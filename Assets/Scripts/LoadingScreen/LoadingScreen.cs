@@ -4,25 +4,30 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class LoadingScreen : MonoBehaviour
+namespace TD.UServices.Core
 {
-    [SerializeField] private Slider _loadingSlider;
-
-    void Start()
+    public class LoadingScreen : MonoBehaviour
     {
-        StartCoroutine(LoadSceneAsync(SceneController.Instance.CurrentScene + 1));
-        SceneController.Instance.NextScene();
-    }
+        [SerializeField]
+        private Slider _loadingSlider;
 
-    IEnumerator LoadSceneAsync(int sceneId)
-    {
-        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneId);
-        while (!operation.isDone)
+        void Start()
         {
-            float progress = Mathf.Clamp01(operation.progress / 0.9f);
-            LogSystem.LogByColor("Loading progress: " + progress, "green");
-            _loadingSlider.value = progress;
-            yield return null;
+            StartCoroutine(LoadSceneAsync(SceneController.Instance.CurrentScene + 1));
+            SceneController.Instance.NextScene();
+        }
+
+        IEnumerator LoadSceneAsync(int sceneId)
+        {
+            AsyncOperation operation = SceneManager.LoadSceneAsync(sceneId);
+            UnityServicesManager.instance.Initialize();
+            while (!operation.isDone && !UnityServicesManager.instance.IsUnityServiceSync)
+            {
+                float progress = Mathf.Clamp01(operation.progress / 0.9f);
+                LogSystem.LogByColor("Loading progress: " + progress, "green");
+                _loadingSlider.value = progress;
+                yield return null;
+            }
         }
     }
 }
