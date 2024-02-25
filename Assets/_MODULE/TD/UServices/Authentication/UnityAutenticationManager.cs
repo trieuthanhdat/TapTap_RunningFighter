@@ -19,10 +19,10 @@ namespace TD.UServices.Authentication
     {
 
         [SerializeField] private TextAsset unityAuthenticationBackupData;
+        [SerializeField] UnityAuthenticationConfig unityAuthenticationConfig;
 
         public static EventHandler OnSignInSuccessfully;
         public static EventHandler OnNameChanged;
-        [SerializeField] UnityAuthenticationConfig unityAuthenticationConfig;
 
         #region ____PROPERTIES____
         private string _playerID = "";

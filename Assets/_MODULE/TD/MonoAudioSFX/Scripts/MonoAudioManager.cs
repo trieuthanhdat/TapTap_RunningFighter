@@ -42,10 +42,6 @@ namespace TD.MonoAudioSFX
         [SerializeField] MonoAudioPlayer audioPlayerPrefabs;
         [SerializeField] SoundConfigSO soundSO;
         bool isInited = false;
-
-        bool isGradient = false;
-        int gradientSoundIndex = -1;
-        float time = 0;
         private void Awake()
         {
             foreach (Sound s in soundSO.sounds)
