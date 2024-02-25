@@ -76,6 +76,10 @@ namespace TD.UServices.Authentication
             }
             _isInited = true;
         }
+        public void StartSignIn()
+        {
+            StartCoroutine(Co_SignIn());
+        }
         public IEnumerator Co_SignIn()
         {
             while (_isInited == false)

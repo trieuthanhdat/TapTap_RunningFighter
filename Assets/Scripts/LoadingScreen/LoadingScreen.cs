@@ -1,28 +1,110 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using DG.Tweening;
+using TD.UServices.Authentication;
+using TD.UServices.Core;
 
-public class LoadingScreen : MonoBehaviour
+public class LoadingScreen : MonoBehaviour, ILoadingService
 {
-    [SerializeField] private Slider _loadingSlider;
-
-    void Start()
+    public enum StepLoadingService
     {
-        StartCoroutine(LoadSceneAsync(SceneController.Instance.CurrentScene + 1));
-        SceneController.Instance.NextScene();
+        NONE = 0,
+        STEP_LOAD_UNITY_SERVICE = 1,
+        STEP_UNITY_AUTHENTICATE = 2,
+        FINALSTEP_LOAD_SCENE_ASYNC = 3,
     }
 
-    IEnumerator LoadSceneAsync(int sceneId)
+    [SerializeField] private Slider _loadingSlider;
+    [Header("DEBUG SECTION")]
+    [SerializeField] private StepLoadingService _stepLoadingService;
+
+    private IEnumerator _currentLoadingRoutine;
+
+    private void Start()
     {
-        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneId);
-        while (!operation.isDone)
+        StartFirstStep();
+    }
+
+    private void StartFirstStep()
+    {
+        _stepLoadingService = StepLoadingService.STEP_LOAD_UNITY_SERVICE;
+        LoadGameAsync();
+    }
+
+    private void LoadGameAsync()
+    {
+        switch (_stepLoadingService)
         {
-            float progress = Mathf.Clamp01(operation.progress / 0.9f);
-            LogSystem.LogByColor("Loading progress: " + progress, "green");
-            _loadingSlider.value = progress;
+            case StepLoadingService.STEP_LOAD_UNITY_SERVICE:
+                _currentLoadingRoutine = LoadUnityService();
+                break;
+            case StepLoadingService.STEP_UNITY_AUTHENTICATE:
+                _currentLoadingRoutine = SignInUnityService();
+                break;
+            case StepLoadingService.FINALSTEP_LOAD_SCENE_ASYNC:
+                _currentLoadingRoutine = LoadSceneAsync(SceneController.Instance.CurrentScene + 1);
+                break;
+        }
+        StartCoroutine(_currentLoadingRoutine);
+    }
+
+    private void ProcessNextStep()
+    {
+        _stepLoadingService += 1;
+        LoadGameAsync();
+    }
+
+    private void UpdateLoadingProgress(float step)
+    {
+        float progress = step / ILoadingService.GetCountILoadingServiceMethods();
+        _loadingSlider.DOValue(progress, 0.5f);
+        Debug.Log($"{nameof(LoadingScreen).ToUpper()}: Loading progress: {progress}");
+    }
+
+    #region _____INTERFACE IMPLEMENTATION_____
+    public IEnumerator LoadSceneAsync(int sceneId)
+    {
+        yield return EnterGame(sceneId);
+    }
+
+    public IEnumerator LoadUnityService()
+    {
+        // Wait until Unity service is synchronized
+        UnityServicesManager.Instance.Initialize();
+        while (!UnityServicesManager.Instance.IsUnityServiceSync)
+        {
             yield return null;
         }
+        UpdateLoadingProgress((int)_stepLoadingService);
+        ProcessNextStep();
     }
+
+    public IEnumerator SignInUnityService()
+    {
+        // Wait until the user is signed in
+        UnityAutenticationManager.Instance.StartSignIn();
+        while (!UnityAutenticationManager.Instance.IsSignIn)
+        {
+            yield return null;
+        }
+        UpdateLoadingProgress((int)_stepLoadingService);
+        ProcessNextStep();
+    }
+    #endregion
+    private IEnumerator EnterGame(int index)
+    {
+        if (_stepLoadingService != StepLoadingService.FINALSTEP_LOAD_SCENE_ASYNC)
+        {
+            StartFirstStep();
+            yield break;
+        }
+
+        _loadingSlider.DOValue(1.0f, 0.5f)
+            .OnUpdate(() => Debug.Log($"Loading progress: {_loadingSlider.value}"))
+            .OnComplete(() => SceneManager.LoadSceneAsync(index));
+    }
+
+    
 }
