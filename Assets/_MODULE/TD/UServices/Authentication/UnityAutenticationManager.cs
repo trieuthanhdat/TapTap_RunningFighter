@@ -63,10 +63,7 @@ namespace TD.UServices.Authentication
             string json = JsonUtility.ToJson(unityAuthenticationConfig);
             Debug.Log($"{nameof(UnityAutenticationManager).ToUpper()}: json {json}");
 
-            if(unityAuthenticationConfig == null)
-            {
-                StartCoroutine(Co_GetAuthenticationConfig());
-            }
+            StartCoroutine(Co_GetAuthenticationConfig());
         }
         private IEnumerator Co_GetAuthenticationConfig()
         {
