@@ -10,6 +10,8 @@ namespace TD.UServices.Core
     {
         [SerializeField]
         private UnityAutenticationManager unityAutenticationManager = null;
+        [SerializeField] 
+        private bool signInAfterInit = false;
 
         private bool _isServiceInited = false;
         public bool IsUnityServiceSync
@@ -31,7 +33,8 @@ namespace TD.UServices.Core
         private IEnumerator InitializeCoroutine()
         {
             yield return StartCoroutine(Co_UnityServicesInitialize());
-            yield return StartCoroutine(unityAutenticationManager.Co_SignIn());
+            if(signInAfterInit) 
+                yield return StartCoroutine(unityAutenticationManager.Co_SignIn());
         }
 
         private IEnumerator Co_UnityServicesInitialize()

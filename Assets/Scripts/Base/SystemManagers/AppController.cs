@@ -9,10 +9,10 @@ public class AppController : MonoBehaviour
        /* SoundManager.Instance.Init();*/
         SceneController.Instance.Init();
         /*UIManager.Instance.Init();*/
-        /*GameplayController.Instance.Init();
+        /*GameplayController.Instance.Init();*/
         TimerManager.Instance.Init();
-        DataManager.Instance.Init();*/
-        
+        DataManager.Instance.Init();
+
         DontDestroyOnLoad(gameObject);
     }
 
