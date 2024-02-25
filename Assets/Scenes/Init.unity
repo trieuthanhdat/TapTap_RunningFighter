@@ -451,6 +451,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2974111728825125461, guid: 79d6084439b78bb4eaf5232cb953fd87, type: 3}
   m_PrefabInstance: {fileID: 804490703}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &804490705 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6467329650127078166, guid: 79d6084439b78bb4eaf5232cb953fd87, type: 3}
+  m_PrefabInstance: {fileID: 804490703}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cf0981872f02e14189943a75d057e27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &935085494
 GameObject:
   m_ObjectHideFlags: 0
@@ -523,6 +534,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c55409f219f955543834ab46fecf1312, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1207616518
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1207616519}
+  - component: {fileID: 1207616520}
+  m_Layer: 0
+  m_Name: UILogManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1207616519
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1207616518}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6494304921295623196}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1207616520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1207616518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 089231d71bcfb8d479b4f8b778b1026f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_editorLogVerbosity: 0
+  m_popUp: {fileID: 804490705}
 --- !u!1 &1800454889
 GameObject:
   m_ObjectHideFlags: 0
@@ -697,6 +754,7 @@ Transform:
   - {fileID: 1238842611524785873}
   - {fileID: 935085495}
   - {fileID: 642237706}
+  - {fileID: 1207616519}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6494304921295623199
