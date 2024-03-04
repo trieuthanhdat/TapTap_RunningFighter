@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using UnityEngine;
@@ -17,6 +19,8 @@ namespace TD.UServices.Authentication
     }
     public class UnityAutenticationManager : MonoSingleton<UnityAutenticationManager>, IUnityAuthentication
     {
+        protected const int k_InitTimeout = 10000;
+        protected static bool s_IsSigningIn;
 
         [SerializeField] private TextAsset unityAuthenticationBackupData;
         [SerializeField] UnityAuthenticationConfig unityAuthenticationConfig;
@@ -30,6 +34,12 @@ namespace TD.UServices.Authentication
         {
             private set => _playerID = value;
             get => _playerID;
+        }
+        private string _playerName = "";
+        public string PlayerName
+        {
+            private set => _playerName = value;
+            get => _playerName;
         }
 
         private bool _isSigned = false;
@@ -49,13 +59,19 @@ namespace TD.UServices.Authentication
         public class AuthenticationInforArgs : EventArgs
         {
             private string playerID;
+            private string playerName;
             public string GetPlayerID()
             {
                 return playerID;
             }
-            public AuthenticationInforArgs(string pID)
+            public string GetPlayerName()
+            {
+                return playerName;
+            }
+            public AuthenticationInforArgs(string pID, string pName)
             {
                 playerID = pID;
+                playerName = pName;
             }
         }
         private void Start()
@@ -130,11 +146,73 @@ namespace TD.UServices.Authentication
             _isSigned = true;
             
         }
+        public static async Task<bool> TryInitServicesAsync(string profileName = null)
+        {
+            if (UnityServices.State == ServicesInitializationState.Initialized)
+                return true;
+
+            //Another Service is mid-initialization:
+            if (UnityServices.State == ServicesInitializationState.Initializing)
+            {
+                var task = WaitForInitialized();
+                if (await Task.WhenAny(task, Task.Delay(k_InitTimeout)) != task)
+                    return false; // We timed out
+
+                return UnityServices.State == ServicesInitializationState.Initialized;
+            }
+
+            if (profileName != null)
+            {
+                //ProfileNames can't contain non-alphanumeric characters
+                Regex rgx = new Regex("[^a-zA-Z0-9 - _]");
+                profileName = rgx.Replace(profileName, "");
+                var authProfile = new InitializationOptions().SetProfile(profileName);
+
+                //If you are using multiple unity services, make sure to initialize it only once before using your services.
+                await UnityServices.InitializeAsync(authProfile);
+            }
+            else
+                await UnityServices.InitializeAsync();
+
+            return UnityServices.State == ServicesInitializationState.Initialized;
+
+            async Task WaitForInitialized()
+            {
+                while (UnityServices.State != ServicesInitializationState.Initialized)
+                    await Task.Delay(100);
+            }
+        }
+        public static async Task<bool> TrySignInAsync(string profileName = null)
+        {
+            if (!await TryInitServicesAsync(profileName))
+                return false;
+            if (s_IsSigningIn)
+            {
+                var task = WaitForSignedIn();
+                if (await Task.WhenAny(task, Task.Delay(k_InitTimeout)) != task)
+                    return false; // We timed out
+                return AuthenticationService.Instance.IsSignedIn;
+            }
+
+            s_IsSigningIn = true;
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            s_IsSigningIn = false;
+
+            return AuthenticationService.Instance.IsSignedIn;
+
+            async Task WaitForSignedIn()
+            {
+                while (!AuthenticationService.Instance.IsSignedIn)
+                    await Task.Delay(100);
+            }
+        }
+        #region ___PLAYER NAME METHODS___
         public void ChangePlayerNameAsync(string newName)
         {
             AuthenticationService.Instance.UpdatePlayerNameAsync(newName);
             OnNameChanged?.Invoke(this, EventArgs.Empty);
         }
+        #endregion
         #region ___INTERFACE IMPLEMENTATION___
         public void HandleAuthenticationError(AuthenticationException ex)
         {
@@ -149,7 +227,8 @@ namespace TD.UServices.Authentication
         public void HandleSuccessfulSignIn()
         {
             _playerID = AuthenticationService.Instance.PlayerId;
-            OnSignInSuccessfully?.Invoke(this, new AuthenticationInforArgs(_playerID));
+            _playerName = AuthenticationService.Instance.PlayerName;
+            OnSignInSuccessfully?.Invoke(this, new AuthenticationInforArgs(_playerID, _playerName));
             Debug.Log("Sign in anonymously succeeded!");
             Debug.Log($"{nameof(UnityAutenticationManager).ToUpper()}: player id => {_playerID}");
         }
