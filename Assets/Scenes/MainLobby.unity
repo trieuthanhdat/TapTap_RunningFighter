@@ -208,6 +208,7 @@ GameObject:
   m_Component:
   - component: {fileID: 259676638}
   - component: {fileID: 259676639}
+  - component: {fileID: 259676640}
   m_Layer: 5
   m_Name: GroupTop
   m_TagString: Untagged
@@ -263,6 +264,21 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &259676640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 259676637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 654914ff294bb7e458ec00f98f83afc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  singleModeButton: {fileID: 1103474917809964631}
+  createRoomButton: {fileID: 1613155170}
+  joinRoomButton: {fileID: 1764677669}
 --- !u!1 &326899447
 GameObject:
   m_ObjectHideFlags: 0
@@ -838,6 +854,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_countdown: {fileID: 0}
+  m_setupInGame: {fileID: 0}
 --- !u!4 &1126788686
 Transform:
   m_ObjectHideFlags: 0
@@ -847,7 +864,7 @@ Transform:
   m_GameObject: {fileID: 1126788684}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.1739368, y: -7.676546, z: 83.32453}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1051,6 +1068,17 @@ MonoBehaviour:
   positionToPucnh: {x: 0, y: 0}
   tweenTarget: {fileID: 0}
   repeatPunchTime: 1
+--- !u!114 &1613155170 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8256319347374362579, guid: 40b5303218286454ba64754efde43d0f, type: 3}
+  m_PrefabInstance: {fileID: 1613155166}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1613155168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1717685860
 GameObject:
   m_ObjectHideFlags: 0
@@ -1263,6 +1291,17 @@ MonoBehaviour:
   positionToPucnh: {x: 0, y: 0}
   tweenTarget: {fileID: 0}
   repeatPunchTime: 1
+--- !u!114 &1764677669 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8256319347374362579, guid: 40b5303218286454ba64754efde43d0f, type: 3}
+  m_PrefabInstance: {fileID: 1764677665}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1764677667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1766936061
 GameObject:
   m_ObjectHideFlags: 0
@@ -1547,6 +1586,17 @@ MonoBehaviour:
   positionToPucnh: {x: 0, y: 0}
   tweenTarget: {fileID: 0}
   repeatPunchTime: 1
+--- !u!114 &1103474917809964631 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8256319347374362579, guid: 40b5303218286454ba64754efde43d0f, type: 3}
+  m_PrefabInstance: {fileID: 1103474917809964627}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1103474917809964629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
