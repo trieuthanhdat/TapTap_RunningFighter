@@ -22,12 +22,15 @@ namespace TD.UServices.CoreLobby.UI
         public override void Start()
         {
             base.Start();
-            if(m_CreateButton) m_CreateButton.interactable = false;
+            if (m_CreateButton)
+            {
+                m_CreateButton.interactable = false;
+                m_CreateButton.onClick.AddListener(OnClick_CreateRoom);
+            }
             if(m_JoinCreateLobbyUI) m_JoinCreateLobbyUI.m_OnTabChanged.AddListener(OnTabChanged);
             if (m_PasswordInputField) m_PasswordInputField.onValueChanged.AddListener(SetServerPassword);
             if (m_RoomNameInputField) m_RoomNameInputField.onValueChanged.AddListener(SetServerName);
         }
-
         protected void OnTabChanged(JoinCreateTabs tabState)
         {
             if (tabState == JoinCreateTabs.Create)
