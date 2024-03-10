@@ -5,15 +5,13 @@ using Unity.Netcode;
 
 public class PlayerController : NetworkBehaviour
 {
-
-    public float jumpForce = 5f;
+    [SerializeField] private float dashForce = 10f;
     private Rigidbody rb;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
     }
-
 
     public override void OnNetworkSpawn()
     {
@@ -27,30 +25,27 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-     private void Update(){
+    private void FixedUpdate()
+    {
         if (IsOwner)
         {
-            // get touch
+            // phone input touch
             if (Input.touchCount > 0)
             {
                 Touch touch = Input.GetTouch(0);
                 if (touch.phase == TouchPhase.Began)
                 {
-                    JumpServerRpc();
+                    DashServerRpc();
                 }
             }
         }
-     }
-
-
-    [ServerRpc]
-    private void JumpServerRpc()
-    {
-        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
 
-
-  
-
+    // Dash
+    [ServerRpc]
+   void DashServerRpc()
+    {
+        // dash to the right
+        rb.AddForce(Vector3.right * dashForce, ForceMode.Impulse);
+    }
 }
-
