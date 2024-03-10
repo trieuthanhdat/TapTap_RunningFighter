@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TD.UServices.Authentication;
 using TD.UServices.CoreLobby;
 using TD.UServices.CoreLobby.Infrastructure;
+using TD.UServices.CoreLobby.UI;
 using TD.UServices.CoreLobby.Utilities;
 using Unity.Services.Lobbies;
 using UnityEngine;
@@ -325,7 +326,7 @@ namespace TD.UServices.Core
 
             if (isLeavingLobby)
                 LeaveLobby();
-            onGameStateChanged.Invoke(LocalGameState);
+            onGameStateChanged?.Invoke(LocalGameState);
         }
         #endregion
 

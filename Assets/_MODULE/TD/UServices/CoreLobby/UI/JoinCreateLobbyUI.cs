@@ -20,7 +20,7 @@ namespace TD.UServices.CoreLobby.UI
         public UnityEvent<JoinCreateTabs> m_OnTabChanged;
 
         [SerializeField] //Serialized for Visisbility in Editor
-        JoinCreateTabs m_CurrentTab = JoinCreateTabs.Join;
+        JoinCreateTabs m_CurrentTab;
 
         public JoinCreateTabs CurrentTab
         {

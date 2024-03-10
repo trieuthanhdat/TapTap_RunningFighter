@@ -156,11 +156,11 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5167769985255958816}
   toggleTransition: 1
   graphic: {fileID: 141602092382872944}
-  m_Group: {fileID: 0}
+  m_Group: {fileID: 719643199907339259}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &649475809778835294
 GameObject:
   m_ObjectHideFlags: 0
@@ -171,6 +171,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2078605433261537125}
   - component: {fileID: 9180316283433287896}
+  - component: {fileID: 719643199907339259}
   m_Layer: 5
   m_Name: GroupHorizontal
   m_TagString: Untagged
@@ -226,6 +227,19 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &719643199907339259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 649475809778835294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fafe2cfe61f6974895a912c3755e8f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AllowSwitchOff: 0
 --- !u!1 &946300807771543476
 GameObject:
   m_ObjectHideFlags: 0
@@ -764,11 +778,11 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7764724995562237926}
   toggleTransition: 1
   graphic: {fileID: 9096732745815988915}
-  m_Group: {fileID: 0}
+  m_Group: {fileID: 719643199907339259}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &6598357417694439276
 GameObject:
   m_ObjectHideFlags: 0
@@ -929,11 +943,11 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4442383270520775053}
   toggleTransition: 1
   graphic: {fileID: 389432544706543094}
-  m_Group: {fileID: 0}
+  m_Group: {fileID: 719643199907339259}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &8865016302558203572
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using UnityEngine;
+using Utils;
 
 namespace TD.UServices.Authentication
 {
@@ -227,7 +227,10 @@ namespace TD.UServices.Authentication
         public void HandleSuccessfulSignIn()
         {
             _playerID = AuthenticationService.Instance.PlayerId;
-            _playerName = AuthenticationService.Instance.PlayerName;
+            _playerName = string.IsNullOrEmpty(AuthenticationService.Instance.PlayerName) ? 
+                          NameGenerator.GetName(_playerID) :
+                          AuthenticationService.Instance.PlayerName;
+
             OnSignInSuccessfully?.Invoke(this, new AuthenticationInforArgs(_playerID, _playerName));
             Debug.Log("Sign in anonymously succeeded!");
             Debug.Log($"{nameof(UnityAutenticationManager).ToUpper()}: player id => {_playerID}");

@@ -3,9 +3,9 @@ using System.Collections;
 using System.Reflection;
 public interface ILoadingService
 {
-    public abstract IEnumerator LoadUnityService();
-    public abstract IEnumerator SignInUnityService();
-    public abstract IEnumerator LoadSceneAsync(int index);
+    public abstract IEnumerator Step_LoadUnityService();
+    public abstract IEnumerator Step_SignInUnityService();
+    public abstract IEnumerator Step_LoadSceneAsync(int index);
 
     public static int GetCountILoadingServiceMethods()
     {
