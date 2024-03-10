@@ -5,27 +5,29 @@ using System.Threading.Tasks;
 using TD.UServices.Authentication;
 using TD.UServices.CoreLobby;
 using TD.UServices.CoreLobby.Infrastructure;
+using TD.UServices.CoreLobby.UI;
 using TD.UServices.CoreLobby.Utilities;
-using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
 using UnityEngine;
 
 
 namespace TD.UServices.Core
 {
-    [Flags]
-    public enum GameState
-    {
-        Menu = 1,
-        Lobby = 2,
-        JoinMenu = 4,
-    }
+    
     public class CoreGameManager : MonoSingleton<CoreGameManager>
     {
+        [Flags]
+        public enum GameState
+        {
+            Menu = 1,
+            Lobby = 2,
+            JoinMenu = 4,
+        }
+
         [SerializeField] private LobbyCountDown m_countdown;
         [SerializeField] private LobbyInGameSetup m_setupInGame;
         #region ____LOBBY EVENTS____
-        public event Action<GameState> onGameStateChanged;
+        public Action<GameState> onGameStateChanged;
         #endregion
 
         #region ____LOBBY PUBLIC VARIABLES____
@@ -40,7 +42,13 @@ namespace TD.UServices.Core
 
         #region ____LOBBY COLOR____
         protected LobbyColor m_lobbyColorFilter;
-
+        public void SetLocalLobbyColor(int color)
+        {
+            if (m_LocalLobby.PlayerCount < 1)
+                return;
+            m_LocalLobby.LocalLobbyColor.Value = (LobbyColor)color;
+            SendLocalLobbyData();
+        }
         public void SetLobbyColorFilter(int color)
         {
             m_lobbyColorFilter = (LobbyColor)color;
@@ -134,7 +142,7 @@ namespace TD.UServices.Core
         async void Awake()
         {
             Application.wantsToQuit += OnWantToQuit;
-            m_LocalUser = new LocalPlayer("", 0, false, "LocalPlayer");
+            m_LocalUser  = new LocalPlayer("", 0, false, "LocalPlayer");
             m_LocalLobby = new LocalLobby { LocalLobbyState = { Value = LobbyState.Lobby } };
             LobbyManager = new LobbyManager();
 
@@ -158,11 +166,12 @@ namespace TD.UServices.Core
 
         void AuthenticatePlayer()
         {
-            var localId = UnityAutenticationManager.instance.PlayerID;
-            var randomName = UnityAutenticationManager.instance.PlayerName;
+            var playerID = UnityAutenticationManager.instance.PlayerID;
+            var playerName = UnityAutenticationManager.instance.PlayerName;
 
-            m_LocalUser.ID.Value = localId;
-            m_LocalUser.DisplayName.Value = randomName;
+            m_LocalUser.ID.Value = playerID;
+            m_LocalUser.DisplayName.Value = playerName;
+            Debug.Log($"CORE GAME MANAGER: Enter game : playerID {playerID} - player name {playerName}");
         }
 
         #endregion
@@ -313,16 +322,26 @@ namespace TD.UServices.Core
                 LocalGameState == GameState.Lobby;
             LocalGameState = state;
 
-            Debug.Log($"Switching Game State to : {LocalGameState}");
-
             if (isLeavingLobby)
                 LeaveLobby();
-            onGameStateChanged.Invoke(LocalGameState);
+            onGameStateChanged?.Invoke(LocalGameState);
         }
         #endregion
 
         #region ____UTITLIES____
+        public void UIChangeMenuState(GameState state)
+        {
+            var isQuittingGame = LocalGameState == GameState.Lobby &&
+                m_LocalLobby.LocalLobbyState.Value == LobbyState.InGame;
 
+            if (isQuittingGame)
+            {
+                //If we were in-game, make sure we stop by the lobby first
+                state = GameState.Lobby;
+                ClientQuitGame();
+            }
+            SetGameState(state);
+        }
         /// In builds, if we are in a lobby and try to send a Leave request on application quit, it won't go through if we're quitting on the same frame.
         /// So, we need to delay just briefly to let the request happen (though we don't need to wait for the result).
         protected IEnumerator LeaveBeforeQuit()

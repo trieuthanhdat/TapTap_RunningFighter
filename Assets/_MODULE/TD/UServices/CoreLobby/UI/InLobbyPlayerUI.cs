@@ -18,12 +18,6 @@ namespace TD.UServices.CoreLobby.UI
         [SerializeField]
         Image m_HostIcon;
 
-        [SerializeField]
-        Image m_EmoteImage;
-
-        [SerializeField]
-        Sprite[] m_EmoteIcons;
-
         /*[SerializeField]
         vivox.VivoxUserHandler m_VivoxUserHandler;*/
 

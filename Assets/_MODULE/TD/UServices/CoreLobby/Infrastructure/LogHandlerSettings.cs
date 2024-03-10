@@ -6,7 +6,7 @@ namespace TD.UServices.CoreLobby.Infrastructure
     /// <summary>
     /// Acts as a buffer between receiving requests to display error messages to the player and running the pop-up UI to do so.
     /// </summary>
-    public class LogHandlerSettings : MonoBehaviour
+    public class LogHandlerSettings : MonoSingleton<LogHandlerSettings>
     {
         [SerializeField]
         [Tooltip("Only logs of this level or higher will appear in the console.")]
@@ -15,16 +15,6 @@ namespace TD.UServices.CoreLobby.Infrastructure
         [SerializeField]
         private LobbyPopupUI m_popUp;
 
-
-        public static LogHandlerSettings Instance
-        {
-            get
-            {
-                if (s_LogHandlerSettings != null) return s_LogHandlerSettings;
-                return s_LogHandlerSettings = FindObjectOfType<LogHandlerSettings>();
-            }
-        }
-        static LogHandlerSettings s_LogHandlerSettings;
         private void Awake()
         {
             LogHandler.Get().mode = m_editorLogVerbosity;

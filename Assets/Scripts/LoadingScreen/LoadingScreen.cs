@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using TD.UServices.Authentication;
 using TD.UServices.Core;
+using System;
 
 public class LoadingScreen : MonoBehaviour, ILoadingService
 {
@@ -38,13 +39,13 @@ public class LoadingScreen : MonoBehaviour, ILoadingService
         switch (_stepLoadingService)
         {
             case StepLoadingService.STEP_LOAD_UNITY_SERVICE:
-                _currentLoadingRoutine = LoadUnityService();
+                _currentLoadingRoutine = Step_LoadUnityService();
                 break;
             case StepLoadingService.STEP_UNITY_AUTHENTICATE:
-                _currentLoadingRoutine = SignInUnityService();
+                _currentLoadingRoutine = Step_SignInUnityService();
                 break;
             case StepLoadingService.FINALSTEP_LOAD_SCENE_ASYNC:
-                _currentLoadingRoutine = LoadSceneAsync(SceneController.Instance.CurrentScene + 1);
+                _currentLoadingRoutine = Step_LoadSceneAsync(SceneController.Instance.CurrentScene + 1);
                 break;
         }
         StartCoroutine(_currentLoadingRoutine);
@@ -56,20 +57,20 @@ public class LoadingScreen : MonoBehaviour, ILoadingService
         LoadGameAsync();
     }
 
-    private void UpdateLoadingProgress(float step)
+    private void UpdateLoadingProgress(float step, Action stepCallback = null)
     {
         float progress = step / ILoadingService.GetCountILoadingServiceMethods();
-        _loadingSlider.DOValue(progress, 0.5f);
+        if (_loadingSlider) _loadingSlider.DOValue(progress, 0.5f).OnComplete(()=> stepCallback?.Invoke());
         Debug.Log($"{nameof(LoadingScreen).ToUpper()}: Loading progress: {progress}");
     }
 
     #region _____INTERFACE IMPLEMENTATION_____
-    public IEnumerator LoadSceneAsync(int sceneId)
+    public IEnumerator Step_LoadSceneAsync(int sceneId)
     {
         yield return EnterGame(sceneId);
     }
 
-    public IEnumerator LoadUnityService()
+    public IEnumerator Step_LoadUnityService()
     {
         // Wait until Unity service is synchronized
         UnityServicesManager.Instance.Initialize();
@@ -81,7 +82,7 @@ public class LoadingScreen : MonoBehaviour, ILoadingService
         ProcessNextStep();
     }
 
-    public IEnumerator SignInUnityService()
+    public IEnumerator Step_SignInUnityService()
     {
         // Wait until the user is signed in
         UnityAutenticationManager.Instance.StartSignIn();
@@ -100,10 +101,11 @@ public class LoadingScreen : MonoBehaviour, ILoadingService
             StartFirstStep();
             yield break;
         }
-
-        _loadingSlider.DOValue(1.0f, 0.5f)
-            .OnUpdate(() => Debug.Log($"Loading progress: {_loadingSlider.value}"))
-            .OnComplete(() => SceneManager.LoadSceneAsync(index));
+        int lastStep = ILoadingService.GetCountILoadingServiceMethods();
+        UpdateLoadingProgress(lastStep, ()=>
+        {
+            SceneManager.LoadSceneAsync(index);
+        });
     }
 
     

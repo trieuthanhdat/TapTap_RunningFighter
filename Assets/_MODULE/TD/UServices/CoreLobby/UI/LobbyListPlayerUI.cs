@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TD.UServices.Core;
 using TD.UServices.CoreLobby.Infrastructure;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace TD.UServices.CoreLobby.UI
         public override void Start()
         {
             base.Start();
-            //m_LocalLobby = GameManager.Instance.LocalLobby;
+            m_LocalLobby = CoreGameManager.Instance.LocalLobby;
             m_LocalLobby.onUserJoined += OnUserJoined;
             m_LocalLobby.onUserLeft += OnUserLeft;
         }
@@ -40,6 +41,7 @@ namespace TD.UServices.CoreLobby.UI
                 if (player == null)
                     continue;
                 lobbySlot.SetUser(player);
+                Debug.Log($"SYNC PLAYER UI: player {player.DisplayName.Value} + {player.ID.Value}");
             }
         }
     }
