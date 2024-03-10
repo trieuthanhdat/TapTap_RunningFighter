@@ -322,8 +322,6 @@ namespace TD.UServices.Core
                 LocalGameState == GameState.Lobby;
             LocalGameState = state;
 
-            Debug.Log($"Switching Game State to : {LocalGameState}");
-
             if (isLeavingLobby)
                 LeaveLobby();
             onGameStateChanged?.Invoke(LocalGameState);
