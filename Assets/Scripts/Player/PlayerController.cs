@@ -2,15 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using System;
 
 public class PlayerController : NetworkBehaviour
 {
     [SerializeField] private float dashForce = 10f;
     private Rigidbody rb;
 
-    private void Start()
+    private void OnEnable()
     {
         rb = GetComponent<Rigidbody>();
+        Debug.Log("PlayerController OnEnable");
+        GameplayUI.Instance.OnPlayerDash += DashServerRpc;
     }
 
     public override void OnNetworkSpawn()
@@ -27,25 +30,19 @@ public class PlayerController : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (IsOwner)
-        {
-            // phone input touch
-            if (Input.touchCount > 0)
-            {
-                Touch touch = Input.GetTouch(0);
-                if (touch.phase == TouchPhase.Began)
-                {
-                    DashServerRpc();
-                }
-            }
-        }
+       
     }
 
-    // Dash
     [ServerRpc]
-   void DashServerRpc()
+    void DashServerRpc()
     {
-        // dash to the right
+        Debug.Log("DashServerRpc");
+        StartCoroutine(Dash());
+    }
+    private IEnumerator Dash()
+    {
         rb.AddForce(Vector3.right * dashForce, ForceMode.Impulse);
+        yield return new WaitForSeconds(0.5f);
+        rb.velocity = Vector3.zero;
     }
 }
