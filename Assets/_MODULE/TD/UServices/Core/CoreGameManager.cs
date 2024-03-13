@@ -7,9 +7,11 @@ using TD.UServices.CoreLobby;
 using TD.UServices.CoreLobby.Infrastructure;
 using TD.UServices.CoreLobby.UI;
 using TD.UServices.CoreLobby.Utilities;
+using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
 using UnityEngine;
-
+using UnityEngine.SocialPlatforms;
+using Utils;
 
 namespace TD.UServices.Core
 {
@@ -23,9 +25,13 @@ namespace TD.UServices.Core
             Lobby = 2,
             JoinMenu = 4,
         }
-
+        [SerializeField] private bool m_AnonimouslySignInRefresh = false;
         [SerializeField] private LobbyCountDown m_countdown;
         [SerializeField] private LobbyInGameSetup m_setupInGame;
+
+        [SerializeField] private Camera UICamera;
+        [SerializeField] private Camera LobbyCamera;
+
         #region ____LOBBY EVENTS____
         public Action<GameState> onGameStateChanged;
         #endregion
@@ -154,7 +160,8 @@ namespace TD.UServices.Core
         private async Task InitializeServices()
         {
             //IF HAVE'NT SIGNED IN
-            if (!UnityAutenticationManager.instance.IsSignIn)
+            if (!UnityAutenticationManager.instance.IsSignIn || 
+                 m_AnonimouslySignInRefresh)
             {
                 string serviceProfileName = "player";
 #if UNITY_EDITOR
@@ -162,12 +169,17 @@ namespace TD.UServices.Core
 #endif
                 await UnityAutenticationManager.TrySignInAsync(serviceProfileName);
             }
+
         }
 
         void AuthenticatePlayer()
         {
-            var playerID = UnityAutenticationManager.instance.PlayerID;
-            var playerName = UnityAutenticationManager.instance.PlayerName;
+            var playerID   = !m_AnonimouslySignInRefresh ? 
+                              UnityAutenticationManager.instance.PlayerID   :
+                              AuthenticationService.Instance.PlayerId;
+            var playerName = !m_AnonimouslySignInRefresh ? 
+                              UnityAutenticationManager.instance.PlayerName :
+                              NameGenerator.GetName(playerID);
 
             m_LocalUser.ID.Value = playerID;
             m_LocalUser.DisplayName.Value = playerName;
@@ -263,8 +275,13 @@ namespace TD.UServices.Core
             Debug.Log($"Setting Lobby user state {GameState.Lobby}");
             SetGameState(GameState.Lobby);
             SetLocalUserStatus(PlayerStatus.Lobby);
+            ToggleLobbyCamera(true);
         }
-
+        void ToggleLobbyCamera(bool isOn)
+        {
+            if (UICamera) UICamera.gameObject.SetActive(!isOn);
+            if (LobbyCamera) LobbyCamera.gameObject.SetActive(isOn);
+        }
         public async void QuickJoin()
         {
             var lobby = await LobbyManager.QuickJoinLobbyAsync(m_LocalUser, m_lobbyColorFilter);
@@ -310,6 +327,7 @@ namespace TD.UServices.Core
             ResetLocalLobby();
             //m_VivoxSetup.LeaveLobbyChannel();
             LobbyList.Clear();
+            ToggleLobbyCamera(false);
         }
         void ResetLocalLobby()
         {

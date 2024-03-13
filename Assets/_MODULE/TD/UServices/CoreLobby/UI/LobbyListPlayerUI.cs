@@ -8,9 +8,9 @@ namespace TD.UServices.CoreLobby.UI
     public class LobbyListPlayerUI : UIPanelBase
     {
         [SerializeField]
-        List<InLobbyPlayerUI> m_UserUIObjects = new List<InLobbyPlayerUI>();
+        protected List<InLobbyPlayerUI> m_UserUIObjects = new List<InLobbyPlayerUI>();
 
-        LocalLobby m_LocalLobby;
+        protected LocalLobby m_LocalLobby;
 
         public override void Start()
         {
@@ -20,17 +20,17 @@ namespace TD.UServices.CoreLobby.UI
             m_LocalLobby.onUserLeft += OnUserLeft;
         }
 
-        void OnUserJoined(LocalPlayer localPlayer)
+        protected virtual void OnUserJoined(LocalPlayer localPlayer)
         {
             SynchPlayerUI();
         }
 
-        void OnUserLeft(int i)
+        protected virtual void OnUserLeft(int i)
         {
             SynchPlayerUI();
         }
 
-        void SynchPlayerUI()
+        protected virtual void SynchPlayerUI()
         {
             foreach (var ui in m_UserUIObjects)
                 ui.ResetUI();

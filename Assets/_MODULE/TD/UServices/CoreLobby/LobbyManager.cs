@@ -9,11 +9,6 @@ using UnityEngine;
 
 namespace TD.UServices.CoreLobby
 {
-    /// <summary>
-    /// An abstraction layer between the direct calls into the Lobby API and the outcomes you actually want. E.g. you can request to get a readable list of
-    /// current lobbies and not need to make the query call directly.
-    /// </summary>
-    ///
     /// Manages one Lobby at a time, Only entry points to a lobby with ID is via JoinAsync, CreateAsync, and QuickJoinAsync
     public class LobbyManager : IDisposable
     {

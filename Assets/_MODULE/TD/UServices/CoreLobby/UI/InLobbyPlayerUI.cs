@@ -25,7 +25,7 @@ namespace TD.UServices.CoreLobby.UI
         public string UserId { get; set; }
         LocalPlayer m_LocalPlayer;
 
-        public void SetUser(LocalPlayer localPlayer)
+        public virtual void SetUser(LocalPlayer localPlayer)
         {
             Show();
             m_LocalPlayer = localPlayer;
@@ -38,26 +38,26 @@ namespace TD.UServices.CoreLobby.UI
             //m_VivoxUserHandler.SetId(UserId);
         }
 
-        void SubscribeToPlayerUpdates()
+        protected virtual void SubscribeToPlayerUpdates()
         {
             m_LocalPlayer.DisplayName.onChanged += SetDisplayName;
-            m_LocalPlayer.UserStatus.onChanged += SetUserStatus;
-            m_LocalPlayer.IsHost.onChanged += SetIsHost;
+            m_LocalPlayer.UserStatus.onChanged  += SetUserStatus;
+            m_LocalPlayer.IsHost.onChanged      += SetIsHost;
         }
 
-        void UnsubscribeToPlayerUpdates()
+        protected virtual void UnsubscribeToPlayerUpdates()
         {
             if (m_LocalPlayer == null)
                 return;
             if (m_LocalPlayer.DisplayName?.onChanged != null)
-                m_LocalPlayer.DisplayName.onChanged -= SetDisplayName;
-            if (m_LocalPlayer.UserStatus?.onChanged != null)
-                m_LocalPlayer.UserStatus.onChanged -= SetUserStatus;
-            if (m_LocalPlayer.IsHost?.onChanged != null)
-                m_LocalPlayer.IsHost.onChanged -= SetIsHost;
+                m_LocalPlayer.DisplayName.onChanged  -= SetDisplayName;
+            if (m_LocalPlayer.UserStatus?.onChanged  != null)
+                m_LocalPlayer.UserStatus.onChanged   -= SetUserStatus;
+            if (m_LocalPlayer.IsHost?.onChanged      != null)
+                m_LocalPlayer.IsHost.onChanged       -= SetIsHost;
         }
 
-        public void ResetUI()
+        public virtual void ResetUI()
         {
             if (m_LocalPlayer == null)
                 return;
@@ -68,22 +68,22 @@ namespace TD.UServices.CoreLobby.UI
             m_LocalPlayer = null;
         }
 
-        void SetDisplayName(string displayName)
+        protected virtual void SetDisplayName(string displayName)
         {
-            m_DisplayNameText.SetText(displayName);
+            if(m_DisplayNameText) m_DisplayNameText.SetText(displayName);
         }
 
-        void SetUserStatus(PlayerStatus statusText)
+        protected virtual void SetUserStatus(PlayerStatus statusText)
         {
-            m_StatusText.SetText(SetStatusFancy(statusText));
+            if(m_StatusText) m_StatusText.SetText(SetStatusFancy(statusText));
         }
 
-        void SetIsHost(bool isHost)
+        protected virtual void SetIsHost(bool isHost)
         {
-            m_HostIcon.enabled = isHost;
+            if (m_HostIcon) m_HostIcon.enabled = isHost;
         }
 
-        string SetStatusFancy(PlayerStatus status)
+        protected virtual string SetStatusFancy(PlayerStatus status)
         {
             switch (status)
             {
