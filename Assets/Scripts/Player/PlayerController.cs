@@ -6,43 +6,50 @@ using System;
 
 public class PlayerController : NetworkBehaviour
 {
-    [SerializeField] private float dashForce = 10f;
+    private GameObject player_body;
+    private Animator anim;
     private Rigidbody rb;
 
     private void OnEnable()
     {
-        rb = GetComponent<Rigidbody>();
-        Debug.Log("PlayerController OnEnable");
-        GameplayUI.Instance.OnPlayerDash += DashServerRpc;
+        player_body = transform.GetChild(0).gameObject;
+        rb = player_body.GetComponent<Rigidbody>();
+        anim = player_body.GetComponent<Animator>();
+        GameplayUI.Instance.OnPlayerDash += Move;
     }
 
-    public override void OnNetworkSpawn()
+    void FixedUpdate()
     {
-        if (IsOwner)
-        {
-            Debug.Log("I am the owner");
-        }
-        else
-        {
-            Debug.Log("I am not the owner");
-        }
+        if (!IsLocalPlayer || !Application.isFocused) return;
     }
+    // private void OnPlayerDash()
+    // {
+    //     // Move the player forward by changing transform.position
+    //     // This will be synced across the network
+    //     transform.position += transform.right * 2;
+    // }
 
-    private void FixedUpdate()
+    void Move()
     {
-       
+        if (IsOwner) {
+            transform.position += transform.right * 2;
+            MoveOnServerRpc();
+        }
     }
 
     [ServerRpc]
-    void DashServerRpc()
+    void MoveOnServerRpc()
     {
-        Debug.Log("DashServerRpc");
-        StartCoroutine(Dash());
+        MoveOnClientRpc();
     }
-    private IEnumerator Dash()
+
+    [ClientRpc]
+    void MoveOnClientRpc()
     {
-        rb.AddForce(Vector3.right * dashForce, ForceMode.Impulse);
-        yield return new WaitForSeconds(0.5f);
-        rb.velocity = Vector3.zero;
+        if (IsOwner) return;
+        transform.position += transform.right * 2;
     }
+
+
+
 }
