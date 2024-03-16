@@ -22,16 +22,11 @@ public class PlayerController : NetworkBehaviour
     {
         if (!IsLocalPlayer || !Application.isFocused) return;
     }
-    // private void OnPlayerDash()
-    // {
-    //     // Move the player forward by changing transform.position
-    //     // This will be synced across the network
-    //     transform.position += transform.right * 2;
-    // }
 
     void Move()
     {
-        if (IsOwner) {
+        if (IsOwner)
+        {
             transform.position += transform.right * 2;
             MoveOnServerRpc();
         }
