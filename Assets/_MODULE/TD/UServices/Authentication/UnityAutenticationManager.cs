@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TD.UServices.CoreLobby.Utilities;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using UnityEngine;
@@ -81,6 +82,18 @@ namespace TD.UServices.Authentication
 
             StartCoroutine(Co_GetAuthenticationConfig());
         }
+#if UNITY_EDITOR
+        private async void Update()
+        {
+            //if(Input.GetKey(KeyCode.LeftControl))
+            {
+                if (Input.GetKeyDown(KeyCode.R))
+                {
+                    await SwitchProfile();
+                }
+            }
+        }
+#endif
         private IEnumerator Co_GetAuthenticationConfig()
         {
             yield return new WaitForSeconds(0.1f);
@@ -136,7 +149,7 @@ namespace TD.UServices.Authentication
                 InitializationOptions options = new InitializationOptions();
                 //Can parse player name here
                 options.SetProfile(UnityEngine.Random.Range(0, 100000).ToString());
-                await UnityServices.InitializeAsync(options);
+                UnityServices.InitializeAsync(options);
             }*/
             var signInTask = AuthenticationService.Instance.SignInAnonymouslyAsync();
             while (!signInTask.IsCompleted)
@@ -145,6 +158,18 @@ namespace TD.UServices.Authentication
             }
             _isSigned = true;
             
+        }
+        private async Task SwitchProfile()
+        {
+            string serviceProfileName = "testProfile";
+#if UNITY_EDITOR
+            serviceProfileName = $"{serviceProfileName}{LocalProfileTool.LocalProfileSuffix}";
+#endif
+            AuthenticationService.Instance.SwitchProfile(serviceProfileName);
+
+            await UnityAutenticationManager.TrySignInAsync(serviceProfileName);
+            Debug.Log($"Switch profile: {AuthenticationService.Instance.Profile.ToString()}");
+
         }
         public static async Task<bool> TryInitServicesAsync(string profileName = null)
         {

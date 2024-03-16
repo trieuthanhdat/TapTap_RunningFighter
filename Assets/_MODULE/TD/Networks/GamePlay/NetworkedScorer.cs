@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using TD.UServices.Core;
+using TD.Networks.Data;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace TD.UServices.GamePlay
+namespace TD.Networks.GamePlay
 {
     public class NetworkedScorer : NetworkBehaviour
     {

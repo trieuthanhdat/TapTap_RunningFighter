@@ -6,7 +6,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace TD.UServices.Core
+namespace TD.Networks.Data
 {
     public class NetworkedDataService : NetworkBehaviour
     {
