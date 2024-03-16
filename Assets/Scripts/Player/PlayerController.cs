@@ -25,6 +25,7 @@ public class PlayerController : NetworkBehaviour
 
     void Move()
     {
+        Debug.Log("Move");  
         if (IsOwner)
         {
             transform.position += transform.right * 2;

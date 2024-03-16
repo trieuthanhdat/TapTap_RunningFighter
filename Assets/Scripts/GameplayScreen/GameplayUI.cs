@@ -4,21 +4,32 @@ using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
 using System;
-using TMPro; 
+using TMPro;
 
-public class GameplayUI : BaseManager<GameplayUI>
+public class GameplayUI : NetworkBehaviour
 {
     [SerializeField] private Button dashButton;
     [SerializeField] private TextMeshProUGUI countdownText;
+    private static GameplayUI _instance;
+    public static GameplayUI Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<GameplayUI>();
+            }
+            return _instance;
+        }
+    }
 
     public event Action OnPlayerDash;
 
-    void Awake()
-    {
+    void Awake() {
         Init();
     }
 
-    public override void Init()
+    public void Init()
     {
         dashButton.onClick.AddListener(() => OnPlayerDash?.Invoke());
         GameplayManager.Instance.OnGameplayWaiting += OnWaitingState;
@@ -27,42 +38,36 @@ public class GameplayUI : BaseManager<GameplayUI>
         GameplayManager.Instance.OnGameplayGameOver += OnGameOverState;
     }
 
-    void OnWaitingState(){
+    private void OnWaitingState()
+    {
         dashButton.interactable = false;
         countdownText.text = "Waiting for players...";
     }
 
-    void OnPreStartState(){
-        // Countdown 3,2,1
+    private void OnPreStartState()
+    {
         dashButton.interactable = false;
-        StartCoroutine(Countdown());
+        countdownText.text = "Game starting in 3...";
+        StartCoroutine(StartCountdown());
     }
 
-    IEnumerator Countdown()
+    private IEnumerator StartCountdown()
     {
-        countdownText.text = "3";
         yield return new WaitForSeconds(1);
-        countdownText.text = "2";
+        countdownText.text = "Game starting in 2...";
         yield return new WaitForSeconds(1);
-        countdownText.text = "1";
+        countdownText.text = "Game starting in 1...";
         yield return new WaitForSeconds(1);
         countdownText.text = "GO!";
-        yield return new WaitForSeconds(1);
-        countdownText.text = "";
     }
 
-    void OnPlayingState(){
+    private void OnPlayingState()
+    {
         dashButton.interactable = true;
-        countdownText.gameObject.SetActive(false);
     }
 
-    void OnGameOverState(){
+    private void OnGameOverState()
+    {
         dashButton.interactable = false;
-        countdownText.text = "Game Over";
-        countdownText.gameObject.SetActive(true);
     }
-
-
-
-
 }
