@@ -4,7 +4,7 @@ using Unity.Netcode;
 using UnityEngine;
 
 
-namespace TD.UServices.Core
+namespace TD.Networks.Data
 {
     public class NetworkedPlayerData : INetworkSerializable
     {

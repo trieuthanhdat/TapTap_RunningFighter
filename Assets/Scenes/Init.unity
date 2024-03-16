@@ -544,7 +544,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unityAutenticationManager: {fileID: 935085496}
-  signInAfterInit: 0
+  signInAfterInit: 1
 --- !u!114 &1152013722
 MonoBehaviour:
   m_ObjectHideFlags: 0

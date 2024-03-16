@@ -659,7 +659,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a50da26b1236764eb66c472bfda8298, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AnonimouslySignInRefresh: 1
+  m_AnonimouslySignInRefresh: 0
   m_countdown: {fileID: 5454416018867191482}
   m_setupInGame: {fileID: 1607592310}
   UICamera: {fileID: 552619690}
