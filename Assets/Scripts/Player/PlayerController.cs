@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using System;
+// using Cinemachine;
 
 public class PlayerController : NetworkBehaviour
 {
+    // [SerializeField] private CinematicFreeLookCamera cinematicCamera;
     private GameObject player_body;
     private Animator anim;
     private Rigidbody rb;
