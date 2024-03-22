@@ -6,7 +6,11 @@ using UnityEngine;
 
 public class GameplayManagerSingleMode : MonoBehaviour {
     [SerializeField] private GameObject playerPrefab;
-    [SerializeField] private Transform playerSpawnPoint;
+    [SerializeField] private GameObject botPrefab;
+    // [SerializeField] private Transform playerSpawnPoint;
+    [SerializeField] private GameObject playerSpawnPoints;
+
+    public enum PLAYER_COLOR { RED, BLUE, GREEN, YELLOW }
 
     void Start()
     {
@@ -15,7 +19,27 @@ public class GameplayManagerSingleMode : MonoBehaviour {
 
     void SpawnPlayer()
     {
-        Instantiate(playerPrefab, playerSpawnPoint.position, playerSpawnPoint.rotation);
+        for (int i = 0; i < playerSpawnPoints.transform.childCount; i++)
+        {
+            GameObject player = Instantiate(i == 0 ? playerPrefab : botPrefab);
+            player.transform.position = playerSpawnPoints.transform.GetChild(i).position;
+
+            switch (i)
+            {
+                case 0:
+                    player.GetComponent<ICharacter>().SetPlayerColor(PLAYER_COLOR.RED);
+                    break;
+                case 1:
+                    player.GetComponent<ICharacter>().SetPlayerColor(PLAYER_COLOR.BLUE);
+                    break;
+                case 2:
+                    player.GetComponent<ICharacter>().SetPlayerColor(PLAYER_COLOR.GREEN);
+                    break;
+                case 3:
+                    player.GetComponent<ICharacter>().SetPlayerColor(PLAYER_COLOR.YELLOW);
+                    break;
+            }
+        }
     }
 }
 

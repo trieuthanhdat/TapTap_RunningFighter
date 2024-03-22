@@ -144,10 +144,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4314180520121040525}
-  - component: {fileID: 5042283339175564173}
-  - component: {fileID: 5458357036264863882}
+  - component: {fileID: 9196243426398259005}
   m_Layer: 0
-  m_Name: PlayerSingleMode
+  m_Name: BotSingleMode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -169,7 +168,7 @@ Transform:
   - {fileID: 241523365381819336}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5042283339175564173
+--- !u!114 &9196243426398259005
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -178,21 +177,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7292599118464010306}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04a3967ad6b314c23a1b6b462371adbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainCamera: {fileID: 0}
-  offset: {x: 0, y: 10, z: -20}
---- !u!114 &5458357036264863882
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7292599118464010306}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c628b0f899c2345beaf8d338282c41f8, type: 3}
+  m_Script: {fileID: 11500000, guid: d9103149cf6b347b591d050eb7dc383d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 0}
@@ -201,3 +186,4 @@ MonoBehaviour:
   staminaCost: 5
   staminaRecovery: 10
   timeToRecover: 2
+  currentMovementState: 0

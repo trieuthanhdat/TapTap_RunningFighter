@@ -1,27 +1,42 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraFollowing : MonoBehaviour
 {
-    // this component is attached to the player
     public Camera mainCamera;
     private Transform playerTransform;
-    // offset between the player and the camera
     [SerializeField] private Vector3 offset;
 
-    void Start()
+    private void Start()
     {
-        // find tag "MainCamera" and assign it to mainCamera
-        mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-        playerTransform = GetComponent<Transform>();
+        FindMainCamera();
+        FindPlayerTransform();
     }
 
-    void LateUpdate()
+    private void FindMainCamera()
     {
-        // Look at the player
+        mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        if (mainCamera == null)
+        {
+            Debug.LogError("Main camera not found. Make sure it is tagged as 'MainCamera'.");
+        }
+    }
+
+    private void FindPlayerTransform()
+    {
+        playerTransform = transform;
+    }
+
+    private void LateUpdate()
+    {
+        if (mainCamera != null && playerTransform != null)
+        {
+            UpdateCameraPositionAndRotation();
+        }
+    }
+
+    private void UpdateCameraPositionAndRotation()
+    {
         mainCamera.transform.position = playerTransform.position + offset;
         mainCamera.transform.LookAt(playerTransform);
     }
-
 }

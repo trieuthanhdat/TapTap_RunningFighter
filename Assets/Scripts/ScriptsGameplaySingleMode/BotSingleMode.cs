@@ -3,7 +3,7 @@ using UnityEngine;
 using DG.Tweening;
 using System;
 
-public class PlayerSingleMode : MonoBehaviour, ICharacter
+public class BotSingleMode : MonoBehaviour, ICharacter
 {
     [SerializeField] private Transform playerTransform;
     [SerializeField] private float speed = 10f;
@@ -13,8 +13,9 @@ public class PlayerSingleMode : MonoBehaviour, ICharacter
     [SerializeField] private float timeToRecover = 2f;
 
     private enum MovementState { Standing, Walking, Running }
-    private MovementState currentMovementState = MovementState.Standing;
+    [SerializeField] private MovementState currentMovementState = MovementState.Standing;
     private bool isRecovering = false;
+    private bool isWaitingAutoAction = false;
 
     public event Action OnAction;
 
@@ -22,33 +23,29 @@ public class PlayerSingleMode : MonoBehaviour, ICharacter
     {
         playerTransform = transform;
         RecoverStamina();
-        OnAction += HandleAction;
+        OnAction += PerformAction;
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (!isWaitingAutoAction)
         {
-            OnAction();
+            isWaitingAutoAction = true;
+            float randomTime = UnityEngine.Random.Range(0.1f, 2f);
+            // Invoke Action
+            Invoke(nameof(InvokeAction), randomTime);
         }
     }
 
-    private IEnumerator RecoverStaminaCoroutine()
+    private void InvokeAction()
     {
-        while (true)
-        {
-            yield return new WaitForSeconds(1);
-            if (stamina < 100)
-            {
-                stamina += staminaRecovery;
-                stamina = Mathf.Clamp(stamina, 0, 100);
-            }
-        }
+        OnAction?.Invoke();
     }
 
-    private void RecoverStamina()
+    private void PerformAction()
     {
-        StartCoroutine(RecoverStaminaCoroutine());
+        HandleAction();
+        isWaitingAutoAction = false;
     }
 
     public void HandleAction()
@@ -58,6 +55,23 @@ public class PlayerSingleMode : MonoBehaviour, ICharacter
 
         UseStamina();
         HandleMovementState();
+    }
+
+    private IEnumerator RecoverStaminaCoroutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(1);
+            if (stamina < 100)
+                stamina += staminaRecovery;
+
+            stamina = Mathf.Clamp(stamina, 0, 100);
+        }
+    }
+
+    private void RecoverStamina()
+    {
+        StartCoroutine(RecoverStaminaCoroutine());
     }
 
     private MovementState GetMovementState()
@@ -73,17 +87,8 @@ public class PlayerSingleMode : MonoBehaviour, ICharacter
     private void HandleMovementState()
     {
         currentMovementState = GetMovementState();
-        switch (currentMovementState)
-        {
-            case MovementState.Standing:
-                break;
-            case MovementState.Walking:
-                MovePlayer(speed);
-                break;
-            case MovementState.Running:
-                MovePlayer(speed * 2);
-                break;
-        }
+        float moveSpeed = (currentMovementState == MovementState.Walking) ? speed : speed * 2;
+        MovePlayer(moveSpeed);
     }
 
     private void MovePlayer(float currentSpeed)
