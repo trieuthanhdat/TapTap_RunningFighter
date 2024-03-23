@@ -16,7 +16,7 @@ public class StaminaBar : MonoBehaviour
     void LateUpdate()
     {
         // playerStaminaBar.value = player.CurrentPercentageStamina();
-        playerStaminaBar.value = Mathf.Lerp(playerStaminaBar.value, player.CurrentPercentageStamina(), Time.deltaTime * 3f);
+        playerStaminaBar.value = Mathf.Lerp(playerStaminaBar.value, player.CurrentPercentageStamina(), Time.deltaTime * 10);
     }
 
     public void CreateStaminaBar(ICharacter player)

@@ -33,6 +33,18 @@ public class PlayerSingleMode : MonoBehaviour, ICharacter
         }
     }
 
+    private void FixedUpdate()
+    {
+        NormalRun();
+    }
+
+    public void NormalRun()
+    { 
+        if (isRecovering)
+            return;
+        playerTransform.position += new Vector3(stamina * 0.01f * Time.fixedDeltaTime, 0, 0);
+    }
+
     private IEnumerator RecoverStaminaCoroutine()
     {
         while (true)
@@ -89,7 +101,7 @@ public class PlayerSingleMode : MonoBehaviour, ICharacter
     private void MovePlayer(float currentSpeed)
     {
         Vector3 targetPosition = playerTransform.position + new Vector3(currentSpeed * Time.deltaTime, 0, 0);
-        playerTransform.DOMove(targetPosition, 0.5f);
+        playerTransform.DOMove(targetPosition, 0.1f);
     }
 
     public void UseStamina()

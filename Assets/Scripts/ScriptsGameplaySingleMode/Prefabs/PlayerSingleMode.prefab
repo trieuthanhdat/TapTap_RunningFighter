@@ -182,7 +182,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 0}
-  offset: {x: 0, y: 10, z: -20}
+  offset: {x: 0, y: 15, z: -20}
 --- !u!114 &5458357036264863882
 MonoBehaviour:
   m_ObjectHideFlags: 0

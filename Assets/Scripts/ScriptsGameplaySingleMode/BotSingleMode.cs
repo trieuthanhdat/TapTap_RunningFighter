@@ -5,15 +5,33 @@ using System;
 
 public class BotSingleMode : MonoBehaviour, ICharacter
 {
-    [SerializeField] private Transform playerTransform;
-    [SerializeField] private float speed = 10f;
-    [SerializeField] private float stamina = 100;
-    [SerializeField] private float staminaCost = 5;
-    [SerializeField] private float staminaRecovery = 10;
-    [SerializeField] private float timeToRecover = 2f;
+    [SerializeField]
+    private Transform playerTransform;
 
-    private enum MovementState { Standing, Walking, Running }
-    [SerializeField] private MovementState currentMovementState = MovementState.Standing;
+    [SerializeField]
+    private float speed = 10f;
+
+    [SerializeField]
+    private float stamina = 100;
+
+    [SerializeField]
+    private float staminaCost = 5;
+
+    [SerializeField]
+    private float staminaRecovery = 10;
+
+    [SerializeField]
+    private float timeToRecover = 2f;
+
+    private enum MovementState
+    {
+        Standing,
+        Walking,
+        Running
+    }
+
+    [SerializeField]
+    private MovementState currentMovementState = MovementState.Standing;
     private bool isRecovering = false;
     private bool isWaitingAutoAction = false;
 
@@ -31,10 +49,22 @@ public class BotSingleMode : MonoBehaviour, ICharacter
         if (!isWaitingAutoAction)
         {
             isWaitingAutoAction = true;
-            float randomTime = UnityEngine.Random.Range(0.1f, 2f);
+            float randomTime = UnityEngine.Random.Range(0.1f, 1f);
             // Invoke Action
             Invoke(nameof(InvokeAction), randomTime);
         }
+    }
+
+    private void FixedUpdate()
+    {
+        NormalRun();
+    }
+
+    public void NormalRun()
+    {
+        if (isRecovering)
+            return;
+        playerTransform.position += new Vector3(stamina * 0.01f * Time.fixedDeltaTime, 0, 0);
     }
 
     private void InvokeAction()
@@ -87,14 +117,24 @@ public class BotSingleMode : MonoBehaviour, ICharacter
     private void HandleMovementState()
     {
         currentMovementState = GetMovementState();
-        float moveSpeed = (currentMovementState == MovementState.Walking) ? speed : speed * 2;
-        MovePlayer(moveSpeed);
+        switch (currentMovementState)
+        {
+            case MovementState.Standing:
+                break;
+            case MovementState.Walking:
+                MovePlayer(speed);
+                break;
+            case MovementState.Running:
+                MovePlayer(speed * 2);
+                break;
+        }
     }
 
     private void MovePlayer(float currentSpeed)
     {
-        Vector3 targetPosition = playerTransform.position + new Vector3(currentSpeed * Time.deltaTime, 0, 0);
-        playerTransform.DOMove(targetPosition, 0.5f);
+        Vector3 targetPosition =
+            playerTransform.position + new Vector3(currentSpeed * Time.deltaTime, 0, 0);
+        playerTransform.DOMove(targetPosition, 0.1f);
     }
 
     public void UseStamina()
