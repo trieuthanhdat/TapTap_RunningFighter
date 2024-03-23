@@ -138,4 +138,9 @@ public class BotSingleMode : MonoBehaviour, ICharacter
                 return Color.white;
         }
     }
+
+    public float CurrentPercentageStamina()
+    {
+        return stamina / 100;
+    }
 }

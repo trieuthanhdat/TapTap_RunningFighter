@@ -133,4 +133,9 @@ public class PlayerSingleMode : MonoBehaviour, ICharacter
                 return Color.white;
         }
     }
+
+    public float CurrentPercentageStamina()
+    {
+        return stamina / 100f;
+    }
 }

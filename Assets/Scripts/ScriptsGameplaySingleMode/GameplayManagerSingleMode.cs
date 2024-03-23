@@ -15,6 +15,7 @@ public class GameplayManagerSingleMode : MonoBehaviour {
     void Start()
     {
         SpawnPlayer();
+        SpawnStaminaBar();
     }
 
     void SpawnPlayer()
@@ -41,5 +42,17 @@ public class GameplayManagerSingleMode : MonoBehaviour {
             }
         }
     }
+
+    void SpawnStaminaBar()
+    {
+        // Get all players
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        for (int i = 0; i < players.Length; i++)
+        {
+            Debug.Log("Player: " + players[i].name);
+            StaminaManager.Instance.CreateStaminaBar(players[i].GetComponent<ICharacter>());
+        }
+    }
+
 }
 
