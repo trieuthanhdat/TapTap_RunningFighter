@@ -908,6 +908,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7348432400703881395, guid: 3bfa76a0ead52b9419c8ec374fdd184e, type: 3}
+      propertyPath: m_Alpha
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7348432400703881395, guid: 3bfa76a0ead52b9419c8ec374fdd184e, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7348432400703881395, guid: 3bfa76a0ead52b9419c8ec374fdd184e, type: 3}
+      propertyPath: m_BlocksRaycasts
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7420024643174176453, guid: 3bfa76a0ead52b9419c8ec374fdd184e, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1317,6 +1329,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7348432400703881395, guid: 3bfa76a0ead52b9419c8ec374fdd184e, type: 3}
+      propertyPath: m_Alpha
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7348432400703881395, guid: 3bfa76a0ead52b9419c8ec374fdd184e, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7348432400703881395, guid: 3bfa76a0ead52b9419c8ec374fdd184e, type: 3}
+      propertyPath: m_BlocksRaycasts
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7420024643174176453, guid: 3bfa76a0ead52b9419c8ec374fdd184e, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1614,6 +1638,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player_Lobby
       objectReference: {fileID: 0}
+    - target: {fileID: 7268921608689355645, guid: 3bfa76a0ead52b9419c8ec374fdd184e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7268921608689416587, guid: 3bfa76a0ead52b9419c8ec374fdd184e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7295410530567984291, guid: 3bfa76a0ead52b9419c8ec374fdd184e, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1658,6 +1690,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7736367074356937999, guid: 3bfa76a0ead52b9419c8ec374fdd184e, type: 3}
+      propertyPath: characterObject
+      value: 
+      objectReference: {fileID: 1385062053}
     - target: {fileID: 8224145004412566367, guid: 3bfa76a0ead52b9419c8ec374fdd184e, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1726,6 +1762,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee4260cead9276344863d713b71471f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1385062053 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1999375722852169603, guid: 3bfa76a0ead52b9419c8ec374fdd184e, type: 3}
+  m_PrefabInstance: {fileID: 1385062050}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1521690662 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 119144747905568191, guid: b97d5a8a5dc339344af9d31f288d8907, type: 3}
@@ -1822,9 +1863,9 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1657797105}
   m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
 --- !u!1 &1766936061
 GameObject:
@@ -2169,6 +2210,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7295410530567984291, guid: 3bfa76a0ead52b9419c8ec374fdd184e, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7348432400703881395, guid: 3bfa76a0ead52b9419c8ec374fdd184e, type: 3}
+      propertyPath: m_Alpha
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7348432400703881395, guid: 3bfa76a0ead52b9419c8ec374fdd184e, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7348432400703881395, guid: 3bfa76a0ead52b9419c8ec374fdd184e, type: 3}
+      propertyPath: m_BlocksRaycasts
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7420024643174176453, guid: 3bfa76a0ead52b9419c8ec374fdd184e, type: 3}
