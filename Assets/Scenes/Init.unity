@@ -769,6 +769,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 890686846172235922, guid: bf24b5be313a4bd46a69045068439025, type: 3}
+      propertyPath: NetworkConfig.Prefabs.NetworkPrefabsLists.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1772957895681615715, guid: bf24b5be313a4bd46a69045068439025, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
