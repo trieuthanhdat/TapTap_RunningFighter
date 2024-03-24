@@ -46,6 +46,9 @@ public class BotSingleMode : MonoBehaviour, ICharacter
 
     private void Update()
     {
+        if (!(GameplayManagerS.Instance.CurrentState == GameplayManagerS.GAME_STATE.PLAYING))
+            return;
+
         if (!isWaitingAutoAction)
         {
             isWaitingAutoAction = true;
@@ -57,6 +60,9 @@ public class BotSingleMode : MonoBehaviour, ICharacter
 
     private void FixedUpdate()
     {
+        if (!(GameplayManagerS.Instance.CurrentState == GameplayManagerS.GAME_STATE.PLAYING))
+            return;
+
         NormalRun();
     }
 
@@ -156,23 +162,23 @@ public class BotSingleMode : MonoBehaviour, ICharacter
         isRecovering = false;
     }
 
-    public void SetPlayerColor(GameplayManagerSingleMode.PLAYER_COLOR color)
+    public void SetPlayerColor(GameSpawner.PLAYER_COLOR color)
     {
         Renderer playerRenderer = GetComponentInChildren<Renderer>();
         playerRenderer.material.color = GetColor(color);
     }
 
-    private Color GetColor(GameplayManagerSingleMode.PLAYER_COLOR color)
+    private Color GetColor(GameSpawner.PLAYER_COLOR color)
     {
         switch (color)
         {
-            case GameplayManagerSingleMode.PLAYER_COLOR.RED:
+            case GameSpawner.PLAYER_COLOR.RED:
                 return Color.red;
-            case GameplayManagerSingleMode.PLAYER_COLOR.BLUE:
+            case GameSpawner.PLAYER_COLOR.BLUE:
                 return Color.blue;
-            case GameplayManagerSingleMode.PLAYER_COLOR.GREEN:
+            case GameSpawner.PLAYER_COLOR.GREEN:
                 return Color.green;
-            case GameplayManagerSingleMode.PLAYER_COLOR.YELLOW:
+            case GameSpawner.PLAYER_COLOR.YELLOW:
                 return Color.yellow;
             default:
                 return Color.white;

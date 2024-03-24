@@ -5,14 +5,31 @@ using System;
 
 public class PlayerSingleMode : MonoBehaviour, ICharacter
 {
-    [SerializeField] private Transform playerTransform;
-    [SerializeField] private float speed = 10f;
-    [SerializeField] private float stamina = 100;
-    [SerializeField] private float staminaCost = 5;
-    [SerializeField] private float staminaRecovery = 10;
-    [SerializeField] private float timeToRecover = 2f;
+    [SerializeField]
+    private Transform playerTransform;
 
-    private enum MovementState { Standing, Walking, Running }
+    [SerializeField]
+    private float speed = 10f;
+
+    [SerializeField]
+    private float stamina = 100;
+
+    [SerializeField]
+    private float staminaCost = 5;
+
+    [SerializeField]
+    private float staminaRecovery = 10;
+
+    [SerializeField]
+    private float timeToRecover = 2f;
+
+    private enum MovementState
+    {
+        Standing,
+        Walking,
+        Running
+    }
+
     private MovementState currentMovementState = MovementState.Standing;
     private bool isRecovering = false;
 
@@ -27,6 +44,9 @@ public class PlayerSingleMode : MonoBehaviour, ICharacter
 
     private void Update()
     {
+        if (!(GameplayManagerS.Instance.CurrentState == GameplayManagerS.GAME_STATE.PLAYING))
+            return;
+
         if (Input.GetMouseButtonDown(0))
         {
             OnAction();
@@ -35,11 +55,14 @@ public class PlayerSingleMode : MonoBehaviour, ICharacter
 
     private void FixedUpdate()
     {
+        if (!(GameplayManagerS.Instance.CurrentState == GameplayManagerS.GAME_STATE.PLAYING))
+            return;
+
         NormalRun();
     }
 
     public void NormalRun()
-    { 
+    {
         if (isRecovering)
             return;
         playerTransform.position += new Vector3(stamina * 0.01f * Time.fixedDeltaTime, 0, 0);
@@ -100,7 +123,8 @@ public class PlayerSingleMode : MonoBehaviour, ICharacter
 
     private void MovePlayer(float currentSpeed)
     {
-        Vector3 targetPosition = playerTransform.position + new Vector3(currentSpeed * Time.deltaTime, 0, 0);
+        Vector3 targetPosition =
+            playerTransform.position + new Vector3(currentSpeed * Time.deltaTime, 0, 0);
         playerTransform.DOMove(targetPosition, 0.1f);
     }
 
@@ -123,23 +147,23 @@ public class PlayerSingleMode : MonoBehaviour, ICharacter
         isRecovering = false;
     }
 
-    public void SetPlayerColor(GameplayManagerSingleMode.PLAYER_COLOR color)
+    public void SetPlayerColor(GameSpawner.PLAYER_COLOR color)
     {
         Renderer playerRenderer = GetComponentInChildren<Renderer>();
         playerRenderer.material.color = GetColor(color);
     }
 
-    private Color GetColor(GameplayManagerSingleMode.PLAYER_COLOR color)
+    private Color GetColor(GameSpawner.PLAYER_COLOR color)
     {
         switch (color)
         {
-            case GameplayManagerSingleMode.PLAYER_COLOR.RED:
+            case GameSpawner.PLAYER_COLOR.RED:
                 return Color.red;
-            case GameplayManagerSingleMode.PLAYER_COLOR.BLUE:
+            case GameSpawner.PLAYER_COLOR.BLUE:
                 return Color.blue;
-            case GameplayManagerSingleMode.PLAYER_COLOR.GREEN:
+            case GameSpawner.PLAYER_COLOR.GREEN:
                 return Color.green;
-            case GameplayManagerSingleMode.PLAYER_COLOR.YELLOW:
+            case GameSpawner.PLAYER_COLOR.YELLOW:
                 return Color.yellow;
             default:
                 return Color.white;

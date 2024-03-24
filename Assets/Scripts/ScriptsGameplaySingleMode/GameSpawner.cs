@@ -1,10 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-
-
-public class GameplayManagerSingleMode : MonoBehaviour {
+public class GameSpawner : MonoBehaviour {
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject botPrefab;
     // [SerializeField] private Transform playerSpawnPoint;
