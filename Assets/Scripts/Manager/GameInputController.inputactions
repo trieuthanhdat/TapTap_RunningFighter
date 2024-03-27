@@ -1,0 +1,34 @@
+{
+    "name": "GameInputController",
+    "maps": [
+        {
+            "name": "Touch",
+            "id": "ac510699-9b8c-492b-95c1-69077c412ee9",
+            "actions": [
+                {
+                    "name": "TouchInput",
+                    "type": "Button",
+                    "id": "f5287b95-8459-4e08-b284-8f1bd435b8cd",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "c821d127-1cb3-434f-9978-9f9c079a25de",
+                    "path": "<Touchscreen>/primaryTouch/tap",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TouchInput",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

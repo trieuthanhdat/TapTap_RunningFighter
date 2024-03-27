@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TD.UServices.Core;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace TD.UServices.CoreLobby.UI
 {
@@ -11,6 +12,11 @@ namespace TD.UServices.CoreLobby.UI
         public void ToGameStatePanel(CoreGameManager.GameState state)
         {
             CoreGameManager.instance.UIChangeMenuState(state);
+        }
+
+        public void ToLobbySingleMode()
+        {
+            SceneManager.LoadScene("GameplayScene");
         }
 
         public void ToLobbyJoinTab()

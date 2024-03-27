@@ -2413,6 +2413,34 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1766936065}
     m_Modifications:
+    - target: {fileID: 442883619603820633, guid: 4c6a9c95e7d0d30469eac53ced026a56, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 442883619603820633, guid: 4c6a9c95e7d0d30469eac53ced026a56, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 442883619603820633, guid: 4c6a9c95e7d0d30469eac53ced026a56, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1766936066}
+    - target: {fileID: 442883619603820633, guid: 4c6a9c95e7d0d30469eac53ced026a56, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 442883619603820633, guid: 4c6a9c95e7d0d30469eac53ced026a56, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ToLobbySingleMode
+      objectReference: {fileID: 0}
+    - target: {fileID: 442883619603820633, guid: 4c6a9c95e7d0d30469eac53ced026a56, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: TD.UServices.CoreLobby.UI.GameStateVisibilityManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 442883619603820633, guid: 4c6a9c95e7d0d30469eac53ced026a56, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 483004520358871867, guid: 4c6a9c95e7d0d30469eac53ced026a56, type: 3}
       propertyPath: m_Layer
       value: 5
