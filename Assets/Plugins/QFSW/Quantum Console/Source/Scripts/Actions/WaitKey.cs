@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7fcb474f382b7cf0cb67e667fca34d81391d16a7e98f4f4ac4f7ab05fbd3538f
-size 342
+﻿using UnityEngine;
+
+namespace QFSW.QC.Actions
+{
+    /// <summary>
+    /// Waits until the given key is pressed.
+    /// </summary>
+    public class WaitKey : WaitUntil
+    {
+        /// <param name="key">The key to wait for.</param>
+        public WaitKey(KeyCode key) : base(() => InputHelper.GetKeyDown(key))
+        {
+
+        }
+    }
+}

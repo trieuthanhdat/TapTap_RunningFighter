@@ -1,3 +1,15 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c5a0bb2d9f691bd44a0ba29dbab823b65b5431594834468059c4673f700a8ec8
-size 451
+﻿using System;
+using System.Linq.Expressions;
+
+namespace QFSW.QC.Grammar
+{
+    public class ModulusOperatorGrammar : BinaryOperatorGrammar
+    {
+        public override int Precedence => 4;
+
+        protected override char OperatorToken => '%';
+        protected override string OperatorMethodName => "op_Modulus";
+
+        protected override Func<Expression, Expression, BinaryExpression> PrimitiveExpressionGenerator => Expression.Modulo;
+    }
+}
