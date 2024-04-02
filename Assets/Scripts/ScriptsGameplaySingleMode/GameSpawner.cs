@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class GameSpawner : MonoBehaviour {
+public class GameSpawner : MonoBehaviour
+{
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject botPrefab;
     // [SerializeField] private Transform playerSpawnPoint;

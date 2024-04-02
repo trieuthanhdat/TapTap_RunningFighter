@@ -97,7 +97,7 @@ namespace TD.UServices.CoreLobby.UI
         {
             if (show)
             {
-                m_JoinCodeField.text = "";
+                if(m_JoinCodeField) m_JoinCodeField.text = "";
                 OnRefresh();
             }
         }
