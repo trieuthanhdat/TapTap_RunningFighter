@@ -423,6 +423,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 9089190602880918420, guid: 42e2e555e99849643b1b291b0b58e96c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9089190602881073826, guid: 42e2e555e99849643b1b291b0b58e96c, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -577,6 +581,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GlobalObjectIdHash: 941497526
+  InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -596,28 +601,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TransitionStateInfoList:
-  - IsCrossFadeExit: 0
-    Layer: 3
-    OriginatingState: 2081823275
-    DestinationState: 1591318465
-    TransitionDuration: 0.1
-    TriggerNameHash: -960178723
-    TransitionIndex: 1
-  - IsCrossFadeExit: 0
-    Layer: 3
-    OriginatingState: 765711723
-    DestinationState: 719018615
-    TransitionDuration: 0.1
-    TriggerNameHash: -960178723
-    TransitionIndex: 2
-  - IsCrossFadeExit: 0
-    Layer: 3
-    OriginatingState: 1748754976
-    DestinationState: -499839140
-    TransitionDuration: 0.1
-    TriggerNameHash: -960178723
-    TransitionIndex: 1
+  TransitionStateInfoList: []
   m_Animator: {fileID: 7268921608696618041}
 --- !u!225 &7348432400703881395
 CanvasGroup:

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e5f1ca2e8f544714b51e82ca2d28848, type: 3}
+  m_Name: WaterLife_Shark
+  m_EditorClassIdentifier: 
+  CharacterType: 2
+  Skill1: {fileID: 0}
+  Skill2: {fileID: 0}
+  Skill3: {fileID: 0}
+  BaseHP: 100
+  BaseMana: 120
+  Speed: 4
+  MoveDistance: 12
+  IsNpc: 0
+  DetectRange: 3
+  DisplayedName: Shark
+  ClassBannerSprite: {fileID: 21300000, guid: 21fb6714fde0b41b9ba9639d03f5a2a6, type: 3}

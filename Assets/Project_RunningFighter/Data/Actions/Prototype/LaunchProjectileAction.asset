@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1a98163367e4d849aa4950569882eae, type: 3}
+  m_Name: LaunchProjectileAction
+  m_EditorClassIdentifier: 
+  Config:
+    Logic: 2
+    Amount: 15
+    ManaCost: 20
+    Range: 20
+    DurationSeconds: 0.55
+    ExecTimeSeconds: 0.15
+    EffectDurationSeconds: 0
+    ReuseTimeSeconds: 0.25
+    AnimAnticipation: 
+    Anim: LaunchProjectile
+    Anim2: 
+    ReactAnim: 
+    OtherAnimatorVariable: 
+    SplashDamage: 0
+    MoveSpeed: 0
+    KnockbackSpeed: 0
+    KnockbackDuration: 0
+    Radius: 0
+    ActionInput: {fileID: 0}
+    ActionInterruptible: 0
+    IsInterruptableBy: []
+    BlockingMode: 0
+    Projectiles:
+    - ProjectilePrefab: {fileID: 472978578813552921, guid: d9c97359cb44d8c45b05d93a13600496, type: 3}
+      Speed_m_s: 16
+      Range: 20
+      Damage: 20
+      MaxVictims: 1
+    Spawns: []
+    IsFriendly: 0
+    Icon: {fileID: 0}
+    DisplayedName: 
+    Description: 
