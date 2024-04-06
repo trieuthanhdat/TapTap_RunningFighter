@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4f88de5def544829ac91312e211f751, type: 3}
   m_Name: AvatarRegistry
   m_EditorClassIdentifier: 
-  m_Avatars: []
+  m_Avatars:
+  - {fileID: 11400000, guid: 9756726217b93b343832c40fb70513f5, type: 2}
