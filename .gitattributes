@@ -121,3 +121,4 @@ Assets/Plugins/** filter=lfs diff=lfs merge=lfs -text
 \*.renderTexture[[:space:]]unityyaml filter=lfs diff=lfs merge=lfs -text
 Assets/GoogleMobileAds/** filter=lfs diff=lfs merge=lfs -text
 Assets/Asset_Packages/** filter=lfs diff=lfs merge=lfs -text
+Assets/Asset_Packages/_Source_Files/** filter=lfs diff=lfs merge=lfs -text
