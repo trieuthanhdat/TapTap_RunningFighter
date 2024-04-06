@@ -36,7 +36,7 @@ public class PlayfabAuthenticationManager : MonoSingleton<PlayfabAuthenticationM
 
 
         // Subscribe to events that happen after authentication
-        // PlayFabAuthService.OnDisplayAuthentication += OnDisplayAuthentication;
+        PlayFabAuthService.OnDisplayAuthentication += OnDisplayAuthentication;
         PlayFabAuthService.OnLoginSuccess += OnLoginSuccess;
         PlayFabAuthService.OnPlayFabError += OnPlayFabError;
 
@@ -48,6 +48,22 @@ public class PlayfabAuthenticationManager : MonoSingleton<PlayfabAuthenticationM
     [ContextMenu("LoginWithEmail")]
     public void LoginWithEmail() {
         OnLoginWithEmail(_email, _password);
+    }
+
+    // test register
+    [ContextMenu("Register")]
+    public void Register() {
+        OnRegister(_email, _password);
+    }
+
+    // test play as guest
+    [ContextMenu("PlayAsGuest")]
+    public void PlayAsGuest() {
+        OnPlayAsGuest();
+    }
+
+    private void OnDisplayAuthentication() {
+        Debug.Log("Display Authentication");
     }
 
     private void OnLoginSuccess(LoginResult result) {
