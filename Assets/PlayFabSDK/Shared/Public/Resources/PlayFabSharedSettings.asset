@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 093286084a3d1994a9c28281a1c38b1d, type: 3}
   m_Name: PlayFabSharedSettings
   m_EditorClassIdentifier: 
-  TitleId: 
+  TitleId: 2D79F
   DeveloperSecretKey: 
   ProductionEnvironmentUrl: 
   RequestType: 2
@@ -22,7 +22,7 @@ MonoBehaviour:
   RequestKeepAlive: 1
   CompressResponses: 0
   DecompressWithDownloadHandler: 1
-  LogLevel: 12
+  LogLevel: 15
   LoggerHost: 
   LoggerPort: 0
   EnableRealTimeLogging: 0
