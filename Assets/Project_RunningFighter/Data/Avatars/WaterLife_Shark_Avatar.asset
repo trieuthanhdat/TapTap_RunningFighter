@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5275c975c798346da89c0ef05ec68161, type: 3}
+  m_Name: WaterLife_Shark_Avatar
+  m_EditorClassIdentifier: 
+  m_Guid: a982112f6714a44e9cf3d33a8c3be289
+  CharacterClass: {fileID: 11400000, guid: 27c3a790b0add514cae70fcd2b27f3a4, type: 2}
+  Graphics: {fileID: 1105230502348969868, guid: a9c1a1a802ee1d74080974a01bc8d9ca, type: 3}
+  GraphicsCharacterSelect: {fileID: 8018813639383726278, guid: 49d52c380f47fbb4dbd2f40c3f62eb06, type: 3}
+  Portrait: {fileID: 21300000, guid: bc4cecddc32989649b14473d51861c69, type: 3}

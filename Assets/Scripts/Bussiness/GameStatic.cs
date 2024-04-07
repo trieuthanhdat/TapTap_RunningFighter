@@ -6,8 +6,6 @@ public class GameStatic : MonoBehaviour
 {
     void Start()
     {
-        SceneController.Instance.NextScene();
-        
         DontDestroyOnLoad(gameObject);
     }
 

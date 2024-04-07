@@ -100,7 +100,7 @@ namespace TD.UServices.CoreLobby
         /// Determine the server endpoint for connecting to the Relay server, for either an Allocation or a JoinAllocation.
         /// If DTLS encryption is available, and there's a secure server endpoint available, use that as a secure connection. Otherwise, just connect to the Relay IP unsecured.
         /// </summary>
-        NetworkEndPoint GetEndpointForAllocation(
+        NetworkEndpoint GetEndpointForAllocation(
             List<RelayServerEndpoint> endpoints,
             string ip,
             int port,
@@ -112,15 +112,15 @@ namespace TD.UServices.CoreLobby
                 if (endpoint.Secure && endpoint.Network == RelayServerEndpoint.NetworkOptions.Udp)
                 {
                     isSecure = true;
-                    return NetworkEndPoint.Parse(endpoint.Host, (ushort)endpoint.Port);
+                    return NetworkEndpoint.Parse(endpoint.Host, (ushort)endpoint.Port);
                 }
             }
 #endif
             isSecure = false;
-            return NetworkEndPoint.Parse(ip, (ushort)port);
+            return NetworkEndpoint.Parse(ip, (ushort)port);
         }
 
-        string AddressFromEndpoint(NetworkEndPoint endpoint)
+        string AddressFromEndpoint(NetworkEndpoint endpoint)
         {
             return endpoint.Address.Split(':')[0];
         }

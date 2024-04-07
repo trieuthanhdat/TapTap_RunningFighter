@@ -19,7 +19,7 @@ MonoBehaviour:
   BaseHP: 120
   BaseMana: 80
   Speed: 6
-  MoveDistance: 120
+  MoveDistance: 15
   IsNpc: 0
   DetectRange: 5
   DisplayedName: Eagle

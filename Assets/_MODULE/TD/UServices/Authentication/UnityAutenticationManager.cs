@@ -1,12 +1,15 @@
+using Project_RunningFighter.Infrastruture;
 using System;
 using System.Collections;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TD.UServices.CoreLobby.Utilities;
+using TD.UServices.Infrastructure;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using UnityEngine;
 using Utils;
+using VContainer;
 
 namespace TD.UServices.Authentication
 {
@@ -25,6 +28,8 @@ namespace TD.UServices.Authentication
 
         [SerializeField] private TextAsset unityAuthenticationBackupData;
         [SerializeField] UnityAuthenticationConfig unityAuthenticationConfig;
+        [Inject]
+        IPublisher<UnityServiceErrorMessage> m_UnityServiceErrorMessagePublisher;
 
         public static EventHandler OnSignInSuccessfully;
         public static EventHandler OnNameChanged;
@@ -140,6 +145,33 @@ namespace TD.UServices.Authentication
             while (signInCoroutine.MoveNext())
             {
                 yield return signInCoroutine.Current;
+            }
+        }
+        public async Task<bool> EnsurePlayerIsAuthorized()
+        {
+            if (AuthenticationService.Instance.IsAuthorized)
+            {
+                return true;
+            }
+
+            try
+            {
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+                return true;
+            }
+            catch (AuthenticationException e)
+            {
+                var reason = e.InnerException == null ? e.Message : $"{e.Message} ({e.InnerException.Message})";
+                m_UnityServiceErrorMessagePublisher.Publish(new UnityServiceErrorMessage("Authentication Error", reason, UnityServiceErrorMessage.Service.Authentication, e));
+                //not rethrowing for authentication exceptions - any failure to authenticate is considered "handled failure"
+                return false;
+            }
+            catch (Exception e)
+            {
+                //all other exceptions should still bubble up as unhandled ones
+                var reason = e.InnerException == null ? e.Message : $"{e.Message} ({e.InnerException.Message})";
+                m_UnityServiceErrorMessagePublisher.Publish(new UnityServiceErrorMessage("Authentication Error", reason, UnityServiceErrorMessage.Service.Authentication, e));
+                throw;
             }
         }
         private IEnumerator SignInAnonymouslyAsyncCoroutine()

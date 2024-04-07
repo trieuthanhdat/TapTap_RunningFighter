@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5275c975c798346da89c0ef05ec68161, type: 3}
+  m_Name: SkyLife_Eagle_Avatar
+  m_EditorClassIdentifier: 
+  m_Guid: a982112f6714a44e9cf3d33a8c3be289
+  CharacterClass: {fileID: 11400000, guid: 22da6748d0c2540459248680556e3b06, type: 2}
+  Graphics: {fileID: 1105230502348969868, guid: 9b235bc177e4f234b8c3bebeae677b53, type: 3}
+  GraphicsCharacterSelect: {fileID: 4033546853485900417, guid: c450595a67a31704687b5226c5e78f97, type: 3}
+  Portrait: {fileID: 21300000, guid: bc4cecddc32989649b14473d51861c69, type: 3}

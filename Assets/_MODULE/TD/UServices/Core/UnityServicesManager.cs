@@ -12,6 +12,7 @@ namespace TD.UServices.Core
         private UnityAutenticationManager unityAutenticationManager = null;
         [SerializeField] 
         private bool signInAfterInit = false;
+        public bool SignInAfterInit => signInAfterInit;
 
         private bool _isServiceInited = false;
         public bool IsUnityServiceSync

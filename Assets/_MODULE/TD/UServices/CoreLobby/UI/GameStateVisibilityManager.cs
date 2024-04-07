@@ -16,7 +16,7 @@ namespace TD.UServices.CoreLobby.UI
 
         public void ToLobbySingleMode()
         {
-            SceneManager.LoadScene("GameplayScene");
+            SceneManager.LoadScene("ActionPhase");
         }
 
         public void ToLobbyJoinTab()

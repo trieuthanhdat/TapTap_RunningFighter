@@ -545,7 +545,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 119
 --- !u!114 &1100353583
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -844,6 +844,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _loadingSlider: {fileID: 1020975203}
+  _stepLoadingService: 0
 --- !u!1 &2056080850
 GameObject:
   m_ObjectHideFlags: 0
