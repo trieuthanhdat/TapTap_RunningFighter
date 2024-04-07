@@ -49,7 +49,7 @@ namespace Project_RunningFighter.ConnectionManagement
                 Debug.Log("STARTING HOSTING STATE: client ID " + clientId + " connectionPayload.playerId " + connectionPayload.playerId);
 
                 SessionManager<SessionPlayerData>.Instance.SetupConnectingPlayerSessionData(clientId, connectionPayload.playerId,
-                    new SessionPlayerData(clientId, connectionPayload.playerName, new NetworkGuid(), 0, true));
+                    new SessionPlayerData(clientId, connectionPayload.playerName, new NetworkGuid(), 0, 0, true));
 
                 response.Approved = true;
                 response.CreatePlayerObject = true;

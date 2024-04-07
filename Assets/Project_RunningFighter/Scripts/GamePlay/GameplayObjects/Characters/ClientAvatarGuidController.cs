@@ -27,20 +27,22 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
 
         void InstantiateAvatar()
         {
-            if (m_GraphicsAnimator.transform.childCount > 0)
-            {
-                // we may receive a NetworkVariable's OnValueChanged callback more than once as a client
-                // this makes sure we don't spawn a duplicate graphics GameObject
-                return;
-            }
-
             // spawn avatar graphics GameObject
             Instantiate(m_NetworkAvatarGuidState.RegisteredAvatar.Graphics, m_GraphicsAnimator.transform);
-
+            Debug.Log("SPAWN CHAR GRAPHICS: "+ m_NetworkAvatarGuidState.RegisteredAvatar.Graphics.name);
             m_GraphicsAnimator.Rebind();
             m_GraphicsAnimator.Update(0f);
 
             AvatarGraphicsSpawned?.Invoke(m_GraphicsAnimator.gameObject);
+        }
+        private bool IsValidToSpawnAvatarGraphics()
+        {
+            foreach(Transform child in m_GraphicsAnimator.transform)
+            {
+                if (child.gameObject.activeSelf)
+                    return false;
+            }
+            return true;
         }
     }
 }

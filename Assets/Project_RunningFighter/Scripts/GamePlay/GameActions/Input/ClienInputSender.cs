@@ -11,6 +11,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.EnhancedTouch;
 using static Project_RunningFighter.Gameplay.Action.GameActionFactory;
 using static Project_RunningFighter.Gameplay.GameplayObjects.Characters.NetworkLifeState;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 namespace Project_RunningFighter.Gameplay.Action.Input
 {
@@ -33,6 +34,7 @@ namespace Project_RunningFighter.Gameplay.Action.Input
         #region ___EVENTS___
         public event Action<ActionRequestData> ActionInputEvent;
         public event Action<Vector3> ClientMoveEvent;
+        public event System.Action   ClientTouchMoveEvent;
         public System.Action action1ModifiedCallback;
 
 
@@ -276,10 +278,8 @@ namespace Project_RunningFighter.Gameplay.Action.Input
                         UnityEngine.Touch touch = UnityEngine.Input.GetTouch(0); // Get the first touch
 
                         Debug.Log("CLIENT INPUT SENDER: moving");
-                        Vector3 direction = transform.position + Vector3.forward * 5;
-                        _ServerCharacter.ServerSendCharacterInputRpc(direction);
-                        ClientMoveEvent?.Invoke(direction);
-                        
+                        _ServerCharacter.ServerSendCharacterInputRpc();
+                        ClientTouchMoveEvent?.Invoke();
                     }
                 }
             }

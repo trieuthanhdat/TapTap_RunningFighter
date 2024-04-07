@@ -90,8 +90,8 @@ namespace Project_RunningFighter.Gameplay.UI
         {
             if (m_Animator)
             {
-                m_Animator.ResetTrigger(m_AnimatorTriggerWhenUnlocked);
-                m_Animator.SetTrigger(m_AnimatorTriggerWhenLockedIn);
+               /* m_Animator.ResetTrigger(m_AnimatorTriggerWhenUnlocked);
+                m_Animator.SetTrigger(m_AnimatorTriggerWhenLockedIn);*/
             }
         }
 
@@ -99,8 +99,8 @@ namespace Project_RunningFighter.Gameplay.UI
         {
             if (m_Animator)
             {
-                m_Animator.ResetTrigger(m_AnimatorTriggerWhenLockedIn);
-                m_Animator.SetTrigger(m_AnimatorTriggerWhenUnlocked);
+                /*m_Animator.ResetTrigger(m_AnimatorTriggerWhenLockedIn);
+                m_Animator.SetTrigger(m_AnimatorTriggerWhenUnlocked);*/
             }
         }
 

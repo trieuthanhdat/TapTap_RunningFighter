@@ -44,8 +44,6 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
                     NetworkAnimator.SetTrigger(m_VisualizationConfiguration.AliveStateTriggerID);
                     break;
                 case CharacterLifeState.Fainted:
-                    NetworkAnimator.SetTrigger(m_VisualizationConfiguration.FaintedStateTriggerID);
-                    break;
                 case CharacterLifeState.Dead:
                     NetworkAnimator.SetTrigger(m_VisualizationConfiguration.DeadStateTriggerID);
                     break;

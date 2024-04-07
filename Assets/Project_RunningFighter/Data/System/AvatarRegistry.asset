@@ -13,4 +13,7 @@ MonoBehaviour:
   m_Name: AvatarRegistry
   m_EditorClassIdentifier: 
   m_Avatars:
+  - {fileID: 11400000, guid: 4bb6542cdd034e8409b0f3b92554e8a8, type: 2}
   - {fileID: 11400000, guid: 9756726217b93b343832c40fb70513f5, type: 2}
+  - {fileID: 11400000, guid: bd872f42fd62c8c4ab4e4b658e83843d, type: 2}
+  - {fileID: 11400000, guid: 739debfde2efc9c48a5664afa811d097, type: 2}

@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b8c9b294459547f0b3f6e68eeb2d286, type: 3}
   m_Name: SharedVisualConfig
   m_EditorClassIdentifier: 
-  m_AliveStateTrigger: StandUp
-  m_FaintedStateTrigger: FallDown
-  m_DeadStateTrigger: Dead
-  m_AnticipateMoveTrigger: AnticipateMove
-  m_EntryDeathTrigger: EntryDeath
-  m_EntryFaintedTrigger: EntryFainted
+  m_StaticB: Static_b
+  m_Jump: Jump_b
+  m_DeathStateTrigger: Death_b
   m_SpeedVariable: Speed_f
+  m_DeadType: DeathType_int
+  m_JumpTrigger: Jump_trig
+  m_GroundedTrigger: Grounded
+  m_AliveStateTrigger: Crouch_up
   m_BaseNodeTag: BaseNode
   SpeedDead: 0
   SpeedIdle: 0
@@ -27,14 +28,12 @@ MonoBehaviour:
   SpeedSlowed: 2
   SpeedHasted: 1.5
   SpeedWalking: 0.5
+  SpeedRunning: 1
   TargetReticule: {fileID: 0}
   ReticuleFriendlyMat: {fileID: 0}
   ReticuleHostileMat: {fileID: 0}
-  AliveStateTriggerID: -1201797473
-  FaintedStateTriggerID: 426567206
-  DeadStateTriggerID: 1293411866
-  AnticipateMoveTriggerID: 291833189
-  EntryDeathTriggerID: -1864568334
-  EntryFaintedTriggerID: -379974620
+  AliveStateTriggerID: -1931519348
+  DeadStateTriggerID: -314203460
+  StaticTypeBooleanID: -76101221
   SpeedVariableID: 259340435
   BaseNodeTagID: -80330083

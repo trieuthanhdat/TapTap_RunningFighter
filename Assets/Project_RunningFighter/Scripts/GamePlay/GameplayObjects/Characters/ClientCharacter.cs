@@ -136,6 +136,7 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
                             inputSender.ActionInputEvent += OnActionInput;
                         }
                         inputSender.ClientMoveEvent += OnMoveInput;
+                        inputSender.ClientTouchMoveEvent += OnMoveInput;
                     }
                 }
             }
@@ -151,6 +152,7 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
                 {
                     sender.ActionInputEvent -= OnActionInput;
                     sender.ClientMoveEvent -= OnMoveInput;
+                    sender.ClientTouchMoveEvent -= OnMoveInput;
                 }
             }
 
@@ -166,7 +168,14 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
         {
             if (!IsAnimating())
             {
-                PlayerAnimator.SetTrigger(m_VisualizationConfiguration.AnticipateMoveTriggerID);
+                PlayerAnimator.SetBool(m_VisualizationConfiguration.StaticTypeBooleanID, true);
+            }
+        }
+        private void OnMoveInput()
+        {
+            if (!IsAnimating())
+            {
+                PlayerAnimator.SetBool(m_VisualizationConfiguration.StaticTypeBooleanID, true);
             }
         }
 
@@ -208,6 +217,8 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
             {
                 case MovementStatus.Idle:
                     return m_VisualizationConfiguration.SpeedIdle;
+                case MovementStatus.Running:
+                    return m_VisualizationConfiguration.SpeedRunning;
                 case MovementStatus.Normal:
                     return m_VisualizationConfiguration.SpeedNormal;
                 case MovementStatus.Uncontrolled:
@@ -256,14 +267,16 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
         {
             if (PlayerAnimator.GetFloat(m_VisualizationConfiguration.SpeedVariableID) > 0.0) { return true; }
 
-            for (int i = 0; i < PlayerAnimator.layerCount; i++)
+           /* for (int i = 0; i < PlayerAnimator.layerCount; i++)
             {
-                if (PlayerAnimator.GetCurrentAnimatorStateInfo(i).tagHash != m_VisualizationConfiguration.BaseNodeTagID)
+                if (PlayerAnimator.GetCurrentAnimatorStateInfo(i).tagHash != 
+                    m_VisualizationConfiguration.BaseNodeTagID)
                 {
                     //we are in an active node, not the default "nothing" node.
+                    Debug.Log("NOTHING NODE!!!");
                     return true;
                 }
-            }
+            }*/
 
             return false;
         }

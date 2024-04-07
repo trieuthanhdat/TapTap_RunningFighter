@@ -145,6 +145,7 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
                     PlayAction(ref startingAction);
                 }
                 InitializeHitPoints();
+                InitializeManaPoints();
             }
         }
 
@@ -178,9 +179,26 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
                         m_ServerPlayerAction.ClearActions(false);
                     }
                 }
-                Debug.Log("SERVER CHARACTER: Send input rpc => move target "+ movementTarget);
+                Debug.Log("SERVER CHARACTER: Send input rpc => move target " + movementTarget);
                 m_ServerPlayerAction.CancelRunningActionsByLogic(GameActionLogic.Target, true); //clear target on move.
                 m_Movement.SetMovementTarget(movementTarget);
+            }
+        }
+        [Rpc(SendTo.Server)]
+        public void ServerSendCharacterInputRpc()
+        {
+            if (!m_Movement.CanMoveByTouchScreen) return;
+            if (CharacterLifeState == CharacterLifeState.Alive && !m_Movement.IsPerformingForcedMovement())
+            {
+                // if we're currently playing an interruptible action, interrupt it!
+                if (m_ServerPlayerAction.GetActiveActionInfo(out ActionRequestData data))
+                {
+                    if (GameDataSource.Instance.GetActionPrototypeByID(data.ActionID).Config.ActionInterruptible)
+                    {
+                        m_ServerPlayerAction.ClearActions(false);
+                    }
+                }
+                m_Movement.SetNextMovementTarget();
             }
         }
 
@@ -220,6 +238,23 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
                     if (HitPoints <= 0)
                     {
                         CharacterLifeState = CharacterLifeState.Fainted;
+                    }
+                }
+            }
+        }
+        void InitializeManaPoints()
+        {
+            ManaPoints = CharacterClass.BaseMana;
+
+            if (!IsNpc)
+            {
+                SessionPlayerData? sessionPlayerData = SessionManager<SessionPlayerData>.Instance.GetPlayerData(OwnerClientId);
+                if (sessionPlayerData is { HasCharacterSpawned: true })
+                {
+                    ManaPoints = sessionPlayerData.Value.CurrentManaPoints;
+                    if (ManaPoints <= 0)
+                    {
+                        
                     }
                 }
             }

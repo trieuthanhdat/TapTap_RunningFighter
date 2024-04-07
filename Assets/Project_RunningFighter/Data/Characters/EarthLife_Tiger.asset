@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e5f1ca2e8f544714b51e82ca2d28848, type: 3}
+  m_Name: EarthLife_Tiger
+  m_EditorClassIdentifier: 
+  CharacterType: 0
+  Skill1: {fileID: 0}
+  Skill2: {fileID: 0}
+  Skill3: {fileID: 0}
+  BaseHP: 100
+  BaseMana: 100
+  Speed: 5
+  MoveDistance: 10
+  MoveCoolDown: 3
+  IsNpc: 0
+  DetectRange: 5
+  DisplayedName: Tiger
+  ClassBannerSprite: {fileID: 21300000, guid: c1df40d40cc814a5695dee0e707cc03a, type: 3}

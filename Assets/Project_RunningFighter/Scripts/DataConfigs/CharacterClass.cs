@@ -27,6 +27,8 @@ namespace Project_RunningFighter.Data
 
         [Tooltip("Base movement Distance of this character class (in meters)")]
         public float MoveDistance;
+        [Tooltip("Base movement CoolDown of this character class (in Seconds)")]
+        public float MoveCoolDown = 3f;
 
         [Tooltip("Set to true If this is an NPC/AI")]
         public bool IsNpc;

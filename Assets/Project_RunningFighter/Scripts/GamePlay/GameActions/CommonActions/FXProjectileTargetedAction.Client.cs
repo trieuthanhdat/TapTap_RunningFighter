@@ -81,7 +81,7 @@ namespace Project_RunningFighter.Gameplay.Action
             if (m_Target && m_Target.TryGetComponent(out ServerCharacter clientCharacter) && clientCharacter.clientCharacter != null)
             {
                 var hitReact = !string.IsNullOrEmpty(Config.ReactAnim) ? Config.ReactAnim : _DefaultHitReact;
-                clientCharacter.clientCharacter.PlayerAnimator.SetTrigger(hitReact);
+                //clientCharacter.clientCharacter.PlayerAnimator.SetTrigger(hitReact);
             }
         }
 

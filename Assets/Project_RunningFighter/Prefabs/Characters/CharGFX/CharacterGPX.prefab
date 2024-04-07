@@ -1579,10 +1579,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8743424184043668970}
-  - component: {fileID: 6770401253032595699}
-  - component: {fileID: 2232568233405876955}
-  - component: {fileID: 5172798763512881367}
-  - component: {fileID: 7971831185808653973}
   - component: {fileID: 1265834450610325059}
   m_Layer: 0
   m_Name: CharacterGPX
@@ -1619,97 +1615,6 @@ Transform:
   - {fileID: 4645237440954537391}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &6770401253032595699
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6633916858371672308}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: c72c97e952bf7834b85e6164373d310d, type: 3}
-  m_Controller: {fileID: 9100000, guid: 4b41e731aca5b4854968133be885c6ab, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
---- !u!114 &2232568233405876955
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6633916858371672308}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1982110644
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
---- !u!114 &5172798763512881367
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6633916858371672308}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TransitionStateInfoList:
-  - IsCrossFadeExit: 0
-    Layer: 3
-    OriginatingState: 2081823275
-    DestinationState: 1591318465
-    TransitionDuration: 0.1
-    TriggerNameHash: -960178723
-    TransitionIndex: 1
-  - IsCrossFadeExit: 0
-    Layer: 3
-    OriginatingState: 765711723
-    DestinationState: 719018615
-    TransitionDuration: 0.1
-    TriggerNameHash: -960178723
-    TransitionIndex: 2
-  - IsCrossFadeExit: 0
-    Layer: 3
-    OriginatingState: 1748754976
-    DestinationState: -499839140
-    TransitionDuration: 0.1
-    TriggerNameHash: -960178723
-    TransitionIndex: 1
-  m_Animator: {fileID: 6770401253032595699}
---- !u!114 &7971831185808653973
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6633916858371672308}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2e808346ff6848d7819c29f703c253f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ClientVisualsAnimator: {fileID: 6770401253032595699}
-  m_VisualizationConfiguration: {fileID: 11400000, guid: b175277ff70ea5545909c27e7995519f, type: 2}
 --- !u!114 &1265834450610325059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1736,7 +1641,7 @@ MonoBehaviour:
     shoulderRight: {fileID: 0}
     shoulderLeft: {fileID: 0}
     handSocket: {fileID: 0}
-    animatorOverrides: {fileID: 0}
+    animatorOverrides: {fileID: 22100000, guid: f0009929667ab2f4faa588ebc49f5078, type: 2}
   m_Animator: {fileID: 0}
   m_StealthySelfMaterial: {fileID: 0}
   m_StealthyOtherMaterial: {fileID: 0}

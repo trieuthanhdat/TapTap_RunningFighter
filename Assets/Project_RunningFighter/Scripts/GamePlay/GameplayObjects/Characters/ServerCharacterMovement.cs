@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Project_RunningFighter.Data;
 using TMPro;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Assertions;
@@ -41,10 +42,14 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
 
         private MovementState  m_MovementState;
         private MovementStatus m_PreviousState;
+        private Vector3 m_TargetPosition;
         private Vector3 m_knockbackDirection;
         // when we are in charging and knockback mode, we use these additional variables
         private float m_ForcedSpeed;
         private float m_SpecialModeDurationRemaining;
+
+        private bool m_CanMoveByTouchScreen = true;
+        public bool CanMoveByTouchScreen => m_CanMoveByTouchScreen;
         #endregion
 
         private void Awake()
@@ -103,7 +108,7 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
                 if (m_SpecialModeDurationRemaining <= 0)
                 {
                     m_MovementState = MovementState.Idle;
-                    m_rigidbody.velocity = Vector3.zero; // Stop movement
+                    m_CanMoveByTouchScreen = true;
                     return;
                 }
 
@@ -116,23 +121,27 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
             }
             else
             {
+                m_CanMoveByTouchScreen = false;
                 var speed = GetBaseMovementSpeed();
-                movementVector = transform.forward * speed;
+                var desiredMovementAmount = speed * Time.fixedDeltaTime;
 
-                Vector3 targetPosition = transform.position + Vector3.forward * GetBaseMovementDistance();
-                m_rigidbody.velocity = movementVector * Time.deltaTime;
-                Debug.Log("SERVER CHARACTER MOVEMENT: moving now => targetPosition " + targetPosition + " move dis "+ GetBaseMovementDistance() + " speed "+ speed);
-                if (Vector3.Distance(transform.position, targetPosition) <= 0.1f)
+                transform.position += transform.forward * desiredMovementAmount;
+                //Smooth lerp Rotation
+                float rotateSpeed = 10f;
+                transform.forward = Vector3.Slerp(transform.forward, Vector3.forward, Time.deltaTime * rotateSpeed);
+
+                if (Vector3.Distance(transform.position, m_TargetPosition) <= 0.1f)
                 {
                     m_MovementState = MovementState.Idle;
-                    m_rigidbody.velocity = Vector3.zero; // Stop movement
+                    m_CanMoveByTouchScreen = true;
                     return;
                 }
             }
+
             //transform.rotation = Quaternion.LookRotation(movementVector.normalized);
             // Update the position of the dynamic rigidbody
-            /*m_rigidbody.position = transform.position;
-            m_rigidbody.rotation = transform.rotation;*/
+            m_rigidbody.position = transform.position;
+            m_rigidbody.rotation = transform.rotation;
         }
 
 
@@ -149,6 +158,13 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
             CharacterClass characterClass = GameDataSource.Instance.CharacterDataByType[m_CharLogic.CharacterType];
             Assert.IsNotNull(characterClass, $"No CharacterClass data for character type {m_CharLogic.CharacterType}");
             return characterClass.MoveDistance;
+        }
+
+        private float GetBaseMovementCoolDown()
+        {
+            CharacterClass characterClass = GameDataSource.Instance.CharacterDataByType[m_CharLogic.CharacterType];
+            Assert.IsNotNull(characterClass, $"No CharacterClass data for character type {m_CharLogic.CharacterType}");
+            return characterClass.MoveCoolDown;
         }
 
 
@@ -192,7 +208,16 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
         }
         public void SetMovementTarget(Vector3 position)
         {
+            m_MovementState  = MovementState.Moving;
+            //m_NavPath.SetTargetPosition(position);
+        }
+        public void SetNextMovementTarget()
+        {
+            m_CanMoveByTouchScreen = false;
             m_MovementState = MovementState.Moving;
+            Vector3 nextPosition = transform.position + transform.forward * GetBaseMovementDistance();
+            m_TargetPosition = nextPosition;
+            Debug.Log("SERVER CHARACTER MOVEMENT: next target pos "+ m_TargetPosition);
             //m_NavPath.SetTargetPosition(position);
         }
 
