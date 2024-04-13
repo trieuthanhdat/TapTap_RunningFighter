@@ -22,7 +22,7 @@ MonoBehaviour:
   RequestKeepAlive: 1
   CompressResponses: 0
   DecompressWithDownloadHandler: 1
-  LogLevel: 15
+  LogLevel: 12
   LoggerHost: 
   LoggerPort: 0
   EnableRealTimeLogging: 0

@@ -123,6 +123,76 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &541197134
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6494304921295623196}
+    m_Modifications:
+    - target: {fileID: 735171850931925330, guid: d4880d4a8baa44178b44f6a19f016ea3, type: 3}
+      propertyPath: _email
+      value: abcdef@gmail.com
+      objectReference: {fileID: 0}
+    - target: {fileID: 735171850931925330, guid: d4880d4a8baa44178b44f6a19f016ea3, type: 3}
+      propertyPath: _player_name
+      value: test001
+      objectReference: {fileID: 0}
+    - target: {fileID: 5085407250423648242, guid: d4880d4a8baa44178b44f6a19f016ea3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5085407250423648242, guid: d4880d4a8baa44178b44f6a19f016ea3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5085407250423648242, guid: d4880d4a8baa44178b44f6a19f016ea3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5085407250423648242, guid: d4880d4a8baa44178b44f6a19f016ea3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5085407250423648242, guid: d4880d4a8baa44178b44f6a19f016ea3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5085407250423648242, guid: d4880d4a8baa44178b44f6a19f016ea3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5085407250423648242, guid: d4880d4a8baa44178b44f6a19f016ea3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5085407250423648242, guid: d4880d4a8baa44178b44f6a19f016ea3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5085407250423648242, guid: d4880d4a8baa44178b44f6a19f016ea3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5085407250423648242, guid: d4880d4a8baa44178b44f6a19f016ea3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7991609969709692278, guid: d4880d4a8baa44178b44f6a19f016ea3, type: 3}
+      propertyPath: m_Name
+      value: PlayfabServicesManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d4880d4a8baa44178b44f6a19f016ea3, type: 3}
+--- !u!4 &541197135 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5085407250423648242, guid: d4880d4a8baa44178b44f6a19f016ea3, type: 3}
+  m_PrefabInstance: {fileID: 541197134}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &642237705
 GameObject:
   m_ObjectHideFlags: 0
@@ -169,86 +239,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioPlayerPrefabs: {fileID: -487159810465252686, guid: 8818e9634af6149c18585e916d420250, type: 3}
   soundSO: {fileID: 11400000, guid: 3928847f5f4c34e0d9cada501ec7b84f, type: 2}
---- !u!1 &690770807
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 690770808}
-  - component: {fileID: 690770809}
-  m_Layer: 0
-  m_Name: PlayfabServicesManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &690770808
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 690770807}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6494304921295623196}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &690770809
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 690770807}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f67e6b0ddc5ea4ac38a55918a49f81e1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ClearPlayerPrefs: 0
-  InfoRequestParams:
-    GetCharacterInventories: 0
-    GetCharacterList: 0
-    GetPlayerProfile: 0
-    GetPlayerStatistics: 0
-    GetTitleData: 0
-    GetUserAccountInfo: 0
-    GetUserData: 0
-    GetUserInventory: 0
-    GetUserReadOnlyData: 0
-    GetUserVirtualCurrency: 0
-    PlayerStatisticNames: []
-    ProfileConstraints:
-      ShowAvatarUrl: 0
-      ShowBannedUntil: 0
-      ShowCampaignAttributions: 0
-      ShowContactEmailAddresses: 0
-      ShowCreated: 0
-      ShowDisplayName: 0
-      ShowExperimentVariants: 0
-      ShowLastLogin: 0
-      ShowLinkedAccounts: 0
-      ShowLocations: 0
-      ShowMemberships: 0
-      ShowOrigination: 0
-      ShowPushNotificationRegistrations: 0
-      ShowStatistics: 0
-      ShowTags: 0
-      ShowTotalValueToDateInUsd: 0
-      ShowValuesToDate: 0
-    TitleDataKeys: []
-    UserDataKeys: []
-    UserReadOnlyDataKeys: []
-  _email: hai13072001@gmail.com
-  _password: 111111
 --- !u!1 &711234427
 GameObject:
   m_ObjectHideFlags: 0
@@ -513,7 +503,7 @@ PrefabInstance:
       objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 5861729228273595515, guid: 79d6084439b78bb4eaf5232cb953fd87, type: 3}
       propertyPath: m_text
-      value: "\u200B"
+      value: "dsdfsdfsdf\u200B"
       objectReference: {fileID: 0}
     - target: {fileID: 5861729228273595515, guid: 79d6084439b78bb4eaf5232cb953fd87, type: 3}
       propertyPath: m_fontSize
@@ -1313,7 +1303,7 @@ Transform:
   m_Children:
   - {fileID: 1238842611524785873}
   - {fileID: 935085495}
-  - {fileID: 690770808}
+  - {fileID: 541197135}
   - {fileID: 642237706}
   - {fileID: 1207616519}
   - {fileID: 1893365619}

@@ -51,5 +51,17 @@ public static class PlayfabManager
         );
     }
 
+    // Cloud Script
+    public static void ExecuteCloudScript(string functionName, object functionParameter, System.Action<ExecuteCloudScriptResult> onSuccess, System.Action<PlayFabError> onError)
+    {
+        var request = new ExecuteCloudScriptRequest
+        {
+            FunctionName = functionName,
+            FunctionParameter = functionParameter
+        };
+        PlayFabClientAPI.ExecuteCloudScript(request, onSuccess, onError);
+    }
+
+
     
 }
