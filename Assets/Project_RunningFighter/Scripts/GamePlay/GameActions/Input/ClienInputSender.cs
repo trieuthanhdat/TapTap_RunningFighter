@@ -1,17 +1,15 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Project_RunningFighter.Data;
 using Project_RunningFighter.Gameplay.GameplayObjects.Characters;
+using Project_RunningFighter.Gameplay.GameStates;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Assertions;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem.EnhancedTouch;
+using VContainer;
 using static Project_RunningFighter.Gameplay.Action.GameActionFactory;
 using static Project_RunningFighter.Gameplay.GameplayObjects.Characters.NetworkLifeState;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 namespace Project_RunningFighter.Gameplay.Action.Input
 {
@@ -36,14 +34,14 @@ namespace Project_RunningFighter.Gameplay.Action.Input
         public event Action<Vector3> ClientMoveEvent;
         public event System.Action   ClientTouchMoveEvent;
         public System.Action action1ModifiedCallback;
-
-
         #endregion
 
         #region ___PROPERTIES___
+        //[Inject] ISubscriber<GameplayStateChangedEventMessage> m_GameplayStateChangeEventSubscriber;
         public CharacterClass CharacterClass => _ServerCharacter.CharacterClass;
 
-        protected bool   _MoveRequest;
+        protected bool _CanSendInput;
+        protected bool _MoveRequest;
         protected UnityEngine.Camera _MainCamera;
 
         //Number of ActionRequests that have been queued
@@ -78,17 +76,20 @@ namespace Project_RunningFighter.Gameplay.Action.Input
         private void Awake()
         {
             _MainCamera = UnityEngine.Camera.main;
+            ServerActionPhaseState.OnGameplayStateChanged += OnGameplayStateChanged;
         }
 
         
         private void FixedUpdate()
         {
+            if (!_CanSendInput) return;
             //OnUpdateWithMouseInput();
             OnUpdateWithTouchInput();
         }
 
         private void Update()
         {
+            if (!_CanSendInput) return;
             OnGetKeyboardInput();
             OnGetTouchInput();
         }
@@ -211,6 +212,23 @@ namespace Project_RunningFighter.Gameplay.Action.Input
 
             m_GroundLayerMask = LayerMask.GetMask(new[] { "Ground" });
             m_ActionLayerMask = LayerMask.GetMask(new[] { "PCs", "NPCs", "Ground" });
+            
+        }
+        private void OnGameplayStateChanged(ActionPhaseState state)
+        {
+            Debug.Log("CLIENT INPUT SENDER: new state " + state +" listened by "+gameObject.GetInstanceID());
+            switch (state)
+            {
+                case ActionPhaseState.ReadyUp:
+                case ActionPhaseState.StartCountDown:
+                case ActionPhaseState.Finish:
+                    _CanSendInput = false;
+                    break;
+                case ActionPhaseState.Playing:
+                case ActionPhaseState.EndCountDown:
+                    _CanSendInput = true;
+                    break;
+            }
         }
 
         public override void OnNetworkDespawn()
@@ -225,6 +243,7 @@ namespace Project_RunningFighter.Gameplay.Action.Input
             {
                 m_TargetServerCharacter.NetCharacterLifeState.LifeState.OnValueChanged -= OnTargetLifeStateChanged;
             }
+           
         }
 
         #region ___INPUT METHODS___

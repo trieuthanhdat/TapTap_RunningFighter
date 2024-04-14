@@ -32,7 +32,8 @@ namespace Project_RunningFighter.Gameplay.UI
 #endif*/
             ISubscriber<DoorStateChangedEventMessage> doorStateChangedSubscriber,
             ISubscriber<ConnectionEventMessage> connectionEventSubscriber,
-            ISubscriber<LifeStateChangedEventMessage> lifeStateChangedEventSubscriber
+            ISubscriber<LifeStateChangedEventMessage> lifeStateChangedEventSubscriber,
+            ISubscriber<GameplayStateChangedEventMessage> gameplayStateChangedEventSubscriber
         )
         {
             m_Subscriptions = new DisposableGroup();
@@ -42,7 +43,10 @@ namespace Project_RunningFighter.Gameplay.UI
             m_Subscriptions.Add(doorStateChangedSubscriber.Subscribe(OnDoorStateChangedEvent));
             m_Subscriptions.Add(connectionEventSubscriber.Subscribe(OnConnectionEvent));
             m_Subscriptions.Add(lifeStateChangedEventSubscriber.Subscribe(OnLifeStateChangedEvent));
+            m_Subscriptions.Add(gameplayStateChangedEventSubscriber.Subscribe(OnGameplayStateChangedEvent));
         }
+
+
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         /*void OnCheatUsedEvent(CheatUsedMessage eventMessage)
@@ -50,7 +54,9 @@ namespace Project_RunningFighter.Gameplay.UI
             DisplayMessage($"Cheat {eventMessage.CheatUsed} used by {eventMessage.CheaterName}");
         }*/
 #endif
-
+        private void OnGameplayStateChangedEvent(GameplayStateChangedEventMessage eventMessage)
+        {
+        }
         void OnDoorStateChangedEvent(DoorStateChangedEventMessage eventMessage)
         {
             DisplayMessage(eventMessage.IsDoorOpen ? "The Door has been opened!" : "The Door is closing.");

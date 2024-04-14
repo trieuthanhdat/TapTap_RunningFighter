@@ -71,9 +71,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1577976823515385894}
-  - component: {fileID: 8680026338139755097}
   - component: {fileID: 1753481406953964288}
   - component: {fileID: 5201964735533304856}
+  - component: {fileID: 8680026338139755097}
+  - component: {fileID: 345112117527909675}
   m_Layer: 0
   m_Name: ActionPhaseState
   m_TagString: Untagged
@@ -100,30 +101,6 @@ Transform:
   - {fileID: 8689308769927256809}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8680026338139755097
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1040733770325099058}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d5948cb1b6972041a9ce221c14b7b42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parentReference:
-    TypeName: Project_RunningFighter.Core.AppController
-  autoRun: 1
-  autoInjectGameObjects:
-  - {fileID: 0}
-  m_NetcodeHooks: {fileID: 5201964735533304856}
-  m_PlayerPrefab: {fileID: 4380948783282340162, guid: 7ce284536fef5ef4e8f0e71c85d2cbe7, type: 3}
-  m_PlayerSpawnPoints:
-  - {fileID: 4071710910379648516}
-  - {fileID: 2116563761877957870}
-  - {fileID: 8009328766581493589}
-  - {fileID: 8689308769927256809}
 --- !u!114 &1753481406953964288
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,7 +113,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1481056797
+  GlobalObjectIdHash: 2215498476
   InScenePlacedSourceGlobalObjectIdHash: 3891751981
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -155,6 +132,54 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6aedfcf74b3f4f248897af16490caa9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8680026338139755097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1040733770325099058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d5948cb1b6972041a9ce221c14b7b42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentReference:
+    TypeName: Project_RunningFighter.Core.AppController
+  autoRun: 1
+  autoInjectGameObjects:
+  - {fileID: 0}
+  txt_CountDown: {fileID: 0}
+  txt_PlayingTimer: {fileID: 0}
+  m_ProgressSlider: {fileID: 0}
+  m_GroupPlayingTimer: {fileID: 0}
+  m_ListPlayerProgressIcon: []
+  m_startPosition: {fileID: 0}
+  m_endPosition: {fileID: 0}
+  m_StartCountDownDuration: 3
+  m_EndCountDownDuration: 3
+  m_PlayTimeDuration: 60
+  m_NetcodeHooks: {fileID: 5201964735533304856}
+  m_PlayerPrefab: {fileID: 4380948783282340162, guid: 7ce284536fef5ef4e8f0e71c85d2cbe7, type: 3}
+  m_PlayerSpawnPoints:
+  - {fileID: 4071710910379648516}
+  - {fileID: 2116563761877957870}
+  - {fileID: 8009328766581493589}
+  - {fileID: 8689308769927256809}
+  m_GameplayState:
+    m_InternalValue: 0
+--- !u!114 &345112117527909675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1040733770325099058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d9d3271076d2a6488d29f3964ffc1da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1454018900797979647
@@ -247,7 +272,7 @@ Transform:
   m_GameObject: {fileID: 5184438530147852803}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -5.4000096, y: 1.1599998, z: 138.62595}
+  m_LocalPosition: {x: -5.4000096, y: 1.1599998, z: 138.63577}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -327,7 +352,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4380948783282340162, guid: 7ce284536fef5ef4e8f0e71c85d2cbe7, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 3135429648
+      value: 2215498476
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

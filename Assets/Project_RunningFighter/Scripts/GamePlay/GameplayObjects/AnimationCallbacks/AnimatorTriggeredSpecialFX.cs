@@ -1,11 +1,12 @@
-using Project_RunningFighter.Gameplay.GameplayObjects.AnimationCallbacks;
 using Project_RunningFighter.Gameplay.GameplayObjects.Characters;
 using Project_RunningFighter.VFX;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+#if UNITY_EDITOR
 using UnityEditor.Animations;
+#endif
 using UnityEngine;
 using UnityEngine.Serialization;
 
