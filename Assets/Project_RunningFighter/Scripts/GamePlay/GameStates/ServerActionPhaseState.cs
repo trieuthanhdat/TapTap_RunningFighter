@@ -102,32 +102,33 @@ namespace Project_RunningFighter.Gameplay.GameStates
         }
         void OnNetworkSpawn()
         {
-            if (!NetworkManager.Singleton.IsServer)
+            if (NetworkManager.Singleton.IsServer)
             {
-                enabled = false;
-                return;
+                m_PersistentGameState.Reset();
+                m_LifeStateChangedEventMessageSubscriber.Subscribe(OnLifeStateChangedEventMessage);
+                NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
+                NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnLoadEventCompleted;
+                NetworkManager.Singleton.SceneManager.OnSynchronizeComplete += OnSynchronizeComplete;
+
+                SessionManager<SessionPlayerData>.Instance.OnSessionStarted();
+
+                Debug.Log("SERVER ACTION PHASE STATE: start !!");
             }
-            m_PersistentGameState.Reset();
-            m_LifeStateChangedEventMessageSubscriber.Subscribe(OnLifeStateChangedEventMessage);
-            NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
-            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnLoadEventCompleted;
-            NetworkManager.Singleton.SceneManager.OnSynchronizeComplete += OnSynchronizeComplete;
-
-            SessionManager<SessionPlayerData>.Instance.OnSessionStarted();
-
-            Debug.Log("SERVER ACTION PHASE STATE: start !!");
         }
         
         void OnNetworkDespawn()
         {
-            if (m_LifeStateChangedEventMessageSubscriber != null)
+            if (NetworkManager.Singleton.IsServer)
             {
-                m_LifeStateChangedEventMessageSubscriber.Unsubscribe(OnLifeStateChangedEventMessage);
-            }
+                if (m_LifeStateChangedEventMessageSubscriber != null)
+                {
+                    m_LifeStateChangedEventMessageSubscriber.Unsubscribe(OnLifeStateChangedEventMessage);
+                }
 
-            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnect;
-            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= OnLoadEventCompleted;
-            NetworkManager.Singleton.SceneManager.OnSynchronizeComplete -= OnSynchronizeComplete;
+                NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnect;
+                NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= OnLoadEventCompleted;
+                NetworkManager.Singleton.SceneManager.OnSynchronizeComplete -= OnSynchronizeComplete;
+            }
         }
 
         protected override void OnDestroy()
@@ -151,6 +152,7 @@ namespace Project_RunningFighter.Gameplay.GameStates
         #region ____EVENT METHODS____
         void OnLifeStateChangedEventMessage(LifeStateChangedEventMessage message)
         {
+            if (!NetworkManager.Singleton.IsServer) return;
             switch (message.CharacterType)
             {
                 case CharacterTypeEnum.SkyLife:
@@ -169,6 +171,7 @@ namespace Project_RunningFighter.Gameplay.GameStates
 
         void OnSynchronizeComplete(ulong clientId)
         {
+            if (!NetworkManager.Singleton.IsServer) return;
             if (InitialSpawnDone && !PlayerServerCharacter.GetPlayerServerCharacter(clientId))
             {
                 SpawnPlayer(clientId, true);
@@ -178,6 +181,7 @@ namespace Project_RunningFighter.Gameplay.GameStates
 
         void OnLoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
         {
+            if (!NetworkManager.Singleton.IsServer) return;
             if (!InitialSpawnDone && loadSceneMode == LoadSceneMode.Single)
             {
                 InitialSpawnDone = true;
@@ -190,6 +194,7 @@ namespace Project_RunningFighter.Gameplay.GameStates
 
         void OnClientDisconnect(ulong clientId)
         {
+            if (!NetworkManager.Singleton.IsServer) return;
             if (clientId != NetworkManager.Singleton.LocalClientId)
             {
                 StartCoroutine(WaitToCheckForGameOver());
@@ -210,7 +215,8 @@ namespace Project_RunningFighter.Gameplay.GameStates
         }
         void UpdateGameplayState()
         {
-            switch(m_GameplayState)
+            if (!NetworkManager.Singleton.IsServer) return;
+            switch (m_GameplayState)
             {
                 case ActionPhaseState.ReadyUp:
                     if (m_IsReadyUp) return;
@@ -282,14 +288,6 @@ namespace Project_RunningFighter.Gameplay.GameStates
         }
         #endregion
         #region ____UI METHODS____
-        /*private void SetupListPlayerProgressIcons()
-        {
-            for (int i = 0; i < m_ListPlayerProgressIcon.Count; i++) 
-            { 
-                var icon = m_ListPlayerProgressIcon[i];
-                icon.Init();
-            }
-        }*/
         private string FormatTime(float timeInSeconds)
         {
             TimeSpan timeSpan = TimeSpan.FromSeconds(timeInSeconds);
@@ -386,6 +384,8 @@ namespace Project_RunningFighter.Gameplay.GameStates
         private int m_SpawnIndex = 0;
         void SpawnPlayer(ulong clientId, bool lateJoin)
         {
+
+            if (!NetworkManager.Singleton.IsServer) return;
             Transform spawnPoint = null;
 
             if (m_PlayerSpawnPointsList == null || m_PlayerSpawnPointsList.Count == 0)
@@ -460,11 +460,14 @@ namespace Project_RunningFighter.Gameplay.GameStates
         #region ____GAME OVER METHODS____
         IEnumerator WaitToCheckForGameOver()
         {
+            if (!NetworkManager.Singleton.IsServer) yield break;
             yield return null;
             CheckForGameOver();
         }
         void CheckForGameOver()
         {
+            if (!NetworkManager.Singleton.IsServer) return;
+
             foreach (var serverCharacter in PlayerServerCharacter.GetPlayerServerCharacters())
             {
                 if (serverCharacter && serverCharacter.CharacterLifeState == CharacterLifeState.Alive)
@@ -477,6 +480,7 @@ namespace Project_RunningFighter.Gameplay.GameStates
 
         IEnumerator Co_GameOver(float wait, bool gameWon)
         {
+            if (!NetworkManager.Singleton.IsServer) yield break;
             m_PersistentGameState.SetWinState(gameWon ? WinState.Win : WinState.Loss);
 
             // wait 5 seconds for game animations to finish

@@ -85,11 +85,11 @@ public class LoadingScreen : MonoBehaviour, ILoadingService
     public IEnumerator Step_SignInUnityService()
     {
         // Wait until the user is signed in
-        if(!UnityAutenticationManager.instance.IsSignIn &&
+        if(!UnityAuthenticationManager.instance.IsSignIn &&
             UnityServicesManager.instance.SignInAfterInit)
         {
-            UnityAutenticationManager.Instance.StartSignIn();
-            while (!UnityAutenticationManager.Instance.IsSignIn)
+            UnityAuthenticationManager.Instance.StartSignIn();
+            while (!UnityAuthenticationManager.Instance.IsSignIn)
             {
                 yield return null;
             }

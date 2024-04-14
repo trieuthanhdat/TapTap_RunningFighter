@@ -19,12 +19,12 @@ namespace Project_RunningFighter.Gameplay.UI
 
         public void OnSelectClick()
         {
-            //m_ProfileManager.Profile = m_ProfileNameText.text;
+            m_ProfileManager.Profile = m_ProfileNameText.text;
         }
 
         public void OnDeleteClick()
         {
-            //m_ProfileManager.DeleteProfile(m_ProfileNameText.text);
+            m_ProfileManager.DeleteProfile(m_ProfileNameText.text);
         }
     }
 }

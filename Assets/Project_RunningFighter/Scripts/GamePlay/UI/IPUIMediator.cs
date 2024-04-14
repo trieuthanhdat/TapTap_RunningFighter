@@ -118,7 +118,7 @@ namespace Project_RunningFighter.Gameplay.UI
 
         public void RegenerateName()
         {
-            m_PlayerNameLabel.text = NameGenerator.GetName(UnityAutenticationManager.instance.PlayerID);
+            m_PlayerNameLabel.text = NameGenerator.GetName(UnityAuthenticationManager.instance.PlayerID);
         }
 
         public void ToggleJoinIPUI()

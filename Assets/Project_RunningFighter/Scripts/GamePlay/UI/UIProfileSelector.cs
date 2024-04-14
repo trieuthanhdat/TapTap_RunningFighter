@@ -35,13 +35,10 @@ namespace Project_RunningFighter.Gameplay.UI
             m_CreateProfileButton.interactable = false;
         }
 
-        /// <summary>
-        /// Added to the InputField component's OnValueChanged callback for the join code text.
-        /// </summary>
         public void SanitizeProfileNameInputText()
         {
-           /* m_NewProfileField.text = SanitizeProfileName(m_NewProfileField.text);
-            m_CreateProfileButton.interactable = m_NewProfileField.text.Length > 0 && !m_ProfileManager.AvailableProfiles.Contains(m_NewProfileField.text);*/
+            m_NewProfileField.text = SanitizeProfileName(m_NewProfileField.text);
+            m_CreateProfileButton.interactable = m_NewProfileField.text.Length > 0 && !m_ProfileManager.AvailableProfiles.Contains(m_NewProfileField.text);
         }
 
         string SanitizeProfileName(string dirtyString)
@@ -53,7 +50,7 @@ namespace Project_RunningFighter.Gameplay.UI
         public void OnNewProfileButtonPressed()
         {
             var profile = m_NewProfileField.text;
-            /*if (!m_ProfileManager.AvailableProfiles.Contains(profile))
+            if (!m_ProfileManager.AvailableProfiles.Contains(profile))
             {
                 m_ProfileManager.CreateProfile(profile);
                 m_ProfileManager.Profile = profile;
@@ -61,19 +58,19 @@ namespace Project_RunningFighter.Gameplay.UI
             else
             {
                 PopupManager.ShowPopupPanel("Could not create new Profile", "A profile already exists with this same name. Select one of the already existing profiles or create a new one.");
-            }*/
+            }
         }
 
         public void InitializeUI()
         {
-            /*EnsureNumberOfActiveUISlots(m_ProfileManager.AvailableProfiles.Count);
+            EnsureNumberOfActiveUISlots(m_ProfileManager.AvailableProfiles.Count);
             for (var i = 0; i < m_ProfileManager.AvailableProfiles.Count; i++)
             {
                 var profileName = m_ProfileManager.AvailableProfiles[i];
                 m_ProfileListItems[i].SetProfileName(profileName);
             }
 
-            m_EmptyProfileListLabel.enabled = m_ProfileManager.AvailableProfiles.Count == 0;*/
+            m_EmptyProfileListLabel.enabled = m_ProfileManager.AvailableProfiles.Count == 0;
         }
 
         void EnsureNumberOfActiveUISlots(int requiredNumber)

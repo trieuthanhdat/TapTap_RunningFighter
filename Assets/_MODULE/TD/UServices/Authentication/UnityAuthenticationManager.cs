@@ -21,7 +21,7 @@ namespace TD.UServices.Authentication
         Facebook,
         Steam
     }
-    public class UnityAutenticationManager : MonoSingleton<UnityAutenticationManager>, IUnityAuthentication
+    public class UnityAuthenticationManager : MonoSingleton<UnityAuthenticationManager>, IUnityAuthentication
     {
         protected const int k_InitTimeout = 10000;
         protected static bool s_IsSigningIn;
@@ -83,7 +83,7 @@ namespace TD.UServices.Authentication
         private void Start()
         {
             string json = JsonUtility.ToJson(unityAuthenticationConfig);
-            Debug.Log($"{nameof(UnityAutenticationManager).ToUpper()}: json {json}");
+            Debug.Log($"{nameof(UnityAuthenticationManager).ToUpper()}: json {json}");
 
             StartCoroutine(Co_GetAuthenticationConfig());
         }
@@ -94,7 +94,7 @@ namespace TD.UServices.Authentication
             {
                 if (Input.GetKeyDown(KeyCode.R))
                 {
-                    await SwitchProfile();
+                    await SwitchProfileAndReSignInAsync(NameGenerator.GetName(AuthenticationService.Instance.PlayerId));
                 }
             }
         }
@@ -105,7 +105,7 @@ namespace TD.UServices.Authentication
             if (unityAuthenticationConfig     == null &&
                 unityAuthenticationBackupData != null)
             {
-                Debug.Log($"{nameof(UnityAutenticationManager).ToUpper()}: fail to get remote data => use backup");
+                Debug.Log($"{nameof(UnityAuthenticationManager).ToUpper()}: fail to get remote data => use backup");
                 unityAuthenticationConfig = JsonUtility.FromJson<UnityAuthenticationConfig>(unityAuthenticationBackupData.text);
             }
             _isInited = true;
@@ -132,13 +132,13 @@ namespace TD.UServices.Authentication
                         signInCoroutine = SignInAnonymouslyAsyncCoroutine();
                         break;
                     default:
-                        Debug.Log($"{nameof(UnityAutenticationManager).ToUpper()}: Not yet implemented this type of authentication {authType}");
+                        Debug.Log($"{nameof(UnityAuthenticationManager).ToUpper()}: Not yet implemented this type of authentication {authType}");
                         yield break;
                 }
             }
             if(signInCoroutine == null)
             {
-                Debug.Log($"{nameof(UnityAutenticationManager).ToUpper()}: Cannot get Authentication method");
+                Debug.Log($"{nameof(UnityAuthenticationManager).ToUpper()}: Cannot get Authentication method");
                 yield break;
             }
 
@@ -191,17 +191,64 @@ namespace TD.UServices.Authentication
             _isSigned = true;
             
         }
-        private async Task SwitchProfile()
+
+        public InitializationOptions GenerateAuthenticationOptions(string profile)
         {
-            string serviceProfileName = "testProfile";
-#if UNITY_EDITOR
-            serviceProfileName = $"{serviceProfileName}{LocalProfileTool.LocalProfileSuffix}";
-#endif
-            AuthenticationService.Instance.SwitchProfile(serviceProfileName);
+            try
+            {
+                var unityAuthenticationInitOptions = new InitializationOptions();
+                if (profile.Length > 0)
+                {
+                    unityAuthenticationInitOptions.SetProfile(profile);
+                }
 
-            await UnityAutenticationManager.TrySignInAsync(serviceProfileName);
-            Debug.Log($"Switch profile: {AuthenticationService.Instance.Profile.ToString()}");
+                return unityAuthenticationInitOptions;
+            }
+            catch (Exception e)
+            {
+                var reason = e.InnerException == null ? e.Message : $"{e.Message} ({e.InnerException.Message})";
+                m_UnityServiceErrorMessagePublisher.Publish(new UnityServiceErrorMessage("Authentication Error", reason, UnityServiceErrorMessage.Service.Authentication, e));
+                throw;
+            }
+        }
+        public async Task SwitchProfileAndReSignInAsync(string profile)
+        {
+            if (AuthenticationService.Instance.IsSignedIn)
+            {
+                AuthenticationService.Instance.SignOut();
+            }
 
+            AuthenticationService.Instance.SwitchProfile(profile);
+
+            try
+            {
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            }
+            catch (Exception e)
+            {
+                var reason = e.InnerException == null ? e.Message : $"{e.Message} ({e.InnerException.Message})";
+                m_UnityServiceErrorMessagePublisher.Publish(new UnityServiceErrorMessage("Authentication Error", reason, UnityServiceErrorMessage.Service.Authentication, e));
+                throw;
+            }
+        }
+        public async Task InitializeAndSignInAsync(InitializationOptions initializationOptions)
+        {
+            try
+            {
+                if (UnityServices.State == ServicesInitializationState.Uninitialized)
+                    await UnityServices.InitializeAsync(initializationOptions);
+
+                if (!AuthenticationService.Instance.IsSignedIn)
+                {
+                    await AuthenticationService.Instance.SignInAnonymouslyAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                var reason = e.InnerException == null ? e.Message : $"{e.Message} ({e.InnerException.Message})";
+                m_UnityServiceErrorMessagePublisher.Publish(new UnityServiceErrorMessage("Authentication Error", reason, UnityServiceErrorMessage.Service.Authentication, e));
+                throw;
+            }
         }
         public static async Task<bool> TryInitServicesAsync(string profileName = null)
         {
@@ -290,7 +337,7 @@ namespace TD.UServices.Authentication
 
             OnSignInSuccessfully?.Invoke(this, new AuthenticationInforArgs(_playerID, _playerName));
             Debug.Log("Sign in anonymously succeeded!");
-            Debug.Log($"{nameof(UnityAutenticationManager).ToUpper()}: player id => {_playerID}");
+            Debug.Log($"{nameof(UnityAuthenticationManager).ToUpper()}: player id => {_playerID}");
         }
         #endregion
     }

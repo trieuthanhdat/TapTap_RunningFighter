@@ -17,11 +17,12 @@ namespace Project_RunningFighter.Gameplay.GameStates
         public override GameState ActiveState => GameState.MainLobby;
 
         [SerializeField] NameGenerationData m_NameGenerationData;
-        [SerializeField] Button m_LobbyButton;
-        [SerializeField] GameObject m_SignInSpinner;
-        [SerializeField] LobbyUIMediator m_LobbyUIMediator;
-        [SerializeField] GameModePanel m_GameModePanel;
-        [SerializeField] IPUIMediator m_IPUIMediator;
+        [SerializeField] Button             m_LobbyButton;
+        [SerializeField] GameObject         m_SignInSpinner;
+        [SerializeField] UIProfileSelector  m_UIProfileSelector;
+        [SerializeField] LobbyUIMediator    m_LobbyUIMediator;
+        [SerializeField] GameModePanel      m_GameModePanel;
+        [SerializeField] IPUIMediator       m_IPUIMediator;
 
         [Inject] ProfileManager m_ProfileManager;
         [Inject] LocalLobby m_LocalLobby;
@@ -46,7 +47,7 @@ namespace Project_RunningFighter.Gameplay.GameStates
         {
             try
             {
-                var unityAuthenticationInitOptions =
+                var unityAuthenticationInitOptions = 
                     m_AuthServiceFacade.GenerateAuthenticationOptions(m_ProfileManager.Profile);
 
                 await m_AuthServiceFacade.InitializeAndSignInAsync(unityAuthenticationInitOptions);
@@ -99,14 +100,14 @@ namespace Project_RunningFighter.Gameplay.GameStates
         }
         async void OnProfileChanged()
         {
-            m_LobbyButton.interactable = false;
-            m_SignInSpinner.SetActive(true);
+            if(m_LobbyButton) m_LobbyButton.interactable = false;
+            if(m_SignInSpinner) m_SignInSpinner.SetActive(true);
             await m_AuthServiceFacade.SwitchProfileAndReSignInAsync(m_ProfileManager.Profile);
 
-            m_LobbyButton.interactable = true;
-            m_SignInSpinner.SetActive(false);
+            if (m_LobbyButton) m_LobbyButton.interactable = true;
+            if (m_SignInSpinner) m_SignInSpinner.SetActive(false);
 
-            Debug.Log($"Signed in. Unity Player ID {AuthenticationService.Instance.PlayerId}");
+            Debug.Log($"ON PROFILE CHANGED: Signed in. Unity Player ID {AuthenticationService.Instance.PlayerId}");
 
             // Updating LocalUser and LocalLobby
             m_LocalLobby.RemoveUser(m_LocalUser);
@@ -147,7 +148,7 @@ namespace Project_RunningFighter.Gameplay.GameStates
 
         public void OnChangeProfileClicked()
         {
-            //m_UIProfileSelector.Show();
+            if(m_UIProfileSelector) m_UIProfileSelector.Show();
         }
     }
 

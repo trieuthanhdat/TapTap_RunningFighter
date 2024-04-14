@@ -9,7 +9,7 @@ namespace TD.UServices.Core
     public class UnityServicesManager : MonoSingleton<UnityServicesManager>
     {
         [SerializeField]
-        private UnityAutenticationManager unityAutenticationManager = null;
+        private UnityAuthenticationManager unityAutenticationManager = null;
         [SerializeField] 
         private bool signInAfterInit = false;
         public bool SignInAfterInit => signInAfterInit;
@@ -23,7 +23,7 @@ namespace TD.UServices.Core
         {
             if(unityAutenticationManager == null)
             {
-                unityAutenticationManager = UnityAutenticationManager.instance;
+                unityAutenticationManager = UnityAuthenticationManager.instance;
             }
         }
         public void Initialize()

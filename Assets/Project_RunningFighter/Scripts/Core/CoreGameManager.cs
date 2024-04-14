@@ -175,10 +175,10 @@ namespace TD.UServices.Core
         void AuthenticatePlayer()
         {
             var playerID   = !m_AnonimouslySignInRefresh ? 
-                              UnityAutenticationManager.instance.PlayerID   :
+                              UnityAuthenticationManager.instance.PlayerID   :
                               AuthenticationService.Instance.PlayerId;
             var playerName = !m_AnonimouslySignInRefresh ? 
-                              UnityAutenticationManager.instance.PlayerName :
+                              UnityAuthenticationManager.instance.PlayerName :
                               NameGenerator.GetName(playerID);
 
             m_LocalUser.ID.Value = playerID;
