@@ -14,7 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainLobby.unity
     guid: db455021e9e134a4dbd820ed0b3790b0
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/TestCharSelect.unity
     guid: 777429eceb5879842b02acfaaac67cfb
   - enabled: 1
