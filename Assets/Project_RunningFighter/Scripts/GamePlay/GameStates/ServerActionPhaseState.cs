@@ -20,34 +20,14 @@ using static Project_RunningFighter.Gameplay.GameplayObjects.Characters.NetworkL
 using UnityEngine.UI;
 using TMPro;
 using Project_RunningFighter.Gameplay.UI;
-using TD.SerializableDictionary;
+using TD.MonoAudioSFX;
 
 namespace Project_RunningFighter.Gameplay.GameStates
 {
-    [System.Serializable]
-    public enum ActionPhaseState
-    {
-        ReadyUp,        //Before Start Game
-        StartCountDown, //Count Down Then Start Game
-        Playing,        //Playing
-        EndCountDown,   //Count Down Then End Game
-        Finish          //After Count Down
-    }
+    
     [RequireComponent(typeof(NetcodeHooks))]
     public class ServerActionPhaseState : GameStateBehaviour
     {
-        [Header("UI REFERENCES")]
-        [SerializeField] TextMeshProUGUI txt_CountDown;
-        [SerializeField] TextMeshProUGUI txt_PlayingTimer;
-        [SerializeField] Slider m_ProgressSlider;
-        [SerializeField] Transform m_GroupPlayingTimer;
-        [SerializeField] List<UIPlayerProgressIconBehaviour> m_ListPlayerProgressIcon;
-        [Header("OBJECTS REFERENCES")]
-        [SerializeField] Transform m_endPosition;
-        [Header("STATE SETTINGS")]
-        [SerializeField] float m_StartCountDownDuration = 3f; //In seconds
-        [SerializeField] float m_EndCountDownDuration   = 3f; //In seconds
-        [SerializeField] float m_PlayTimeDuration = 60f;      //In seconds
         [FormerlySerializedAs("m_NetworkWinState")]
         [SerializeField] PersistentGameState persistentGameState;
         [SerializeField] NetcodeHooks m_NetcodeHooks;
@@ -59,24 +39,8 @@ namespace Project_RunningFighter.Gameplay.GameStates
         [Tooltip("A collection of locations for spawning players")]
         private Transform[] m_PlayerSpawnPoints;
         #region ___PROPERTIES___
-        //ACTION PHASE STATE
-        public static event Action<ActionPhaseState> OnGameplayStateChanged;
-        [SerializeField]
-        ActionPhaseState m_GameplayState = ActionPhaseState.ReadyUp;
-        public ActionPhaseState GameplayState => m_GameplayState;
-        [SerializeField]
-        private Dictionary<Transform, Transform> m_SpanwedPlayerTable = new Dictionary<Transform, Transform>();
         private List<Transform> m_PlayerSpawnPointsList = new List<Transform>();
-
-        private Transform m_StartPosition;
-
-        private float m_CountDownTimer;
-
-        private bool m_IsReadyUp;
-        public bool IsReadyUp => m_IsReadyUp;
-
-        private bool m_IsPlaying;
-        public bool IsPlaying => m_IsPlaying;
+        
         public override GameState ActiveState => GameState.ActionPhase;
         
         private const float k_WinDelay = 7.0f;
@@ -87,6 +51,20 @@ namespace Project_RunningFighter.Gameplay.GameStates
 
         [Inject] ConnectionManager m_ConnectionManager;
         [Inject] PersistentGameState m_PersistentGameState;
+
+        public static event Action<PlayerSpawnedSetup> OnPlayerSpawned;
+        public struct PlayerSpawnedSetup
+        {
+            public int spawnIndex;
+            public Transform playerTrans;
+            public Transform spawnPosTrans;
+            public PlayerSpawnedSetup(int index, Transform player, Transform spawnPos)
+            {
+                spawnIndex = index;
+                playerTrans = player;
+                spawnPosTrans = spawnPos;
+            }
+        }
         #endregion
 
         #region UNITY METHODS___
@@ -95,25 +73,33 @@ namespace Project_RunningFighter.Gameplay.GameStates
             base.Awake();
             m_NetcodeHooks.OnNetworkSpawnHook += OnNetworkSpawn;
             m_NetcodeHooks.OnNetworkDespawnHook += OnNetworkDespawn;
+
+            NetworkedActionPhaseState.OnGameplayStateChanged += OnGameplayStateChanged;
         }
-        private void Update()
+
+        
+        protected override void Start()
         {
-            UpdateGameplayState();
+            base.Start();
+            MonoAudioManager.instance.StopSound("EntranceTheme");
+            MonoAudioManager.instance.PlaySound("Music_1", true, true, 1f);
         }
         void OnNetworkSpawn()
         {
-            if (NetworkManager.Singleton.IsServer)
+            if (!NetworkManager.Singleton.IsServer)
             {
-                m_PersistentGameState.Reset();
-                m_LifeStateChangedEventMessageSubscriber.Subscribe(OnLifeStateChangedEventMessage);
-                NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
-                NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnLoadEventCompleted;
-                NetworkManager.Singleton.SceneManager.OnSynchronizeComplete += OnSynchronizeComplete;
-
-                SessionManager<SessionPlayerData>.Instance.OnSessionStarted();
-
-                Debug.Log("SERVER ACTION PHASE STATE: start !!");
+                enabled = false;
+                return;
             }
+            m_PersistentGameState.Reset();
+            m_LifeStateChangedEventMessageSubscriber.Subscribe(OnLifeStateChangedEventMessage);
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
+            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnLoadEventCompleted;
+            NetworkManager.Singleton.SceneManager.OnSynchronizeComplete += OnSynchronizeComplete;
+
+            SessionManager<SessionPlayerData>.Instance.OnSessionStarted();
+
+            Debug.Log("SERVER ACTION PHASE STATE: start !!");
         }
         
         void OnNetworkDespawn()
@@ -150,6 +136,14 @@ namespace Project_RunningFighter.Gameplay.GameStates
         #endregion
 
         #region ____EVENT METHODS____
+        private void OnGameplayStateChanged(ActionPhaseState state)
+        {
+            if(state == ActionPhaseState.Finish)
+            {
+                WaitToCheckForGameOver();
+            }
+        }
+
         void OnLifeStateChangedEventMessage(LifeStateChangedEventMessage message)
         {
             if (!NetworkManager.Singleton.IsServer) return;
@@ -159,9 +153,8 @@ namespace Project_RunningFighter.Gameplay.GameStates
                 case CharacterTypeEnum.EarthLife:
                 case CharacterTypeEnum.WaterLife:
                     // Every time a player's life state changes to fainted we check to see if game is over
-                    if (message.NewLifeState == CharacterLifeState.Fainted)
+                    if (message.NewLifeState == CharacterLifeState.Dead)
                     {
-                        CheckForGameOver();
                     }
                     break;
                 default:
@@ -175,7 +168,6 @@ namespace Project_RunningFighter.Gameplay.GameStates
             if (InitialSpawnDone && !PlayerServerCharacter.GetPlayerServerCharacter(clientId))
             {
                 SpawnPlayer(clientId, true);
-                ChangeGameplayState(ActionPhaseState.ReadyUp);
             }
         }
 
@@ -202,185 +194,7 @@ namespace Project_RunningFighter.Gameplay.GameStates
         }
         #endregion
        
-        #region ____STATE MANAGEMENT____
-        void ChangeGameplayState(ActionPhaseState newState)
-        {
-            m_GameplayState = newState;
-            ChangeGameplayStateRpc(newState);
-        }
-        [Rpc(SendTo.Everyone)]
-        public void ChangeGameplayStateRpc(ActionPhaseState newState)
-        {
-            OnGameplayStateChanged?.Invoke(newState);
-        }
-        void UpdateGameplayState()
-        {
-            if (!NetworkManager.Singleton.IsServer) return;
-            switch (m_GameplayState)
-            {
-                case ActionPhaseState.ReadyUp:
-                    if (m_IsReadyUp) return;
-
-                    ToggleTextCountDown(false);
-                    TogglePlayingTimer(false);
-                    m_IsPlaying = false;
-                    m_CountDownTimer = m_StartCountDownDuration;
-                    m_IsReadyUp = true;
-                    StartCoroutine(Co_WaitAlittle());
-                    IEnumerator Co_WaitAlittle()
-                    {
-                        yield return new WaitForSeconds(0.5f);
-                        ChangeGameplayState(ActionPhaseState.StartCountDown);
-                    }
-                    break;
-                case ActionPhaseState.StartCountDown:
-                    m_CountDownTimer -= Time.unscaledDeltaTime;
-
-                    if (IsCountDownTimerFinished(ref m_CountDownTimer))
-                    {
-                        ChangeGameplayState(ActionPhaseState.Playing);
-                    }
-                    UpdateTextCountDown(m_CountDownTimer, m_CountDownTimer > 0);
-                    break;
-                case ActionPhaseState.Playing:
-                    if (!m_IsPlaying)
-                    {
-                        m_IsPlaying = true;
-                        m_CountDownTimer = m_PlayTimeDuration;
-                    }
-                    else
-                    {
-                        m_CountDownTimer -= Time.unscaledDeltaTime;
-                        UpdatePlayersProgess();
-                        //Will change To EndCount Down When There's only 3 seconds left
-                        if (IsCountDownTimerFinished(ref m_CountDownTimer, 3f))
-                        {
-                            ChangeGameplayState(ActionPhaseState.EndCountDown);
-                        }
-                        UpdateTextTimePlaying(m_CountDownTimer);
-                    }
-                    break;
-                case ActionPhaseState.EndCountDown:
-                    m_CountDownTimer -= Time.unscaledDeltaTime;
-                    UpdatePlayersProgess();
-                    if (IsCountDownTimerFinished(ref m_CountDownTimer))
-                    {
-                        ChangeGameplayState(ActionPhaseState.Finish);
-                    }
-                    UpdateTextTimePlaying(m_CountDownTimer);
-                    UpdateTextCountDown(m_CountDownTimer, m_CountDownTimer > 0);
-                    break;
-                case ActionPhaseState.Finish:
-                    //FINISH GAME 
-                    Debug.Log("FINISH GAME!!!");
-                    m_IsPlaying = false;
-                    break;
-            }
-        }
-        bool IsCountDownTimerFinished(ref float Timer, float endTime = 0)
-        {
-            if (m_CountDownTimer <= endTime)
-            {
-                Timer = endTime;
-                return true;
-            }
-            return false;
-        }
-        #endregion
-        #region ____UI METHODS____
-        private string FormatTime(float timeInSeconds)
-        {
-            TimeSpan timeSpan = TimeSpan.FromSeconds(timeInSeconds);
-
-            if (timeInSeconds >= 60)
-            {
-                // Format as mm:ss
-                return $"{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
-            }
-            else
-            {
-                // Format as ss
-                return $"{timeSpan.Seconds:D2}s";
-            }
-        }
-        void UpdateTextTimePlaying(float time, bool isActive = true)
-        {
-            if (!m_GroupPlayingTimer) return;
-            if (txt_PlayingTimer) txt_PlayingTimer.text = FormatTime((int)time);
-            if (!isActive) StartCoroutine(Co_DeactivatePlayingTimer());
-            else TogglePlayingTimer(true);
-
-            IEnumerator Co_DeactivatePlayingTimer()
-            {
-                yield return new WaitForSeconds(0.5f);
-                TogglePlayingTimer(false);
-            }
-        }
-        
-        void TogglePlayingTimer(bool isActive)
-        {
-            if (!m_GroupPlayingTimer) return;
-            m_GroupPlayingTimer.gameObject.SetActive(isActive);
-        }
-        void UpdateTextCountDown(float time, bool isActive = true)
-        {
-            if (!txt_CountDown) return;
-            int intTime = (int)time;
-            txt_CountDown.text = intTime.ToString();
-
-            if (!isActive) StartCoroutine(Co_DeactivateTextCountDown());
-            else ToggleTextCountDown(true);
-
-            IEnumerator Co_DeactivateTextCountDown()
-            {
-                yield return new WaitForSeconds(0.5f);
-                ToggleTextCountDown(false);
-            }
-        }
-        void ToggleTextCountDown(bool isActive)
-        {
-            if (!txt_CountDown) return;
-            txt_CountDown.gameObject.SetActive(isActive);
-        }
-
-        #endregion
         #region ____PLAYERS UTILS____
-        void UpdatePlayersProgess()
-        {
-            if (m_endPosition == null) return;
-            if (m_SpanwedPlayerTable == null || m_SpanwedPlayerTable.Count == 0) return;
-
-            // Calculate the width of the Fill Area of the slider
-            RectTransform fillRect = m_ProgressSlider.fillRect.GetComponent<RectTransform>();
-            float fillAreaWidth = fillRect.rect.width;
-            int count = m_PlayerSpawnPoints.Length;
-            
-            for (int i = 0; i < count; i++)
-            {
-                Transform playerStartPos = m_PlayerSpawnPoints[i];
-
-                m_SpanwedPlayerTable.TryGetValue(playerStartPos, out Transform player);
-                if (player == null) continue;
-                var playerIcon = m_ListPlayerProgressIcon[i];
-                float totalDistance = m_endPosition.position.x - playerStartPos.position.x;
-
-                float distanceToPlayer = Vector3.Distance(playerStartPos.position, player.transform.position);
-                float sliderValue = distanceToPlayer / totalDistance;
-
-                sliderValue = Mathf.Clamp01(sliderValue);
-                Debug.Log($"UPDATE PLAYER PROGRESS: slider value {sliderValue} - distanceToPlayer {distanceToPlayer}");
-                //The Slider's Handle Only for Host Player
-                if (playerIcon.name.ToLower().Contains("server") || playerIcon.name.ToLower().Contains("host"))
-                {
-                    m_ProgressSlider.value = sliderValue;
-                }else
-                {
-                    float iconXPosition = fillAreaWidth * sliderValue;
-                    playerIcon.ChangePositionX(iconXPosition);
-                }
-                
-            }
-        }
         private int m_SpawnIndex = 0;
         void SpawnPlayer(ulong clientId, bool lateJoin)
         {
@@ -409,14 +223,15 @@ namespace Project_RunningFighter.Gameplay.GameStates
             var playerNetworkObject = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(clientId);
 
             var newPlayer = Instantiate(m_PlayerPrefab, Vector3.zero, Quaternion.identity);
-            Debug.Log("SERVER ACTION PHASE STATE: spawning player " + newPlayer);
             var newPlayerCharacter = newPlayer.GetComponent<ServerCharacter>();
 
             var physicsTransform = newPlayerCharacter.physicsWrapper.Transform;
 
             if (spawnPoint != null)
             {
-                physicsTransform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+                physicsTransform.transform.localPosition = spawnPoint.position;
+                physicsTransform.transform.localRotation = spawnPoint.rotation;
+                Debug.Log($"SPANW PLAYER {newPlayer.name} at {spawnPoint.transform.localPosition}");
             }
 
             var persistentPlayerExists = playerNetworkObject.TryGetComponent(out PersistentPlayer persistentPlayer);
@@ -449,8 +264,7 @@ namespace Project_RunningFighter.Gameplay.GameStates
             }
 
             newPlayer.SpawnWithOwnership(clientId, true);
-            m_SpanwedPlayerTable.Add(spawnPoint, newPlayer.transform);
-            m_ListPlayerProgressIcon[m_SpawnIndex].Init(newPlayer.transform);
+            OnPlayerSpawned?.Invoke(new PlayerSpawnedSetup(m_SpawnIndex, newPlayer.transform, spawnPoint));
             m_SpawnIndex++;
 
         }
@@ -475,7 +289,7 @@ namespace Project_RunningFighter.Gameplay.GameStates
                     return;
                 }
             }
-            StartCoroutine(Co_GameOver(k_LoseDelay, false));
+            StartCoroutine(Co_GameOver(k_LoseDelay, true));
         }
 
         IEnumerator Co_GameOver(float wait, bool gameWon)

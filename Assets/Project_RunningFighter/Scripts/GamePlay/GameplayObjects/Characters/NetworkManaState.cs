@@ -8,6 +8,17 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
 {
     public class NetworkManaState : NetworkBehaviour
     {
+        public enum CharacterManaState
+        {
+            Consuming,
+            Depleted,
+            Recovering,
+            Full
+        }
+        [SerializeField]
+        NetworkVariable<CharacterManaState> m_ManaState = new NetworkVariable<CharacterManaState>(CharacterManaState.Full);
+        public NetworkVariable<CharacterManaState> ManaState => m_ManaState;
+
         [HideInInspector]
         public NetworkVariable<int> ManaPoints = new NetworkVariable<int>();
 

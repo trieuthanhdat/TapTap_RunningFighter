@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using static Project_RunningFighter.Gameplay.Action.GameActionFactory;
 using static Project_RunningFighter.Gameplay.GameplayObjects.Characters.NetworkLifeState;
+using static Project_RunningFighter.Gameplay.GameplayObjects.Characters.NetworkManaState;
 
 namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
 {
@@ -65,6 +66,11 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
         {
             get => NetManaState.ManaPoints.Value;
             private set => NetManaState.ManaPoints.Value = value;
+        }
+        public CharacterManaState CharacterManaState
+        {
+            get => NetManaState.ManaState.Value;
+            private set => NetManaState.ManaState.Value = value;
         }
         public NetworkHealthState NetHealthState { get; private set; }
         public int HitPoints
@@ -128,6 +134,8 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
             else
             {
                 NetCharacterLifeState.LifeState.OnValueChanged += OnCharacterLifeStateChanged;
+
+                NetManaState.ManaState.OnValueChanged += OnCharacterManaStateChanged;
                 m_DamageReceiver.DamageReceived += ReceiveHP;
                 m_DamageReceiver.CollisionEntered += CollisionEntered;
 
@@ -149,10 +157,11 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
             }
         }
 
+       
         public override void OnNetworkDespawn()
         {
             NetCharacterLifeState.LifeState.OnValueChanged -= OnCharacterLifeStateChanged;
-
+            NetManaState.ManaState.OnValueChanged -= OnCharacterManaStateChanged;
             if (m_DamageReceiver)
             {
                 m_DamageReceiver.DamageReceived   -= ReceiveHP;
@@ -198,6 +207,7 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
                         m_ServerPlayerAction.ClearActions(false);
                     }
                 }
+                m_ManaConsumer.ReceiveMP(this, -10);
                 m_Movement.SetNextMovementTarget();
             }
         }
@@ -273,6 +283,21 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
                 m_ServerPlayerAction.PlayAction(ref action);
             }
         }
+        private void OnCharacterManaStateChanged(CharacterManaState previousManaState, CharacterManaState newManaState)
+        {
+            switch(newManaState)
+            {
+                case CharacterManaState.Consuming:
+                    break;
+                case CharacterManaState.Depleted:
+                    m_Movement.CancelMove();
+                    break;
+                case CharacterManaState.Full:
+                    break;
+                case CharacterManaState.Recovering:
+                    break;
+            }
+        }
 
         void OnCharacterLifeStateChanged(CharacterLifeState prevCharacterLifeState, CharacterLifeState CharacterLifeState)
         {
@@ -344,16 +369,11 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
         {
             if (MP > 0)
             {
-                m_ServerPlayerAction.OnGameplayActivity(GameAction.GameplayActivity.RechargedMana);
-                float recoverMod = m_ServerPlayerAction.GetBuffedValue(GameAction.BuffableValue.PercentManaRecovered);
-                MP = (int)(MP * recoverMod);
+                CharacterManaState = CharacterManaState.Recovering;
             }
             else
             {
-
-                m_ServerPlayerAction.OnGameplayActivity(GameAction.GameplayActivity.ConsumeMana);
-                float depleteMod = m_ServerPlayerAction.GetBuffedValue(GameAction.BuffableValue.PercentManaDepleted);
-                MP = (int)(MP * depleteMod);
+                CharacterManaState = CharacterManaState.Consuming;
             }
 
             ManaPoints = Mathf.Clamp(ManaPoints + MP, 0, CharacterClass.BaseMana);

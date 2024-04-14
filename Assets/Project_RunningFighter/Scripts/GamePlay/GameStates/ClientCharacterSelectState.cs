@@ -9,6 +9,7 @@ using Unity.Netcode;
 using UnityEngine;
 using VContainer;
 using Avatar = Project_RunningFighter.Data.Avatar;
+using TD.MonoAudioSFX;
 
 namespace Project_RunningFighter.Gameplay.GameStates
 {
@@ -136,7 +137,7 @@ namespace Project_RunningFighter.Gameplay.GameStates
             {
                 m_PlayerSeats[i].Initialize(i);
             }
-
+            MonoAudioManager.instance.PlaySound("EntranceTheme", true, true, 1f);
             ConfigureUIForLobbyMode(LobbyMode.ChooseSeat);
             UpdateCharacterSelection(NetworkCharacterSelection.SeatState.Inactive);
         }

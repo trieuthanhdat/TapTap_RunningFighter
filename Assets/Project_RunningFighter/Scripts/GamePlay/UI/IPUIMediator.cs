@@ -76,7 +76,7 @@ namespace Project_RunningFighter.Gameplay.UI
 
             ip = string.IsNullOrEmpty(ip) ? k_DefaultIP : ip;
 
-            m_SignInSpinner.SetActive(true);
+            if(m_SignInSpinner) m_SignInSpinner.SetActive(true);
             m_ConnectionManager.StartHostIp(m_PlayerNameLabel.text, ip, portNum);
         }
 
@@ -90,11 +90,11 @@ namespace Project_RunningFighter.Gameplay.UI
 
             ip = string.IsNullOrEmpty(ip) ? k_DefaultIP : ip;
 
-            m_SignInSpinner.SetActive(true);
+            if (m_SignInSpinner) m_SignInSpinner.SetActive(true);
 
             m_ConnectionManager.StartClientIp(m_PlayerNameLabel.text, ip, portNum);
 
-            m_IPConnectionWindow.ShowConnectingWindow();
+            if (m_IPConnectionWindow) m_IPConnectionWindow.ShowConnectingWindow();
         }
 
         public void JoiningWindowCancelled()
@@ -105,7 +105,7 @@ namespace Project_RunningFighter.Gameplay.UI
 
         public void DisableSignInSpinner()
         {
-            m_SignInSpinner.SetActive(false);
+            if(m_SignInSpinner) m_SignInSpinner.SetActive(false);
         }
 
         void RequestShutdown()
@@ -118,50 +118,55 @@ namespace Project_RunningFighter.Gameplay.UI
 
         public void RegenerateName()
         {
-            m_PlayerNameLabel.text = NameGenerator.GetName(UnityAuthenticationManager.instance.PlayerID);
+            if (m_PlayerNameLabel) m_PlayerNameLabel.text = NameGenerator.GetName(UnityAuthenticationManager.instance.PlayerID);
         }
 
         public void ToggleJoinIPUI()
         {
-            m_IPJoiningUI.Show();
-            m_IPHostingUI.Hide();
-            m_JoinTabButtonHighlightTinter.SetToColor(1);
-            m_JoinTabButtonTabBlockerTinter.SetToColor(1);
-            m_HostTabButtonHighlightTinter.SetToColor(0);
-            m_HostTabButtonTabBlockerTinter.SetToColor(0);
+            if (m_IPJoiningUI) m_IPJoiningUI.Show();
+            if (m_IPHostingUI) m_IPHostingUI.Hide();
+            if (m_JoinTabButtonHighlightTinter) m_JoinTabButtonHighlightTinter.SetToColor(1);
+            if (m_JoinTabButtonTabBlockerTinter) m_JoinTabButtonTabBlockerTinter.SetToColor(1);
+            if (m_HostTabButtonHighlightTinter) m_HostTabButtonHighlightTinter.SetToColor(0);
+            if (m_HostTabButtonTabBlockerTinter) m_HostTabButtonTabBlockerTinter.SetToColor(0);
         }
 
         public void ToggleCreateIPUI()
         {
-            m_IPJoiningUI.Hide();
-            m_IPHostingUI.Show();
-            m_JoinTabButtonHighlightTinter.SetToColor(0);
-            m_JoinTabButtonTabBlockerTinter.SetToColor(0);
-            m_HostTabButtonHighlightTinter.SetToColor(1);
-            m_HostTabButtonTabBlockerTinter.SetToColor(1);
+            if (m_IPJoiningUI) m_IPJoiningUI.Hide();
+            if (m_IPHostingUI) m_IPHostingUI.Show();
+            if (m_JoinTabButtonHighlightTinter) m_JoinTabButtonHighlightTinter.SetToColor(0);
+            if (m_JoinTabButtonTabBlockerTinter) m_JoinTabButtonTabBlockerTinter.SetToColor(0);
+            if (m_HostTabButtonHighlightTinter) m_HostTabButtonHighlightTinter.SetToColor(1);
+            if (m_HostTabButtonTabBlockerTinter) m_HostTabButtonTabBlockerTinter.SetToColor(1);
         }
 
         public void Show()
         {
-            m_CanvasGroup.alpha = 1f;
-            m_CanvasGroup.interactable = true;
-            m_CanvasGroup.blocksRaycasts = true;
-
+            if(m_CanvasGroup)
+            {
+                m_CanvasGroup.alpha = 1f;
+                m_CanvasGroup.interactable = true;
+                m_CanvasGroup.blocksRaycasts = true;
+            }
             DisableSignInSpinner();
         }
 
         public void Hide()
         {
-            m_CanvasGroup.alpha = 0f;
-            m_CanvasGroup.interactable = false;
-            m_CanvasGroup.blocksRaycasts = false;
+            if(m_CanvasGroup)
+            {
+                m_CanvasGroup.alpha = 0f;
+                m_CanvasGroup.interactable = false;
+                m_CanvasGroup.blocksRaycasts = false;
+            }
         }
 
         // To be called from the Cancel (X) UI button
         public void CancelConnectingWindow()
         {
             RequestShutdown();
-            m_IPConnectionWindow.CancelConnectionWindow();
+            if(m_IPConnectionWindow) m_IPConnectionWindow.CancelConnectionWindow();
         }
 
         /// Sanitize user IP address InputField box allowing only numbers and '.'. This also prevents undesirable

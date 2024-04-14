@@ -76,7 +76,7 @@ namespace Project_RunningFighter.Gameplay.Action.Input
         private void Awake()
         {
             _MainCamera = UnityEngine.Camera.main;
-            ServerActionPhaseState.OnGameplayStateChanged += OnGameplayStateChanged;
+            NetworkedActionPhaseState.OnGameplayStateChanged += OnGameplayStateChanged;
         }
 
         
@@ -106,6 +106,8 @@ namespace Project_RunningFighter.Gameplay.Action.Input
                     switch (touch.phase)
                     {
                         case TouchPhase.Began:
+                            if (_ServerCharacter.CharacterManaState == NetworkManaState.CharacterManaState.Depleted) return;
+
                             _MoveRequest = true;
                             Debug.Log("CLIENT INPUT SENDER: begin to move");
                             break;

@@ -49,3 +49,123 @@ MonoBehaviour:
     useFadeInEffect: 0
     useFadeOutEffect: 0
     player: {fileID: 0}
+  - name: Blip
+    clip: {fileID: 8300000, guid: 22f2486d90b9e8e4ca51335d00b0840d, type: 3}
+    playOnAwake: 0
+    isBackgroundSound: 0
+    volume: 1
+    pitch: 1
+    fadeInDuration: 1
+    fadeOutDuration: 1
+    audioSource: {fileID: 0}
+    useFadeInEffect: 0
+    useFadeOutEffect: 0
+    player: {fileID: 0}
+  - name: Boing
+    clip: {fileID: 8300000, guid: 8e5cf338505cdf14d9e9a07910694c89, type: 3}
+    playOnAwake: 0
+    isBackgroundSound: 0
+    volume: 1
+    pitch: 1
+    fadeInDuration: 1
+    fadeOutDuration: 1
+    audioSource: {fileID: 0}
+    useFadeInEffect: 0
+    useFadeOutEffect: 0
+    player: {fileID: 0}
+  - name: Boom
+    clip: {fileID: 8300000, guid: cafda72ce3e4e174fbc7d5ec7df34df9, type: 3}
+    playOnAwake: 0
+    isBackgroundSound: 0
+    volume: 1
+    pitch: 1
+    fadeInDuration: 1
+    fadeOutDuration: 1
+    audioSource: {fileID: 0}
+    useFadeInEffect: 0
+    useFadeOutEffect: 0
+    player: {fileID: 0}
+  - name: Music_1
+    clip: {fileID: 8300000, guid: b7aa4466e7c84bc46bf179f7f237dbea, type: 3}
+    playOnAwake: 0
+    isBackgroundSound: 1
+    volume: 0.819
+    pitch: 1
+    fadeInDuration: 2.5
+    fadeOutDuration: 2.9
+    audioSource: {fileID: 0}
+    useFadeInEffect: 1
+    useFadeOutEffect: 0
+    player: {fileID: 0}
+  - name: Footstep01_01
+    clip: {fileID: 8300000, guid: 078e15982fce2e147bf06c8a7682f28b, type: 3}
+    playOnAwake: 0
+    isBackgroundSound: 0
+    volume: 1
+    pitch: 1
+    fadeInDuration: 1
+    fadeOutDuration: 1
+    audioSource: {fileID: 0}
+    useFadeInEffect: 0
+    useFadeOutEffect: 0
+    player: {fileID: 0}
+  - name: Footstep01_02
+    clip: {fileID: 8300000, guid: b2d2893ac04fbdb44a226f4b6ea0d271, type: 3}
+    playOnAwake: 0
+    isBackgroundSound: 0
+    volume: 1
+    pitch: 1
+    fadeInDuration: 1
+    fadeOutDuration: 1
+    audioSource: {fileID: 0}
+    useFadeInEffect: 0
+    useFadeOutEffect: 0
+    player: {fileID: 0}
+  - name: Footstep02_01
+    clip: {fileID: 8300000, guid: cc97c340134faa948bcaf20fea6429c6, type: 3}
+    playOnAwake: 0
+    isBackgroundSound: 0
+    volume: 1
+    pitch: 1
+    fadeInDuration: 1
+    fadeOutDuration: 1
+    audioSource: {fileID: 0}
+    useFadeInEffect: 0
+    useFadeOutEffect: 0
+    player: {fileID: 0}
+  - name: Footstep02_02
+    clip: {fileID: 8300000, guid: 64a04bb4fa4ed5d4eac6b0a31f91843a, type: 3}
+    playOnAwake: 0
+    isBackgroundSound: 0
+    volume: 1
+    pitch: 1
+    fadeInDuration: 1
+    fadeOutDuration: 1
+    audioSource: {fileID: 0}
+    useFadeInEffect: 0
+    useFadeOutEffect: 0
+    player: {fileID: 0}
+  - name: EntranceTheme
+    clip: {fileID: 8300000, guid: e4a1dafebc291c44f8d5069a5f0255eb, type: 3}
+    playOnAwake: 0
+    isBackgroundSound: 1
+    volume: 0.754
+    pitch: 0.69
+    fadeInDuration: 3.6
+    fadeOutDuration: 4
+    audioSource: {fileID: 0}
+    useFadeInEffect: 1
+    useFadeOutEffect: 0
+    player: {fileID: 0}
+  - name: Warning_1
+    clip: {fileID: 8300000, guid: b90d8099bdbf09a40ab1163556d5b5f4, type: 3}
+    playOnAwake: 0
+    isBackgroundSound: 0
+    volume: 1
+    pitch: 1
+    fadeInDuration: 1
+    fadeOutDuration: 1
+    audioSource: {fileID: 0}
+    useFadeInEffect: 0
+    useFadeOutEffect: 0
+    player: {fileID: 0}
