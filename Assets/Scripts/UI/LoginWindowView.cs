@@ -11,10 +11,12 @@ using UnityEngine.UI;
 using PlayFab;
 using PlayFab.ClientModels;
 
-public class LoginWindowView : MonoBehaviour
+public class LoginWindowView : BaseManager<LoginWindowView>
 {
     // Debug Flag to simulate a reset
     public bool ClearPlayerPrefs;
+
+    public GameObject LoginStackPanel;
 
     // Meta fields for objects in the UI
     public InputField Username;
@@ -36,6 +38,8 @@ public class LoginWindowView : MonoBehaviour
     public InputField DisplayNameInput;
     public Button DisplayNameButton;
     public Text StatusText;
+
+    public Button LoginWithFacebookButton;
 
     // Settings for what data to get from playfab on login.
     public GetPlayerCombinedInfoRequestParams InfoRequestParams;
@@ -63,6 +67,11 @@ public class LoginWindowView : MonoBehaviour
             });
     }
 
+    public override void Init()
+    {
+        throw new System.NotImplementedException();
+    }
+
     public void Start()
     {
         // Hide all our panels until we know what UI to display
@@ -81,6 +90,7 @@ public class LoginWindowView : MonoBehaviour
         PlayAsGuestButton.onClick.AddListener(OnPlayAsGuestClicked);
         RegisterButton.onClick.AddListener(OnRegisterButtonClicked);
         CancelRegisterButton.onClick.AddListener(OnCancelRegisterButtonClicked);
+        LoginWithFacebookButton.onClick.AddListener(OnLoginWithFacebookClicked);
 
         // Set the data we want at login from what we chose in our meta data.
         _AuthService.InfoRequestParams = InfoRequestParams;
@@ -160,9 +170,7 @@ public class LoginWindowView : MonoBehaviour
     /// </summary>
     private void OnPlayAsGuestClicked()
     {
-
         StatusText.text = "Logging In As Guest ...";
-
         _AuthService.Authenticate(Authtypes.Silent);
     }
 
@@ -213,6 +221,15 @@ public class LoginWindowView : MonoBehaviour
         SigninPanel.SetActive(true);
     }
 
+    /// <summary>
+    /// They have opted to login with Facebook.
+    /// </summary>
+    private void OnLoginWithFacebookClicked()
+    {
+        Debug.Log("Logging in with Facebook");  
+        _AuthService.Authenticate(Authtypes.Facebook);
+    }
+
     // after login, we need to set the display name
     // check if the player has a display name, if not, ask them to set one.
     public void OnSetDisplayName()
@@ -220,13 +237,16 @@ public class LoginWindowView : MonoBehaviour
         // get display name from PlayerProfile
         PlayFabClientAPI.GetPlayerProfile(new GetPlayerProfileRequest(), (result) =>
         {
+            Debug.Log(result);
             if (result.PlayerProfile.DisplayName == null)
             {
+                LoginStackPanel.SetActive(false);
                 CreateDisplayNamePanel.SetActive(true);
                 DisplayNameButton.onClick.AddListener(OnDisplayNameSubmit);
             }
             else
             {
+                LoginStackPanel.SetActive(true);
                 CreateDisplayNamePanel.SetActive(false);
             }
         }, (error) =>

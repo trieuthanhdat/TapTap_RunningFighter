@@ -5,12 +5,12 @@
 // Copyright (C) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 //--------------------------------------------------------------------------------------
-
 using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
 using LoginResult = PlayFab.ClientModels.LoginResult;
 using System;
+using Facebook.Unity;
 
 /// <summary>
 /// Supported Authentication types
@@ -22,7 +22,8 @@ public enum Authtypes
     Silent,
     UsernameAndPassword,
     EmailAndPassword,
-    RegisterPlayFabAccount
+    RegisterPlayFabAccount,
+    Facebook,
 }
 
 public class PlayFabAuthService
@@ -166,6 +167,10 @@ public class PlayFabAuthService
 
             case Authtypes.RegisterPlayFabAccount:
                 AddAccountAndPassword();
+                break;
+            
+            case Authtypes.Facebook:
+                AuthenticateFacebook();
                 break;
         }
     }
@@ -357,6 +362,14 @@ public class PlayFabAuthService
                         }
                     });
             });
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private void AuthenticateFacebook()
+    {
+        PlayfabFacebookAuthentication.Instance.Authenticate();
     }
 
     private void SilentlyAuthenticate(System.Action<LoginResult> callback = null)
