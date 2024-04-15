@@ -26,6 +26,8 @@ GameObject:
   - component: {fileID: 1438700737440959311}
   - component: {fileID: 6168190634228815736}
   - component: {fileID: 1298327807796663080}
+  - component: {fileID: 1105087559787905299}
+  - component: {fileID: 2550974201584446672}
   m_Layer: 0
   m_Name: Player_Network
   m_TagString: Untagged
@@ -75,9 +77,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
 --- !u!114 &4380948783282340162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,7 +115,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UseUnreliableDeltas: 0
   SyncPositionX: 1
-  SyncPositionY: 0
+  SyncPositionY: 1
   SyncPositionZ: 1
   SyncRotAngleX: 0
   SyncRotAngleY: 0
@@ -228,9 +230,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 345e0cf92345d42e39851d42f8c5a8cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_ClientMovement: {fileID: 1105087559787905299}
   m_CharLogic: {fileID: 3124383208989612032}
   m_moveDirection: {x: 0, y: 0, z: 2}
   m_rigidbody: {fileID: 8513540799294748281}
+  m_FallMultiplier: 5
+  m_JumpPowerMultiplier: 1
+  m_JumpTime: 0.5
+  m_Forcemode: 1
+  m_CollisionLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  m_CapsuleHeight: 0.1
+  m_CapsuleRadius: 0.1
+  m_MovementState: 0
+  m_CanMoveByTouchScreen:
+    m_InternalValue: 1
 --- !u!114 &5553517390854870634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -287,6 +302,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ServerCharacter: {fileID: 3124383208989612032}
   _PhysicsWrapper: {fileID: 5553517390854870634}
+  m_MinSwipeDistance: 50
 --- !u!114 &7472329150841092870
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -313,13 +329,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cead4253912fb1241be383143c5f3b59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_DisplayHealth: 0
+  m_DisplayHealth: 1
   m_DisplayMana: 1
-  m_DisplayName: 0
+  m_DisplayName: 1
   m_UIStatePrefab: {fileID: -1943162842029199943, guid: 2cf067bbb35acaa47a648d03f19c93ca, type: 3}
   m_NetworkHealthState: {fileID: 5700546874998887606}
   m_NetworkManaState: {fileID: 6168190634228815736}
-  m_NetworkNameState: {fileID: 0}
+  m_NetworkNameState: {fileID: 2550974201584446672}
   m_BaseHP: 0
   m_BaseMana: 0
   m_TransformToTrack: {fileID: 3630474757096092925}
@@ -337,6 +353,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5af0bad8268b724599edf5c300fcbf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_ManaState:
+    m_InternalValue: 3
   ManaPoints:
     m_InternalValue: 0
 --- !u!114 &1298327807796663080
@@ -349,6 +367,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5bc9494e5b3f29e4ab275a9ccdc67dba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1105087559787905299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4051040245861430888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 760fe7fd5c781244f91c7aeb1e043bed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2550974201584446672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4051040245861430888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a139ec3debb0d42b1bd21cb4a9b8b65e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &8785235233423016688

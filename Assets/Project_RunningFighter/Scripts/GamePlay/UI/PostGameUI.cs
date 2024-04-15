@@ -9,9 +9,7 @@ namespace Project_RunningFighter.Gameplay.UI
     /// Provides backing logic for all of the UI that runs in the PostGame stage.
     public class PostGameUI : MonoBehaviour
     {
-        [SerializeField]
-        private Light m_SceneLight;
-
+        
         [SerializeField]
         private TextMeshProUGUI m_WinEndMessage;
 
@@ -75,12 +73,10 @@ namespace Project_RunningFighter.Gameplay.UI
             {
                 // Set end message and background color based last game outcome
                 case GameStates.WinState.Win:
-                    m_SceneLight.color = m_WinLightColor;
                     m_WinEndMessage.gameObject.SetActive(true);
                     m_LoseGameMessage.gameObject.SetActive(false);
                     break;
                 case GameStates.WinState.Loss:
-                    m_SceneLight.color = m_LoseLightColor;
                     m_WinEndMessage.gameObject.SetActive(false);
                     m_LoseGameMessage.gameObject.SetActive(true);
                     break;

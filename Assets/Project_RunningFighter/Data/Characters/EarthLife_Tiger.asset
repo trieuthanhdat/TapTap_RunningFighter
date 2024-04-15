@@ -21,6 +21,8 @@ MonoBehaviour:
   Speed: 5
   MoveDistance: 10
   MoveCoolDown: 3
+  JumpFwdForce: 2
+  JumpUpForce: 5
   IsNpc: 0
   DetectRange: 5
   DisplayedName: Tiger

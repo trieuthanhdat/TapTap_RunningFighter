@@ -17,6 +17,7 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
         [SerializeField] private Animator m_ClientVisualsAnimator;
         [SerializeField] private VisualizationConfig m_VisualizationConfiguration;
 
+        public static event System.Action<ulong> OnWinBarrierEntered;
         public Animator PlayerAnimator => m_ClientVisualsAnimator;
         public GameObject TargetReticulePrefab => m_VisualizationConfiguration.TargetReticule;
         public Material ReticuleHostileMat => m_VisualizationConfiguration.ReticuleHostileMat;
@@ -137,6 +138,7 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
                         }
                         inputSender.ClientMoveEvent += OnMoveInput;
                         inputSender.ClientTouchMoveEvent += OnMoveInput;
+                        inputSender.ClientTouchJumpEvent += OnJumpInput;
                     }
                 }
             }
@@ -153,6 +155,7 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
                     sender.ActionInputEvent -= OnActionInput;
                     sender.ClientMoveEvent -= OnMoveInput;
                     sender.ClientTouchMoveEvent -= OnMoveInput;
+                    sender.ClientTouchJumpEvent -= OnJumpInput;
                 }
             }
 
@@ -176,6 +179,14 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
             if (!IsAnimating())
             {
                 PlayerAnimator.SetBool(m_VisualizationConfiguration.StaticTypeBooleanID, true);
+            }
+        }
+        private void OnJumpInput()
+        {
+            if (!IsAnimating())
+            {
+                PlayerAnimator.SetTrigger(m_VisualizationConfiguration.JumpStateTriggerID);
+                PlayerAnimator.SetBool(m_VisualizationConfiguration.JumpTypeBooleanID, true);
             }
         }
 
@@ -279,6 +290,15 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
             }*/
 
             return false;
+        }
+        
+        private void OnTriggerEnter(Collider collider)
+        {
+            if(collider.gameObject.CompareTag("FinishBarrier"))
+            {
+                OnWinBarrierEntered?.Invoke(OwnerClientId);
+                Debug.Log("CLIENT CHARACTER: On Enterring Win Barrier!");
+            }
         }
     }
 }

@@ -29,6 +29,11 @@ namespace Project_RunningFighter.Data
         public float MoveDistance;
         [Tooltip("Base movement CoolDown of this character class (in Seconds)")]
         public float MoveCoolDown = 3f;
+        [Tooltip("Base Jump Forward Force of this character class")]
+        public float JumpFwdForce = 5f;
+        [Tooltip("Base Jump Up Force of this character class")]
+        public float JumpUpForce = 5f;
+       
 
         [Tooltip("Set to true If this is an NPC/AI")]
         public bool IsNpc;

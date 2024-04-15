@@ -20,6 +20,9 @@ MonoBehaviour:
   BaseMana: 80
   Speed: 6
   MoveDistance: 15
+  MoveCoolDown: 3
+  JumpFwdForce: 2
+  JumpUpForce: 5
   IsNpc: 0
   DetectRange: 5
   DisplayedName: Eagle

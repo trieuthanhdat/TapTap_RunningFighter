@@ -47,6 +47,8 @@ namespace Project_RunningFighter.Data
         // These are maintained by our OnValidate(). Code refers to these hashed values, not the string versions!
         [SerializeField][HideInInspector] public int AliveStateTriggerID;
         [SerializeField][HideInInspector] public int DeadStateTriggerID;
+        [SerializeField][HideInInspector] public int JumpStateTriggerID;
+        [SerializeField][HideInInspector] public int JumpTypeBooleanID;
         [SerializeField][HideInInspector] public int StaticTypeBooleanID;
         [SerializeField][HideInInspector] public int SpeedVariableID;
         [SerializeField][HideInInspector] public int BaseNodeTagID;
@@ -59,6 +61,9 @@ namespace Project_RunningFighter.Data
 
             SpeedVariableID = Animator.StringToHash(m_SpeedVariable);
             BaseNodeTagID = Animator.StringToHash(m_BaseNodeTag);
+
+            JumpStateTriggerID = Animator.StringToHash(m_JumpTrigger);
+            JumpTypeBooleanID = Animator.StringToHash(m_Jump);
         }
     }
 }

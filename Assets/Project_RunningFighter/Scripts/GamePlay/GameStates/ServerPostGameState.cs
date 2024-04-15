@@ -2,6 +2,7 @@ using Project_RunningFighter.ConnectionManagement;
 using Project_RunningFighter.Gameplay.Action;
 using System.Collections;
 using System.Collections.Generic;
+using TD.MonoAudioSFX;
 using Unity.Multiplayer.Samples.BossRoom;
 using Unity.Multiplayer.Samples.Utilities;
 using Unity.Netcode;
@@ -61,7 +62,7 @@ namespace Project_RunningFighter.Gameplay.GameStates
 
         public void PlayAgain()
         {
-            SceneLoaderWrapper.Instance.LoadScene("CharSelect", useNetworkSceneManager: true);
+            SceneLoaderWrapper.Instance.LoadScene("CharacterSelectScene", useNetworkSceneManager: true);
         }
 
         public void GoToMainMenu()

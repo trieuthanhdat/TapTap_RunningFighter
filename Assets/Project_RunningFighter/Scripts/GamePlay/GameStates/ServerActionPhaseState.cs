@@ -38,9 +38,28 @@ namespace Project_RunningFighter.Gameplay.GameStates
         [SerializeField]
         [Tooltip("A collection of locations for spawning players")]
         private Transform[] m_PlayerSpawnPoints;
+
+        #region ____SINGLETON____
+        private static ServerActionPhaseState instance = null;
+        public static ServerActionPhaseState Instance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = FindObjectOfType<ServerActionPhaseState>();
+
+                return instance;
+            }
+        }
+        #endregion
         #region ___PROPERTIES___
+
         private List<Transform> m_PlayerSpawnPointsList = new List<Transform>();
-        
+        private NetworkVariable<int> m_PlayerEnterteringWinBarrierCount = new NetworkVariable<int>(0);
+
+        private ulong m_WinningPlayer = default;
+        public ulong WinningPlayer => m_WinningPlayer;
+
         public override GameState ActiveState => GameState.ActionPhase;
         
         private const float k_WinDelay = 7.0f;
@@ -76,13 +95,28 @@ namespace Project_RunningFighter.Gameplay.GameStates
 
             NetworkedActionPhaseState.OnGameplayStateChanged += OnGameplayStateChanged;
         }
-
         
         protected override void Start()
         {
             base.Start();
             MonoAudioManager.instance.StopSound("EntranceTheme");
             MonoAudioManager.instance.PlaySound("Music_1", true, true, 1f);
+        }
+        protected override void OnDestroy()
+        {
+            if (m_LifeStateChangedEventMessageSubscriber != null)
+            {
+                m_LifeStateChangedEventMessageSubscriber.Unsubscribe(OnLifeStateChangedEventMessage);
+            }
+            NetworkedActionPhaseState.OnGameplayStateChanged -= OnGameplayStateChanged;
+            ClientCharacter.OnWinBarrierEntered -= ClientCharacter_OnWinBarrierEntered;
+            if (m_NetcodeHooks)
+            {
+                m_NetcodeHooks.OnNetworkSpawnHook -= OnNetworkSpawn;
+                m_NetcodeHooks.OnNetworkDespawnHook -= OnNetworkDespawn;
+            }
+
+            base.OnDestroy();
         }
         void OnNetworkSpawn()
         {
@@ -96,12 +130,14 @@ namespace Project_RunningFighter.Gameplay.GameStates
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
             NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnLoadEventCompleted;
             NetworkManager.Singleton.SceneManager.OnSynchronizeComplete += OnSynchronizeComplete;
+            ClientCharacter.OnWinBarrierEntered += ClientCharacter_OnWinBarrierEntered;
 
             SessionManager<SessionPlayerData>.Instance.OnSessionStarted();
 
             Debug.Log("SERVER ACTION PHASE STATE: start !!");
         }
-        
+
+       
         void OnNetworkDespawn()
         {
             if (NetworkManager.Singleton.IsServer)
@@ -114,33 +150,29 @@ namespace Project_RunningFighter.Gameplay.GameStates
                 NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnect;
                 NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= OnLoadEventCompleted;
                 NetworkManager.Singleton.SceneManager.OnSynchronizeComplete -= OnSynchronizeComplete;
+                ClientCharacter.OnWinBarrierEntered -= ClientCharacter_OnWinBarrierEntered;
             }
         }
 
-        protected override void OnDestroy()
-        {
-            if (m_LifeStateChangedEventMessageSubscriber != null)
-            {
-                m_LifeStateChangedEventMessageSubscriber.Unsubscribe(OnLifeStateChangedEventMessage);
-            }
 
-
-            if (m_NetcodeHooks)
-            {
-                m_NetcodeHooks.OnNetworkSpawnHook -= OnNetworkSpawn;
-                m_NetcodeHooks.OnNetworkDespawnHook -= OnNetworkDespawn;
-            }
-
-            base.OnDestroy();
-        }
         #endregion
 
         #region ____EVENT METHODS____
+        private void ClientCharacter_OnWinBarrierEntered(ulong clientId)
+        {
+            if (m_PlayerEnterteringWinBarrierCount.Value == 0)
+                m_WinningPlayer = clientId;
+
+            m_PlayerEnterteringWinBarrierCount.Value += 1;
+        }
+
         private void OnGameplayStateChanged(ActionPhaseState state)
         {
             if(state == ActionPhaseState.Finish)
             {
-                WaitToCheckForGameOver();
+                //Set Win If Current Winninng player is LocalClient
+                StartCoroutine(Co_GameOver(k_WinDelay, m_WinningPlayer == NetworkManager.Singleton.LocalClientId));
+                MonoAudioManager.instance.StopSound("Music_1", true);
             }
         }
 
@@ -189,13 +221,13 @@ namespace Project_RunningFighter.Gameplay.GameStates
             if (!NetworkManager.Singleton.IsServer) return;
             if (clientId != NetworkManager.Singleton.LocalClientId)
             {
-                StartCoroutine(WaitToCheckForGameOver());
+                StartCoroutine(Co_GameOver(k_LoseDelay, false));
             }
         }
         #endregion
-       
+
         #region ____PLAYERS UTILS____
-        private int m_SpawnIndex = 0;
+        int count = 0;
         void SpawnPlayer(ulong clientId, bool lateJoin)
         {
 
@@ -210,28 +242,21 @@ namespace Project_RunningFighter.Gameplay.GameStates
             Debug.Assert(m_PlayerSpawnPointsList.Count > 0,
                 $"PlayerSpawnPoints array should have at least 1 spawn points.");
 
-            if (m_SpawnIndex < m_PlayerSpawnPointsList.Count)
-            {
-                spawnPoint = m_PlayerSpawnPointsList[m_SpawnIndex];
-            }
-            else
-            {
-                Debug.LogWarning("No more spawn points available for spawning players.");
-                return;
-            }
+            int index = UnityEngine.Random.Range(0, m_PlayerSpawnPointsList.Count);
+            spawnPoint = m_PlayerSpawnPointsList[index];
+            m_PlayerSpawnPointsList.RemoveAt(index);
 
             var playerNetworkObject = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(clientId);
 
             var newPlayer = Instantiate(m_PlayerPrefab, Vector3.zero, Quaternion.identity);
+
             var newPlayerCharacter = newPlayer.GetComponent<ServerCharacter>();
 
             var physicsTransform = newPlayerCharacter.physicsWrapper.Transform;
 
             if (spawnPoint != null)
             {
-                physicsTransform.transform.localPosition = spawnPoint.position;
-                physicsTransform.transform.localRotation = spawnPoint.rotation;
-                Debug.Log($"SPANW PLAYER {newPlayer.name} at {spawnPoint.transform.localPosition}");
+                physicsTransform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
             }
 
             var persistentPlayerExists = playerNetworkObject.TryGetComponent(out PersistentPlayer persistentPlayer);
@@ -255,6 +280,7 @@ namespace Project_RunningFighter.Gameplay.GameStates
                 }
             }
 
+            // instantiate new NetworkVariables with a default value to ensure they're ready for use on OnNetworkSpawn
             networkAvatarGuidState.AvatarGuid = new NetworkVariable<NetworkGuid>(persistentPlayer.NetworkAvatarGuidState.AvatarGuid.Value);
 
             // pass name from persistent player to avatar
@@ -263,12 +289,16 @@ namespace Project_RunningFighter.Gameplay.GameStates
                 networkNameState.Name = new NetworkVariable<FixedPlayerName>(persistentPlayer.NetworkNameState.Name.Value);
             }
 
+            // spawn players characters with destroyWithScene = true
             newPlayer.SpawnWithOwnership(clientId, true);
-            OnPlayerSpawned?.Invoke(new PlayerSpawnedSetup(m_SpawnIndex, newPlayer.transform, spawnPoint));
-            m_SpawnIndex++;
-
+            OnPlayerSpawnedRpc(newPlayer.transform, spawnPoint);
+            count++;
         }
-
+        [Rpc(SendTo.ClientsAndHost)]
+        private void OnPlayerSpawnedRpc(Transform playerTrans, Transform spawnPoint)
+        {
+            OnPlayerSpawned?.Invoke(new PlayerSpawnedSetup(count, playerTrans, spawnPoint));
+        }
         #endregion
 
         #region ____GAME OVER METHODS____
@@ -289,7 +319,7 @@ namespace Project_RunningFighter.Gameplay.GameStates
                     return;
                 }
             }
-            StartCoroutine(Co_GameOver(k_LoseDelay, true));
+            StartCoroutine(Co_GameOver(k_LoseDelay, false));
         }
 
         IEnumerator Co_GameOver(float wait, bool gameWon)

@@ -1,41 +1,61 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Project_RunningFighter.Gameplay.UI
 {
     public class UIPlayerProgressIconBehaviour : MonoBehaviour
     {
-        [SerializeField] RectTransform rectTransform;
-        [SerializeField] private Transform m_AttachedPlayerTf;
-        public void Init(Transform playerTrans)
+        [SerializeField] float m_HandleWidth = 55f;
+        [SerializeField] Slider m_Slider;
+        [SerializeField] RectTransform rectPlayerProgressIcon;
+        [SerializeField] int m_AttachedPlayerIndex;
+
+        private void Awake()
         {
-            m_AttachedPlayerTf = playerTrans;
-            RefreshRectTransform();
+            if(m_Slider == null) m_Slider = GetComponent<Slider>();
+            SetActive(false);
+        }
+       
+        public void SetActive(bool isOn)
+        {
+            gameObject.SetActive(isOn);
+        }
+        
+        public void Init(int playerIndex)
+        {
+            SetPlayerIndex(playerIndex);
+            SetupRectTransform();
         }
 
-        private void RefreshRectTransform()
+        private void SetupRectTransform()
         {
-            if (!rectTransform) return;
+            if (!rectPlayerProgressIcon) return;
+
             // Set anchorMin and anchorMax to (0, 0) to anchor the RectTransform to the bottom-left corner
-            rectTransform.anchorMin = new Vector2(0, 0);
-            rectTransform.anchorMax = new Vector2(0, 0);
+            rectPlayerProgressIcon.anchorMin = new Vector2(0, 0);
+            rectPlayerProgressIcon.anchorMax = new Vector2(0, 0);
 
             // Set the offsets to adjust the position
-            rectTransform.offsetMin = new Vector2(0, rectTransform.offsetMin.y); // Keep the same bottom offset
-            rectTransform.offsetMax = new Vector2(rectTransform.offsetMax.x, rectTransform.offsetMax.y); // Keep the same top offset
+            rectPlayerProgressIcon.offsetMin = new Vector2(0, rectPlayerProgressIcon.offsetMin.y); // Keep the same bottom offset
+            rectPlayerProgressIcon.offsetMax = new Vector2(m_HandleWidth, rectPlayerProgressIcon.offsetMax.y); 
 
-            // Set the new PosX
-            rectTransform.anchoredPosition = new Vector2(0, rectTransform.anchoredPosition.y); // Set PosX to 0
+            rectPlayerProgressIcon.anchoredPosition = new Vector2(0, rectPlayerProgressIcon.anchoredPosition.y); // Set PosX to 0
         }
 
-        public void ChangePositionX(float newX)
+        public void ChangeSliderProgress(float sliderValue)
         {
-            RectTransform iconRect = rectTransform;
-            Vector3 iconPosition = iconRect.localPosition;
-            iconPosition.x = newX;
-            iconRect.localPosition = iconPosition;
+           m_Slider.value = sliderValue;
         }
+
+        private void SetPlayerIndex(int playerIndex)
+        {
+            m_AttachedPlayerIndex = playerIndex;
+            Debug.Log($"UI PLAYER PROGRESS BEHAVIOUR: set Player Trans source on networked index" + playerIndex);
+        }
+
     }
 
 }

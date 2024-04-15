@@ -29,4 +29,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ActionPhase.unity
     guid: f4628fae4865ba040ba0a90af227da11
+  - enabled: 1
+    path: Assets/Scenes/PostGame.unity
+    guid: b695dc13433ccfc439b893211f56d04b
   m_configObjects: {}

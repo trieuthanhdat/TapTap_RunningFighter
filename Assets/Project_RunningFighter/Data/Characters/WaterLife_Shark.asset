@@ -20,6 +20,9 @@ MonoBehaviour:
   BaseMana: 120
   Speed: 4
   MoveDistance: 12
+  MoveCoolDown: 3
+  JumpFwdForce: 2
+  JumpUpForce: 5
   IsNpc: 0
   DetectRange: 3
   DisplayedName: Shark

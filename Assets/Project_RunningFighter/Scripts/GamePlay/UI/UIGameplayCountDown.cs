@@ -24,6 +24,7 @@ namespace Project_RunningFighter.Gameplay.UI
         [SerializeField] private Animator animator;
         private int previousCountdownNumber;
         private bool _isVisible;
+        private bool _isFinished;
         #region ____UNITY METHODS____
         private void OnEnable()
         {
@@ -40,15 +41,19 @@ namespace Project_RunningFighter.Gameplay.UI
 
         private void NetworkedActionPhaseState_OnGameplayStateChanged(ActionPhaseState newState)
         {
+            bool isFinished = newState == ActionPhaseState.Finish;
+            if (isFinished) MonoAudioManager.Instance.PlaySound("Boing");
             switch (m_CountDownTimerType)
             {
                 case CountDownTimerType.Warning:
                     SetVisibility(newState == ActionPhaseState.StartCountDown ||
-                                  newState == ActionPhaseState.EndCountDown);
+                                  newState == ActionPhaseState.EndCountDown   ||
+                                  newState == ActionPhaseState.Finish, 
+                                  isFinished);
                     Debug.Log("UI GAMEPLAY COUNT DOWN: Warning => new state " + newState + " is visible "+_isVisible);
                     break;
                 case CountDownTimerType.PlayTime:
-                    SetVisibility(newState == ActionPhaseState.Playing ||
+                    SetVisibility(newState == ActionPhaseState.Playing      ||
                                   newState == ActionPhaseState.EndCountDown);
                     Debug.Log("UI GAMEPLAY COUNT DOWN: PlayTime => new state " + newState + " is visible " + _isVisible);
                     break;
@@ -62,13 +67,14 @@ namespace Project_RunningFighter.Gameplay.UI
                 Hide();
                 return;
             }
+
             int countdownNumber = Mathf.CeilToInt(NetworkedActionPhaseState.Instance.GetCountDownTimer());
-            m_CountdownText.text = FormatTime(countdownNumber);
+            m_CountdownText.text = _isFinished ? "GAME FINISHED !!!" : FormatTime(countdownNumber);
 
             if (previousCountdownNumber != countdownNumber)
             {
                 previousCountdownNumber = countdownNumber;
-                if(m_CountDownTimerType == CountDownTimerType.Warning)
+                if(m_CountDownTimerType == CountDownTimerType.Warning && !_isFinished)
                 {
                     if(animator) animator.SetTrigger(NUMBER_POPUP);
                     MonoAudioManager.Instance.PlaySound("Warning_1");
@@ -93,9 +99,10 @@ namespace Project_RunningFighter.Gameplay.UI
                 return $"{timeSpan.Seconds:D1}";
             }
         }
-        public void SetVisibility(bool isVisible)
+        public void SetVisibility(bool isVisible, bool isFinished = false)
         {
-            _isVisible = isVisible;
+            _isVisible  = isVisible;
+            _isFinished = isFinished;
             if (isVisible)
             {
                 Show();

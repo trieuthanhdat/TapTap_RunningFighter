@@ -89,7 +89,7 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: b7aa4466e7c84bc46bf179f7f237dbea, type: 3}
     playOnAwake: 0
     isBackgroundSound: 1
-    volume: 0.819
+    volume: 0.603
     pitch: 1
     fadeInDuration: 2.5
     fadeOutDuration: 2.9

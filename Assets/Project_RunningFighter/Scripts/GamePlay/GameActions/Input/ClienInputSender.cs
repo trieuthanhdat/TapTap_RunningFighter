@@ -1,8 +1,10 @@
 using System;
+using System.Net;
 using Project_RunningFighter.Data;
 using Project_RunningFighter.Gameplay.GameplayObjects.Characters;
 using Project_RunningFighter.Gameplay.GameStates;
 using Unity.Netcode;
+using Unity.Services.Authentication;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Assertions;
@@ -29,10 +31,13 @@ namespace Project_RunningFighter.Gameplay.Action.Input
     {
         [SerializeField] ServerCharacter _ServerCharacter;
         [SerializeField] CharacterPhysicWrapper _PhysicsWrapper;
+        [SerializeField] private float m_MinSwipeDistance = 50f; // Minimum distance for a swipe to be registered
+
         #region ___EVENTS___
         public event Action<ActionRequestData> ActionInputEvent;
         public event Action<Vector3> ClientMoveEvent;
         public event System.Action   ClientTouchMoveEvent;
+        public event System.Action   ClientTouchJumpEvent;
         public System.Action action1ModifiedCallback;
         #endregion
 
@@ -42,6 +47,7 @@ namespace Project_RunningFighter.Gameplay.Action.Input
 
         protected bool _CanSendInput;
         protected bool _MoveRequest;
+        protected bool _JumpRequest;
         protected UnityEngine.Camera _MainCamera;
 
         //Number of ActionRequests that have been queued
@@ -50,7 +56,9 @@ namespace Project_RunningFighter.Gameplay.Action.Input
         BaseActionInput _CurrentSkillInput;
 
         protected const float _MoveSendRateSeconds = 0.04f; //25 fps.
+        protected const float _JumpSendRateSeconds = 0.04f; //25 fps.
         protected float _LastSentMove;
+        protected float _LastSentJump;
 
         readonly RaycastHit[] _CachedHit = new RaycastHit[4];
         LayerMask m_GroundLayerMask;
@@ -58,6 +66,9 @@ namespace Project_RunningFighter.Gameplay.Action.Input
         const float _MouseInputRaycastDistance = 100f;
         const float _MaxNavMeshDistance = 1f;
         RaycastHitComparer _RaycastHitComparer;
+
+        private Vector2 m_TouchStartPos;
+
 
         private readonly ActionRequest[] m_ActionRequests = new ActionRequest[5];
         struct ActionRequest
@@ -78,8 +89,12 @@ namespace Project_RunningFighter.Gameplay.Action.Input
             _MainCamera = UnityEngine.Camera.main;
             NetworkedActionPhaseState.OnGameplayStateChanged += OnGameplayStateChanged;
         }
+        public override void OnDestroy()
+        {
+            NetworkedActionPhaseState.OnGameplayStateChanged -= OnGameplayStateChanged;
+            base.OnDestroy();
+        }
 
-        
         private void FixedUpdate()
         {
             if (!_CanSendInput) return;
@@ -96,6 +111,8 @@ namespace Project_RunningFighter.Gameplay.Action.Input
 
         private void OnGetTouchInput()
         {
+            if (!IsOwner || !IsClient) return;
+
             if (UnityEngine.Input.touchCount > 0)
             {
                 // Loop through all the touches
@@ -107,9 +124,26 @@ namespace Project_RunningFighter.Gameplay.Action.Input
                     {
                         case TouchPhase.Began:
                             if (_ServerCharacter.CharacterManaState == NetworkManaState.CharacterManaState.Depleted) return;
-
+                            if (_JumpRequest) return; // Cannot Run While Jumpping
                             _MoveRequest = true;
+                            m_TouchStartPos = touch.position;
                             Debug.Log("CLIENT INPUT SENDER: begin to move");
+                            break;
+                        case TouchPhase.Ended:
+                            if (_ServerCharacter.CharacterManaState == NetworkManaState.CharacterManaState.Depleted) return;
+                            _MoveRequest = false; //Can Jump While Running
+                            float swipeDistance = touch.position.y - m_TouchStartPos.y;
+                            Debug.Log($"CLIENT INPUT SENDER: min swipe distance {m_MinSwipeDistance} + swip Distance {swipeDistance}");
+                            // Check if the swipe distance is greater than the minimum required distance
+                            if (Mathf.Abs(swipeDistance) >= m_MinSwipeDistance)
+                            {
+                                // If the swipe is upwards, perform the jump
+                                if (swipeDistance > 0)
+                                {
+                                    Debug.Log("CLIENT INPUT SENDER: begin to jump");
+                                    _JumpRequest = true;
+                                }
+                            }
                             break;
                     }
                 }
@@ -177,13 +211,25 @@ namespace Project_RunningFighter.Gameplay.Action.Input
                 }
                 else if (UnityEngine.Input.GetMouseButton(0))
                 {
+                    if (_ServerCharacter.CharacterManaState == NetworkManaState.CharacterManaState.Depleted) return;
+                    if (_JumpRequest) return; // Cannot Run While Jumpping
                     _MoveRequest = true;
+                    Debug.Log("CLIENT INPUT SENDER: begin to move");
+                       
                 }
+            }
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
+            {
+                if (_ServerCharacter.CharacterManaState == NetworkManaState.CharacterManaState.Depleted) return;
+                _MoveRequest = false; //Can Jump While Running
+                _JumpRequest = true;
+                Debug.Log("CLIENT INPUT SENDER: begin to jump");
             }
         }
 
         public override void OnNetworkSpawn()
         {
+            Debug.Log($"ON NET WORK SPANWED: {AuthenticationService.Instance.PlayerName} + IsClient {IsClient} + IsOwner {IsOwner}");
             if (!IsClient || !IsOwner)
             {
                 enabled = false;
@@ -218,7 +264,6 @@ namespace Project_RunningFighter.Gameplay.Action.Input
         }
         private void OnGameplayStateChanged(ActionPhaseState state)
         {
-            Debug.Log("CLIENT INPUT SENDER: new state " + state +" listened by "+gameObject.GetInstanceID());
             switch (state)
             {
                 case ActionPhaseState.ReadyUp:
@@ -281,10 +326,10 @@ namespace Project_RunningFighter.Gameplay.Action.Input
 
             _ActionRequestCount = 0;
 
-            /*if (EventSystem.current.currentSelectedGameObject != null)
+            if (EventSystem.current.currentSelectedGameObject != null)
             {
                 return;
-            }*/
+            }
 
             if (_MoveRequest)
             {
@@ -296,12 +341,24 @@ namespace Project_RunningFighter.Gameplay.Action.Input
                     // Check if there's a touch
                     if (UnityEngine.Input.touchCount > 0)
                     {
-                        UnityEngine.Touch touch = UnityEngine.Input.GetTouch(0); // Get the first touch
+                        Touch touch = UnityEngine.Input.GetTouch(0); // Get the first touch
 
                         Debug.Log("CLIENT INPUT SENDER: moving");
-                        _ServerCharacter.ServerSendCharacterInputRpc();
+                        _ServerCharacter.ServerSendCharacterMoveInputRpc();
                         ClientTouchMoveEvent?.Invoke();
                     }
+                }
+            }
+            if(_JumpRequest)
+            {
+                _JumpRequest = false;
+                if ((Time.time - _LastSentJump) > _JumpSendRateSeconds)
+                {
+                    _LastSentJump = Time.time;
+
+                    Debug.Log("CLIENT INPUT SENDER: Jumping");
+                    _ServerCharacter.ServerSendCharacterJumpInputRpc();
+                    ClientTouchJumpEvent?.Invoke();
                 }
             }
         }

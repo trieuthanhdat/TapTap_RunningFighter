@@ -108,6 +108,9 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
             NetHealthState = GetComponent<NetworkHealthState>();
             NetManaState   = GetComponent<NetworkManaState>();
             m_State        = GetComponent<NetworkAvatarGuidState>();
+
+            this.gameObject.name += GetInstanceID();
+
         }
 
         private void Update()
@@ -194,9 +197,9 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
             }
         }
         [Rpc(SendTo.Server)]
-        public void ServerSendCharacterInputRpc()
+        public void ServerSendCharacterMoveInputRpc()
         {
-            if (!m_Movement.CanMoveByTouchScreen) return;
+            if (!m_Movement.CanMoveByTouchScreen.Value || m_Movement.IsJumping.Value) return;
             if (CharacterLifeState == CharacterLifeState.Alive && !m_Movement.IsPerformingForcedMovement())
             {
                 // if we're currently playing an interruptible action, interrupt it!
@@ -209,6 +212,17 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
                 }
                 m_ManaConsumer.ReceiveMP(this, -10);
                 m_Movement.SetNextMovementTarget();
+            }
+        }
+        [Rpc(SendTo.Server)]
+        public void ServerSendCharacterJumpInputRpc()
+        {
+            if (m_Movement.IsJumping.Value) return;
+
+            if (CharacterLifeState == CharacterLifeState.Alive && !m_Movement.IsPerformingForcedMovement())
+            {
+                m_ManaConsumer.ReceiveMP(this, -15);
+                m_Movement.SetJumpState();
             }
         }
 

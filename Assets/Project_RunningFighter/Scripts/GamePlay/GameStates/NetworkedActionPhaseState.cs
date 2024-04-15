@@ -1,7 +1,9 @@
+using Project_RunningFighter.Gameplay.GameplayObjects.Characters;
 using Project_RunningFighter.Gameplay.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -27,6 +29,7 @@ namespace Project_RunningFighter.Gameplay.GameStates
         [SerializeField] List<UIPlayerProgressIconBehaviour> m_ListPlayerProgressIcon;
         [Header("OBJECTS REFERENCES")]
         [SerializeField] Transform m_endPosition;
+        [SerializeField] Transform m_PlayerProgressParent;
         [Header("STATE SETTINGS")]
         [SerializeField] float m_StartCountDownDuration = 3f; //In seconds
         [SerializeField] float m_EndCountDownDuration = 3f;   //In seconds
@@ -34,6 +37,7 @@ namespace Project_RunningFighter.Gameplay.GameStates
 
         #region ____PROPETIES____
         #region NETWORKED PROPETIES
+
         private NetworkVariable<float> m_CountDownTimer = new NetworkVariable<float>(3f);
 
         private NetworkVariable<bool> m_IsReadyUp = new NetworkVariable<bool>();
@@ -45,7 +49,6 @@ namespace Project_RunningFighter.Gameplay.GameStates
         private NetworkVariable<ActionPhaseState> m_GameplayState = new NetworkVariable<ActionPhaseState>(ActionPhaseState.ReadyUp);
         public  NetworkVariable<ActionPhaseState> GameplayState => m_GameplayState;
         #endregion
-
         private Dictionary<int, Transform> m_PlayerStartPositionTable = new Dictionary<int, Transform>();
         private Dictionary<Transform, Transform> m_SpanwedPlayerTable = new Dictionary<Transform, Transform>();
         //ACTION PHASE STATE
@@ -69,8 +72,6 @@ namespace Project_RunningFighter.Gameplay.GameStates
         {
             OnPlayerSpawned += ServerActionPhaseState_OnPlayerSpawned;
         }
-        
-       
         private void Update()
         {
             UpdateGameplayState();
@@ -79,20 +80,40 @@ namespace Project_RunningFighter.Gameplay.GameStates
         {
             if (!IsServer) return;
             NetworkManager.Singleton.SceneManager.OnSynchronizeComplete += OnSynchronizeComplete;
+            ClientCharacter.OnWinBarrierEntered += ClientCharacter_OnWinBarrierEntered;
         }
         public override void OnNetworkDespawn()
         {
             OnPlayerSpawned -= ServerActionPhaseState_OnPlayerSpawned;
+            ClientCharacter.OnWinBarrierEntered -= ClientCharacter_OnWinBarrierEntered;
             base.OnNetworkDespawn();
         }
+        public override void OnDestroy()
+        {
+            OnPlayerSpawned -= ServerActionPhaseState_OnPlayerSpawned;
+            ClientCharacter.OnWinBarrierEntered -= ClientCharacter_OnWinBarrierEntered;
+            base.OnDestroy();
+        }
         #region ____EVENT METHODS____
+        private void ClientCharacter_OnWinBarrierEntered(ulong clientId)
+        {
+            if (m_GameplayState.Value != ActionPhaseState.EndCountDown &&
+               m_GameplayState.Value != ActionPhaseState.Finish)
+            {
+                m_CountDownTimer.Value = m_EndCountDownDuration;
+                ChangeGameplayState(ActionPhaseState.EndCountDown);
+            }
+
+        }
+
         private void ServerActionPhaseState_OnPlayerSpawned(ServerActionPhaseState.PlayerSpawnedSetup setup)
         {
             try
             {
                 m_SpanwedPlayerTable.Add(setup.spawnPosTrans, setup.playerTrans);
                 m_PlayerStartPositionTable.Add(setup.spawnIndex, setup.spawnPosTrans);
-                m_ListPlayerProgressIcon[setup.spawnIndex].Init(setup.playerTrans);
+                
+                SetActivePlayerProgressRpc(setup.spawnIndex);
             }
             catch (Exception e)
             {
@@ -107,47 +128,49 @@ namespace Project_RunningFighter.Gameplay.GameStates
         #endregion
 
         #region ____PLAYERS UTILS____
-        void UpdatePlayersProgess()
+        void UpdatePlayersProgress()
         {
             if (m_endPosition == null) return;
             if (m_SpanwedPlayerTable == null || m_SpanwedPlayerTable.Count == 0) return;
 
+            // Create a list to store the spawn positions in order
+            List<Transform> orderedSpawnPositions = new List<Transform>(m_PlayerStartPositionTable.Values);
+            List<int> listPlayerNumerKey = new List<int>(m_PlayerStartPositionTable.Keys);
+
             // Calculate the width of the Fill Area of the slider
             RectTransform fillRect = m_ProgressSlider.fillRect.GetComponent<RectTransform>();
             float fillAreaWidth = fillRect.rect.width;
-            int count = m_PlayerStartPositionTable.Count;
 
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < orderedSpawnPositions.Count; i++)
             {
-                Transform playerStartPos = m_PlayerStartPositionTable[i];
+                Transform playerStartPos = orderedSpawnPositions[i];
+                int playerNumberKey = listPlayerNumerKey[i];
+
                 if (playerStartPos == null) continue;
-                m_SpanwedPlayerTable.TryGetValue(playerStartPos, out Transform player);
-                if (player == null) continue;
-                var playerIcon = m_ListPlayerProgressIcon[i];
-                float totalDistance = Vector3.Distance(playerStartPos.position, m_endPosition.position);
 
-                float distanceToPlayer = Vector3.Distance(playerStartPos.position, player.transform.position);
-                float sliderValue = distanceToPlayer / totalDistance;
-
-                sliderValue = Mathf.Clamp01(sliderValue);
-                Debug.Log($"UPDATE PLAYER PROGRESS: slider value {sliderValue} - distanceToPlayer {distanceToPlayer} - Total Distance {totalDistance}");
-                //The Slider's Handle Only for Host Player
-                if (playerIcon.name.ToLower().Contains("server") || playerIcon.name.ToLower().Contains("host"))
+                if (m_SpanwedPlayerTable.TryGetValue(playerStartPos, out Transform player))
                 {
-                    m_ProgressSlider.value = sliderValue;
-                }
-                else
-                {
-                    float iconXPosition = fillAreaWidth * sliderValue;
-                    playerIcon.ChangePositionX(iconXPosition);
-                }
+                    if (player == null) continue;
+                    float totalDistance = Vector3.Distance(playerStartPos.position, m_endPosition.position);
+                    float distanceToPlayer = Vector3.Distance(playerStartPos.position, player.position);
+                    float sliderValue = distanceToPlayer / totalDistance;
+                    sliderValue = Mathf.Clamp01(sliderValue);
 
+                    Debug.Log($"UPDATE PLAYER PROGRESS: slider value {sliderValue} " +
+                              $"- distanceToPlayer {distanceToPlayer} " +
+                              $"- Total Distance {totalDistance} " +
+                              $"- fillAreaWidth {fillAreaWidth}");
+                    SetPlayerProgressRpc(playerNumberKey, sliderValue);
+
+                }
             }
         }
+
+
         #endregion
 
         #region ____STATE MANAGEMENT____
-        public 
+        public
         void ChangeGameplayState(ActionPhaseState newState)
         {
             if (!IsServer) return;
@@ -194,9 +217,9 @@ namespace Project_RunningFighter.Gameplay.GameStates
                     else
                     {
                         m_CountDownTimer.Value -= Time.unscaledDeltaTime;
-                        UpdatePlayersProgess();
+                        UpdatePlayersProgress();
                         //Will change To EndCount Down When There's only 3 seconds left
-                        if (IsCountDownTimerFinished(ref m_CountDownTimer, 3f))
+                        if (IsCountDownTimerFinished(ref m_CountDownTimer, m_EndCountDownDuration))
                         {
                             ChangeGameplayState(ActionPhaseState.EndCountDown);
                         }
@@ -204,7 +227,7 @@ namespace Project_RunningFighter.Gameplay.GameStates
                     break;
                 case ActionPhaseState.EndCountDown:
                     m_CountDownTimer.Value -= Time.unscaledDeltaTime;
-                    UpdatePlayersProgess();
+                    UpdatePlayersProgress();
                     if (IsCountDownTimerFinished(ref m_CountDownTimer))
                     {
                         ChangeGameplayState(ActionPhaseState.Finish);
@@ -227,6 +250,28 @@ namespace Project_RunningFighter.Gameplay.GameStates
             return false;
         }
         #endregion
+
+        #region ____RPC METHODS____
+
+        [Rpc(SendTo.ClientsAndHost)]
+        public void SetPlayerProgressRpc(int playerNumberKey, float sliderValue)
+        {
+            var playerIcon = m_ListPlayerProgressIcon[playerNumberKey];
+
+            sliderValue = Mathf.Clamp01(sliderValue);
+
+            Debug.Log($"UPDATE PLAYER PROGRESS: RPC slider value {sliderValue}");
+            playerIcon.ChangeSliderProgress(sliderValue);
+        }
+        [Rpc(SendTo.ClientsAndHost)]
+        public void SetActivePlayerProgressRpc(int spawnIndex)
+        {
+            var progressIcon = m_ListPlayerProgressIcon[spawnIndex];
+            progressIcon.SetActive(true);
+            progressIcon.Init(spawnIndex);
+        }
+        #endregion
+
         #region ____UI METHODS____
         public float GetCountDownTimer()
         {
