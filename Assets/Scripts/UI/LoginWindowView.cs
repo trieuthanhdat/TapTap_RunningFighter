@@ -10,6 +10,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using PlayFab;
 using PlayFab.ClientModels;
+using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class LoginWindowView : BaseManager<LoginWindowView>
 {
@@ -45,10 +47,12 @@ public class LoginWindowView : BaseManager<LoginWindowView>
     public GetPlayerCombinedInfoRequestParams InfoRequestParams;
 
     // Reference to our Authentication service
-    private PlayFabAuthService _AuthService = PlayFabAuthService.Instance;
+    private PlayFabAuthService _AuthService;
 
     public void Awake()
     {
+        _AuthService = PlayfabAuthenticationManager.Instance.AuthService;
+
         if (ClearPlayerPrefs)
         {
             _AuthService.UnlinkSilentAuth();
@@ -74,9 +78,7 @@ public class LoginWindowView : BaseManager<LoginWindowView>
 
     public void Start()
     {
-        // Hide all our panels until we know what UI to display
         LoginPanel.SetActive(false);
-        // LoggedinPanel.SetActive(false);
         RegisterPanel.SetActive(false);
         SigninPanel.SetActive(true);
 
@@ -92,10 +94,7 @@ public class LoginWindowView : BaseManager<LoginWindowView>
         CancelRegisterButton.onClick.AddListener(OnCancelRegisterButtonClicked);
         LoginWithFacebookButton.onClick.AddListener(OnLoginWithFacebookClicked);
 
-        // Set the data we want at login from what we chose in our meta data.
         _AuthService.InfoRequestParams = InfoRequestParams;
-
-        // Start the authentication process.
         _AuthService.Authenticate();
     }
 
@@ -109,7 +108,6 @@ public class LoginWindowView : BaseManager<LoginWindowView>
         Debug.LogFormat("Logged In as: {0}", result.PlayFabId);
         StatusText.text = "";
         LoginPanel.SetActive(false);
-        // LoggedinPanel.SetActive(true);
         OnSetDisplayName();
     }
 
@@ -171,7 +169,8 @@ public class LoginWindowView : BaseManager<LoginWindowView>
     private void OnPlayAsGuestClicked()
     {
         StatusText.text = "Logging In As Guest ...";
-        _AuthService.Authenticate(Authtypes.Silent);
+        PlayfabAuthenticationManager.Instance.OnPlayAsGuest();
+        // _AuthService.Authenticate(Authtypes.Silent);
     }
 
     /// <summary>
@@ -181,10 +180,10 @@ public class LoginWindowView : BaseManager<LoginWindowView>
     private void OnLoginClicked()
     {
         StatusText.text = string.Format("Logging In As {0} ...", Username.text);
-
-        _AuthService.Email = Username.text;
-        _AuthService.Password = Password.text;
-        _AuthService.Authenticate(Authtypes.EmailAndPassword);
+        PlayfabAuthenticationManager.Instance.OnLoginWithEmail(Username.text, Password.text);
+        // _AuthService.Email = Username.text;
+        // _AuthService.Password = Password.text;
+        // _AuthService.Authenticate(Authtypes.EmailAndPassword);
     }
 
     /// <summary>
@@ -199,10 +198,11 @@ public class LoginWindowView : BaseManager<LoginWindowView>
         }
 
         StatusText.text = string.Format("Registering User {0} ...", Username.text);
+        PlayfabAuthenticationManager.Instance.OnRegister(Username.text, Password.text);
 
-        _AuthService.Email = Username.text;
-        _AuthService.Password = Password.text;
-        _AuthService.Authenticate(Authtypes.RegisterPlayFabAccount);
+        // _AuthService.Email = Username.text;
+        // _AuthService.Password = Password.text;
+        // _AuthService.Authenticate(Authtypes.RegisterPlayFabAccount);
     }
 
     /// <summary>
@@ -215,7 +215,6 @@ public class LoginWindowView : BaseManager<LoginWindowView>
         Username.text = string.Empty;
         Password.text = string.Empty;
         ConfirmPassword.text = string.Empty;
-
         // Show panels
         RegisterPanel.SetActive(false);
         SigninPanel.SetActive(true);
@@ -226,7 +225,7 @@ public class LoginWindowView : BaseManager<LoginWindowView>
     /// </summary>
     private void OnLoginWithFacebookClicked()
     {
-        Debug.Log("Logging in with Facebook");  
+        Debug.Log("Logging in with Facebook");
         _AuthService.Authenticate(Authtypes.Facebook);
     }
 
@@ -248,6 +247,8 @@ public class LoginWindowView : BaseManager<LoginWindowView>
             {
                 LoginStackPanel.SetActive(true);
                 CreateDisplayNamePanel.SetActive(false);
+                string sceneName = "MainMenuUI";
+                SceneManager.LoadScene(sceneName);
             }
         }, (error) =>
         {
@@ -261,11 +262,20 @@ public class LoginWindowView : BaseManager<LoginWindowView>
         PlayFabClientAPI.UpdateUserTitleDisplayName(request, (result) =>
         {
             Debug.Log("Updated Display Name");
-            CreateDisplayNamePanel.SetActive(false);
         }, (error) =>
         {
             Debug.LogError(error.GenerateErrorReport());
         });
+        StartCoroutine(WaitForUpdateDisplayName()); // will be replaced
     }
+
+    private IEnumerator WaitForUpdateDisplayName()
+    {
+        yield return new WaitForSeconds(2);
+        string sceneName = "MainMenuUI";
+        SceneManager.LoadSceneAsync(sceneName);
+    }
+
+
 
 }

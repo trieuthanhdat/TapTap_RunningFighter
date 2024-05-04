@@ -7,20 +7,11 @@ using PlayFab.ClientModels;
 public class PlayfabAuthenticationManager : MonoSingleton<PlayfabAuthenticationManager>
 {
     private PlayFabAuthService _AuthService = PlayFabAuthService.Instance;
-    // private void OnLoginWithUsername(string username, string password) {
-    //     _AuthService.Username = username;
-    //     _AuthService.Password = password;
-    //     _AuthService.Authenticate(Authtypes.UsernameAndPassword);
-    // }
+    public PlayFabAuthService AuthService => _AuthService;
 
     [SerializeField] private bool ClearPlayerPrefs = false;
 
     public GetPlayerCombinedInfoRequestParams InfoRequestParams;
-
-    [Header("DEBUG SECTION")]
-    [SerializeField] private string _email;
-    [SerializeField] private string _password;
-    [SerializeField] private string _player_name;
 
     public void Awake()
     {
@@ -33,70 +24,24 @@ public class PlayfabAuthenticationManager : MonoSingleton<PlayfabAuthenticationM
         }
     }
 
-    void Start()
+    public void OnGetHelloWorld(ExecuteCloudScriptResult result)
     {
-        Debug.Log("PlayfabAuthenticationManager Start");
-
-
-        // Subscribe to events that happen after authentication
-        PlayFabAuthService.OnDisplayAuthentication += OnDisplayAuthentication;
-        PlayFabAuthService.OnLoginSuccess += OnLoginSuccess;
-        PlayFabAuthService.OnPlayFabError += OnPlayFabError;
-
-        _AuthService.InfoRequestParams = InfoRequestParams;
-        _AuthService.Authenticate();
-    }
-
-    // test login
-    [ContextMenu("LoginWithEmail")]
-    public void LoginWithEmail()
-    {
-        OnLoginWithEmail(_email, _password);
-    }
-
-    // test register
-    [ContextMenu("Register")]
-    public void Register()
-    {
-        OnRegister(_email, _password);
-    }
-
-    // test play as guest
-    [ContextMenu("PlayAsGuest")]
-    public void PlayAsGuest()
-    {
-        OnPlayAsGuest();
-    }
-    
-    // set player name
-    [ContextMenu("SetPlayerDisplayName")]
-    public void SetPlayerDisplayName(){
-        SetPlayerDisplayName(_player_name);
-    }
-
-    // test cloud script
-    [ContextMenu("Get Hello World")]
-    public void GetHelloWorld(){
-        PlayfabManager.ExecuteCloudScript("hello", null, OnGetHelloWorld, OnError);
-    }
-
-    private void OnGetHelloWorld(ExecuteCloudScriptResult result){
         Debug.Log(result.FunctionResult);
     }
 
-    private void OnDisplayAuthentication()
+    public void OnDisplayAuthentication()
     {
         Debug.Log("Display Authentication");
     }
 
-    private void OnLoginSuccess(LoginResult result)
+    public void OnLoginSuccess(LoginResult result)
     {
         Debug.Log("Login Success");
         Debug.Log(result.PlayFabId);
         Debug.Log(result.SessionTicket);
     }
 
-    private void OnPlayFabError(PlayFabError error)
+    public void OnPlayFabError(PlayFabError error)
     {
         switch (error.Error)
         {
@@ -117,59 +62,77 @@ public class PlayfabAuthenticationManager : MonoSingleton<PlayfabAuthenticationM
         Debug.Log(error.GenerateErrorReport());
     }
 
-    private void OnLoginWithEmail(string email, string password)
+    public void OnLoginWithEmail(string email, string password)
     {
         Debug.Log("Login with email and password");
         _AuthService.Email = email;
         _AuthService.Password = password;
         _AuthService.Authenticate(Authtypes.EmailAndPassword);
     }
-    private void OnPlayAsGuest()
+
+    public void OnLoginWithFacebook()
+    {
+        _AuthService.Authenticate(Authtypes.Facebook);
+    }
+
+    public void OnPlayAsGuest()
     {
         Debug.Log("Play as guest");
         _AuthService.Authenticate(Authtypes.Silent);
     }
-
-    private void OnRegister(string email, string password)
+    public void OnRegister(string email, string password)
     {
         _AuthService.Email = email;
         _AuthService.Password = password;
-        _AuthService.Username = _player_name;
         _AuthService.Authenticate(Authtypes.RegisterPlayFabAccount);
+    }
+    public void SetPlayerDisplayName(string displayName)
+    {
+        PlayFabClientAPI.UpdateUserTitleDisplayName(new UpdateUserTitleDisplayNameRequest()
+        {
+            DisplayName = displayName
+        }, result =>
+        {
+            Debug.Log("Display Name Updated");
+        }, error =>
+        {
+            Debug.Log(error.GenerateErrorReport());
+        });
+    }
+    public void OnError(PlayFabError error)
+    {
+        Debug.Log(error.GenerateErrorReport());
     }
 
     [ContextMenu("Get Player Display Name")]
-    public void GetPlayerDisplayName(){
-        PlayFabClientAPI.GetPlayerProfile(new GetPlayerProfileRequest(), result => {
+    // public void GetPlayerName()
+    public string GetPlayerName()
+    {
+        string displayName = "";
+        PlayFabClientAPI.GetPlayerProfile(new GetPlayerProfileRequest(), result =>
+        {
             Debug.Log(result.PlayerProfile.DisplayName);
-        }, error => {
+            displayName = result.PlayerProfile.DisplayName;
+        }, error =>
+        {
             Debug.Log(error.GenerateErrorReport());
         });
+        return displayName;
     }
 
-    public void SetPlayerDisplayName(string displayName){
-        PlayFabClientAPI.UpdateUserTitleDisplayName(new UpdateUserTitleDisplayNameRequest(){
-            DisplayName = displayName
-        }, result => {
-            Debug.Log("Display Name Updated");
-        }, error => {
+    [ContextMenu("Get Player Combined Info")]
+    public string GetPlayerID()
+    {
+        string playerID = "";
+        PlayFabClientAPI.GetPlayerProfile(new GetPlayerProfileRequest(), result =>
+        {
+            Debug.Log(result.PlayerProfile.PlayerId);
+            playerID = result.PlayerProfile.PlayerId; // master ID
+        }, error =>
+        {
             Debug.Log(error.GenerateErrorReport());
         });
+        return playerID;
     }
 
-    [ContextMenu("Get Player Level")]
-    // Get player level in Player Data (Title Data)
-    public void GetPlayerLevel(){
-        PlayFabClientAPI.GetUserData(new GetUserDataRequest(), OnGetPlayerLevel, OnError);
-    }
-
-    private void OnGetPlayerLevel(GetUserDataResult result){
-        if(result.Data.ContainsKey("Level")){
-            Debug.Log(result.Data["Level"].Value);
-        }
-    }
-
-    private void OnError(PlayFabError error){
-        Debug.Log(error.GenerateErrorReport());
-    }
 }
