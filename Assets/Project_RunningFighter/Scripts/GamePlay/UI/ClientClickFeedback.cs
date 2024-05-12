@@ -41,6 +41,10 @@ namespace Project_RunningFighter.Gameplay.UI
             m_FeedbackObj.SetActive(true);
             m_ClickFeedbackLerper.SetTarget(position);
         }
+        void OnClientMove()
+        {
+            m_FeedbackObj.SetActive(false);
+        }
 
         public override void OnDestroy()
         {
