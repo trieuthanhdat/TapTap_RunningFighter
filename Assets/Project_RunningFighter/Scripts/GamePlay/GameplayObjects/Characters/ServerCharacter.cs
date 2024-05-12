@@ -200,6 +200,7 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
         public void ServerSendCharacterMoveInputRpc()
         {
             if (!m_Movement.CanMoveByTouchScreen.Value || m_Movement.IsJumping.Value) return;
+            if (m_Movement.IsMoving()) return;
             if (CharacterLifeState == CharacterLifeState.Alive && !m_Movement.IsPerformingForcedMovement())
             {
                 // if we're currently playing an interruptible action, interrupt it!

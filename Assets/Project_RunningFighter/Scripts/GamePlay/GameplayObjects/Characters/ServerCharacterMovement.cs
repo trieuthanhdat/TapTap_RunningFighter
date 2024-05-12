@@ -193,6 +193,7 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
         {
             m_MovementState = MovementState.Idle;
             m_CanMoveByTouchScreen.Value = true;
+            Debug.Log("RESET MOVEMENT STATE:!!!");
         }
         private bool IsGrounded()
         {
@@ -302,6 +303,8 @@ namespace Project_RunningFighter.Gameplay.GameplayObjects.Characters
         }
         public void SetNextMovementTarget()
         {
+            if (m_MovementState == MovementState.Moving) return;
+
             m_CanMoveByTouchScreen.Value = false;
             m_MovementState = MovementState.Moving;
             Vector3 nextPosition = transform.position + transform.forward * GetBaseMovementDistance();

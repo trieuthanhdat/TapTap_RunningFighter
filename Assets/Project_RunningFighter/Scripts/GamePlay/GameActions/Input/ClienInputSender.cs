@@ -9,9 +9,11 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Assertions;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.EnhancedTouch;
 using VContainer;
 using static Project_RunningFighter.Gameplay.Action.GameActionFactory;
 using static Project_RunningFighter.Gameplay.GameplayObjects.Characters.NetworkLifeState;
+using Touch = UnityEngine.Touch;
 
 namespace Project_RunningFighter.Gameplay.Action.Input
 {
@@ -35,9 +37,9 @@ namespace Project_RunningFighter.Gameplay.Action.Input
 
         #region ___EVENTS___
         public event Action<ActionRequestData> ActionInputEvent;
-        public event Action<Vector3> ClientMoveEvent;
-        public event System.Action   ClientTouchMoveEvent;
-        public event System.Action   ClientTouchJumpEvent;
+        public event System.Action<Vector3> ClientMoveEvent;
+        public event System.Action ClientTouchMoveEvent;
+        public event System.Action ClientTouchJumpEvent;
         public System.Action action1ModifiedCallback;
         #endregion
 
@@ -98,15 +100,21 @@ namespace Project_RunningFighter.Gameplay.Action.Input
         private void FixedUpdate()
         {
             if (!_CanSendInput) return;
-            //OnUpdateWithMouseInput();
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+            OnUpdateWithMouseInput();
+#else
             OnUpdateWithTouchInput();
+#endif
         }
 
         private void Update()
         {
             if (!_CanSendInput) return;
+#if UNITY_EDITOR|| UNITY_STANDALONE_WIN
             OnGetKeyboardInput();
+#else
             OnGetTouchInput();
+#endif
         }
 
         private void OnGetTouchInput()
@@ -156,44 +164,38 @@ namespace Project_RunningFighter.Gameplay.Action.Input
             {
                 RequestAction(actionState1.actionID, SkillTriggerStyle.Keyboard);
             }
-            else if (UnityEngine.Input.GetKeyUp(KeyCode.Alpha1) && CharacterClass.Skill1)
-            {
-                RequestAction(actionState1.actionID, SkillTriggerStyle.KeyboardRelease);
-            }
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha2) && CharacterClass.Skill2)
-            {
-                RequestAction(actionState2.actionID, SkillTriggerStyle.Keyboard);
-            }
-            else if (UnityEngine.Input.GetKeyUp(KeyCode.Alpha2) && CharacterClass.Skill2)
-            {
-                RequestAction(actionState2.actionID, SkillTriggerStyle.KeyboardRelease);
-            }
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha3) && CharacterClass.Skill3)
-            {
-                RequestAction(actionState3.actionID, SkillTriggerStyle.Keyboard);
-            }
-            else if (UnityEngine.Input.GetKeyUp(KeyCode.Alpha3) && CharacterClass.Skill3)
-            {
-                RequestAction(actionState3.actionID, SkillTriggerStyle.KeyboardRelease);
-            }
 
             if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha5))
             {
                 RequestAction(GameDataSource.Instance.Emote1ActionPrototype.ActionID, SkillTriggerStyle.Keyboard);
             }
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha6))
+            */
+            // Loop through all the touches
+            if(UnityEngine.Input.GetMouseButtonDown(0))
             {
-                RequestAction(GameDataSource.Instance.Emote2ActionPrototype.ActionID, SkillTriggerStyle.Keyboard);
+                if (_ServerCharacter.CharacterManaState == NetworkManaState.CharacterManaState.Depleted) return;
+                if (_JumpRequest) return; // Cannot Run While Jumpping
+                _MoveRequest = true;
+                m_TouchStartPos = UnityEngine.Input.mousePosition;
+                Debug.Log("CLIENT INPUT SENDER: begin to move");
             }
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha7))
+            if (UnityEngine.Input.GetMouseButtonUp(0))
             {
-                RequestAction(GameDataSource.Instance.Emote3ActionPrototype.ActionID, SkillTriggerStyle.Keyboard);
+                if (_ServerCharacter.CharacterManaState == NetworkManaState.CharacterManaState.Depleted) return;
+                float swipeDistance = UnityEngine.Input.mousePosition.y - m_TouchStartPos.y;
+                if (swipeDistance <= 0) return;
+                _MoveRequest = false; //Can Jump While Running
+                Debug.Log($"CLIENT INPUT SENDER: min swipe distance {m_MinSwipeDistance} + swip Distance {swipeDistance}");
+                if (Mathf.Abs(swipeDistance) >= m_MinSwipeDistance)
+                {
+                    if (swipeDistance > 0)
+                    {
+                        Debug.Log("CLIENT INPUT SENDER: begin to jump");
+                        _JumpRequest = true;
+                    }
+                }
             }
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha8))
-            {
-                RequestAction(GameDataSource.Instance.Emote4ActionPrototype.ActionID, SkillTriggerStyle.Keyboard);
-            }*/
-
+            /*
             if (!EventSystem.current.IsPointerOverGameObject() &&
                 _CurrentSkillInput == null)
             {
@@ -224,7 +226,7 @@ namespace Project_RunningFighter.Gameplay.Action.Input
                 _MoveRequest = false; //Can Jump While Running
                 _JumpRequest = true;
                 Debug.Log("CLIENT INPUT SENDER: begin to jump");
-            }
+            }*/
         }
 
         public override void OnNetworkSpawn()
@@ -405,32 +407,23 @@ namespace Project_RunningFighter.Gameplay.Action.Input
                 if ((Time.time - _LastSentMove) > _MoveSendRateSeconds)
                 {
                     _LastSentMove = Time.time;
-                    var ray = _MainCamera.ScreenPointToRay(UnityEngine.Input.mousePosition);
-
-                    var groundHits = Physics.RaycastNonAlloc(ray,
-                        _CachedHit,
-                        _MouseInputRaycastDistance,
-                        m_GroundLayerMask);
-
-                    if (groundHits > 0)
                     {
-                        if (groundHits > 1)
-                        {
-                            // sort hits by distance
-                            Array.Sort(_CachedHit, 0, groundHits, _RaycastHitComparer);
-                        }
-
-                        // verify point is indeed on navmesh surface
-                        if (NavMesh.SamplePosition(_CachedHit[0].point,
-                                out var hit,
-                                _MaxNavMeshDistance,
-                                NavMesh.AllAreas))
-                        {
-                            _ServerCharacter.ServerSendCharacterInputRpc(hit.position);
-                            //Send our client only click request
-                            ClientMoveEvent?.Invoke(hit.position);
-                        }
+                        Debug.Log("CLIENT INPUT SENDER: moving");
+                        _ServerCharacter.ServerSendCharacterMoveInputRpc();
+                        ClientTouchMoveEvent?.Invoke();
                     }
+                }
+            }
+            if (_JumpRequest)
+            {
+                _JumpRequest = false;
+                if ((Time.time - _LastSentJump) > _JumpSendRateSeconds)
+                {
+                    _LastSentJump = Time.time;
+
+                    Debug.Log("CLIENT INPUT SENDER: Jumping");
+                    _ServerCharacter.ServerSendCharacterJumpInputRpc();
+                    ClientTouchJumpEvent?.Invoke();
                 }
             }
         }
