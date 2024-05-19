@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Startup.unity
     guid: d5aef95b5d9e96a4d905e95b8ba0c74e
   - enabled: 1
+    path: Assets/Scenes/MainLobby.unity
+    guid: db455021e9e134a4dbd820ed0b3790b0
+  - enabled: 1
     path: Assets/Scenes/LoadingScene.unity
     guid: 7f63eee2fbe73f34ebaa02ae79ca073b
   - enabled: 1
@@ -17,9 +20,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainMenuUI.unity
     guid: 138692c71b8bb42688a0b3bed8de98fb
-  - enabled: 1
-    path: Assets/Scenes/MainLobby.unity
-    guid: db455021e9e134a4dbd820ed0b3790b0
   - enabled: 0
     path: Assets/Scenes/TestCharSelect.unity
     guid: 777429eceb5879842b02acfaaac67cfb

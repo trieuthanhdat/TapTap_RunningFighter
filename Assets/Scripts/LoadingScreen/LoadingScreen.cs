@@ -31,8 +31,8 @@ public class LoadingScreen : MonoBehaviour, ILoadingService
     private void StartFirstStep()
     {
         _stepLoadingService = StepLoadingService.STEP_LOAD_UNITY_SERVICE;
-        // LoadGameAsync();
-        LoadLoginScene();
+        LoadGameAsync();
+        // LoadLoginScene();
     }
 
     private void LoadGameAsync()
