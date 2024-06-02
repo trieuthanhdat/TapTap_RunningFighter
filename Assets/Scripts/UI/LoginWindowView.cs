@@ -247,8 +247,7 @@ public class LoginWindowView : BaseManager<LoginWindowView>
             {
                 LoginStackPanel.SetActive(true);
                 CreateDisplayNamePanel.SetActive(false);
-                string sceneName = "MainMenuUI";
-                SceneManager.LoadScene(sceneName);
+                LoadingMenuScene();
             }
         }, (error) =>
         {
@@ -266,16 +265,11 @@ public class LoginWindowView : BaseManager<LoginWindowView>
         {
             Debug.LogError(error.GenerateErrorReport());
         });
-        StartCoroutine(WaitForUpdateDisplayName()); // will be replaced
+        LoadingMenuScene();
     }
-
-    private IEnumerator WaitForUpdateDisplayName()
+    private void LoadingMenuScene()
     {
-        yield return new WaitForSeconds(2);
         string sceneName = "MainMenuUI";
         SceneManager.LoadSceneAsync(sceneName);
     }
-
-
-
 }

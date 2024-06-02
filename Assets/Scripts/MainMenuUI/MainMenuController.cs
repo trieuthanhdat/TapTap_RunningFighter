@@ -8,43 +8,51 @@ using VContainer;
 public class MainMenuController : MonoBehaviour {
     private MainMenuModel _model;
     private MainMenuView _view;
-    
+
+    private bool _isProfileLoaded;
+    private bool _isInventoryLoaded;
 
     private void Awake() {
         _model = GetComponent<MainMenuModel>();
         _view = GetComponent<MainMenuView>();
-        GetAllInfomation();
+        FetchAllPlayerData();
     }
 
-    public void GetAllInfomation() {
-        PlayFabClientAPI.GetPlayerProfile(new GetPlayerProfileRequest(), OnGetPlayerProfileSuccess, OnError);
-        PlayFabClientAPI.GetUserInventory(new GetUserInventoryRequest(), OnGetPlayerMoneySuccess, OnError);
+    private void FetchAllPlayerData() {
+        FetchPlayerProfile();
+        FetchPlayerInventory();
     }
 
-    private void OnGetPlayerProfileSuccess(GetPlayerProfileResult result) {
-        try 
-        {
-            _model.UpdatePlayerName(result.PlayerProfile.DisplayName);
+    private void FetchPlayerProfile() {
+        PlayFabClientAPI.GetPlayerProfile(new GetPlayerProfileRequest(), OnPlayerProfileSuccess, OnApiError);
+    }
+
+    private void FetchPlayerInventory() {
+        PlayFabClientAPI.GetUserInventory(new GetUserInventoryRequest(), OnPlayerInventorySuccess, OnApiError);
+    }
+
+    private void OnPlayerProfileSuccess(GetPlayerProfileResult result) {
+        _model.UpdatePlayerName(result.PlayerProfile.DisplayName);
+        _isProfileLoaded = true;
+        TryUpdateUI();
+    }
+
+    private void OnPlayerInventorySuccess(GetUserInventoryResult result) {
+        _model.StaminaAmount = result.VirtualCurrency.TryGetValue("ST", out int stamina) ? stamina : 0;
+        _model.RubyAmount = result.VirtualCurrency.TryGetValue("RB", out int ruby) ? ruby : 0;
+        _model.GoldAmount = result.VirtualCurrency.TryGetValue("GD", out int gold) ? gold : 0;
+        _isInventoryLoaded = true;
+        TryUpdateUI();
+    }
+
+    private void OnApiError(PlayFabError error) {
+        Debug.LogError($"PlayFab API Error: {error.GenerateErrorReport()}");
+    }
+
+    private void TryUpdateUI() {
+        if (_isProfileLoaded && _isInventoryLoaded) {
             _view.UpdatePlayerInfo(_model.PlayerName);
-        } 
-        catch (System.Exception e) 
-        {
-            Debug.Log(e);
-        }
-    }
-
-    private void OnGetPlayerMoneySuccess(GetUserInventoryResult result) {
-        try {
-            _model.StaminaAmount = result.VirtualCurrency["ST"];
-            _model.RubyAmount = result.VirtualCurrency["RB"];
-            _model.GoldAmount = result.VirtualCurrency["GD"];
             _view.UpdatePlayerMoney(_model.StaminaAmount, _model.RubyAmount, _model.GoldAmount);
-        } catch (System.Exception e) {
-            Debug.Log(e);
         }
-    }
-
-    private void OnError(PlayFabError error) {
-        Debug.LogError(error.GenerateErrorReport());
     }
 }
