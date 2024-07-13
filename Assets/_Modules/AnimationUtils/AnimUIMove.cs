@@ -7,6 +7,7 @@ public class AnimUIMove : MonoBehaviour
     [SerializeField] Vector2 posFrom;
     [SerializeField] Vector2 posTo;
     [SerializeField] float timeMove;
+    [SerializeField] float timeDelayShow = 0f;
     [SerializeField] Ease ease;
     RectTransform rect;
     private void Awake()
@@ -20,6 +21,6 @@ public class AnimUIMove : MonoBehaviour
     private void OnEnable()
     {
         rect.anchoredPosition = posFrom;
-        rect.DOAnchorPos(posTo, timeMove).SetEase(ease);
+        rect.DOAnchorPos(posTo, timeMove).SetEase(ease).SetDelay(timeDelayShow);
     }
 }
