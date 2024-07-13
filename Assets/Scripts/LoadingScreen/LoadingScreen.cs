@@ -32,6 +32,7 @@ public class LoadingScreen : MonoBehaviour, ILoadingService
     {
         _stepLoadingService = StepLoadingService.STEP_LOAD_UNITY_SERVICE;
         LoadGameAsync();
+        // LoadLoginScene();
     }
 
     private void LoadGameAsync()
@@ -50,6 +51,12 @@ public class LoadingScreen : MonoBehaviour, ILoadingService
         }
         StartCoroutine(_currentLoadingRoutine);
     }
+
+    private void LoadLoginScene(){
+        string sceneName = "LoginScene";
+        SceneManager.LoadScene(sceneName);
+    }
+
 
     private void ProcessNextStep()
     {
