@@ -5,18 +5,41 @@ namespace TD.MonoAudioSFX
 {
     public class MonoAudioPlayer : MonoBehaviour
     {
-        public Sound sound;
-        public float fadeInTimer = 2f;
-        public float fadeOutTimer = 2f;
+        [SerializeField] protected Sound sound;
+        [SerializeField] protected float fadeInTimer = 2f;
+        [SerializeField] protected float fadeOutTimer = 2f;
 
-        float timeGradient = 0;
-        bool startPlaying = false;
-        bool stopPlaying = false;
-        float originVolume = 1;
+        private float _timeGradient = 0;
+        private bool _startPlaying = false;
+        private bool _stopPlaying = false;
+        private float _originVolume = 1;
+
+        private bool _isInited = false;
+        private MonoAudioPlayerPool _pool;
+
+        public void Setup(Sound sound, MonoAudioPlayerPool pool)
+        {
+            this.sound = sound;
+            this._pool = pool;
+            fadeInTimer = sound.fadeInDuration;
+            fadeOutTimer = sound.fadeOutDuration;
+            // SETUP SOUND
+            AudioSource audioSource = gameObject.AddComponent<AudioSource>();
+            sound.audioSource = audioSource;
+            audioSource.clip = sound.clip;
+            audioSource.playOnAwake = sound.playOnAwake;
+            audioSource.pitch = sound.pitch;
+            if (sound.isBackgroundSound)
+                audioSource.volume = 0;
+            else
+                audioSource.volume = sound.volume;
+
+            _isInited = true;
+        }
 
         private void Start()
         {
-            originVolume = sound.volume;
+            _originVolume = sound.volume;
 
             if (sound.playOnAwake)
                 PlaySound();
@@ -24,7 +47,8 @@ namespace TD.MonoAudioSFX
 
         private void Update()
         {
-            if (startPlaying && !stopPlaying)
+            if (!_isInited) return;
+            if (_startPlaying && !_stopPlaying)
             {
                 if (sound.useFadeInEffect)
                 {
@@ -33,10 +57,10 @@ namespace TD.MonoAudioSFX
                 else
                 {
                     sound.audioSource.Play();
-                    startPlaying = false;
+                    _startPlaying = false;
                 }
             }
-            else if (stopPlaying && !startPlaying)
+            else if (_stopPlaying && !_startPlaying)
             {
                 if (sound.useFadeOutEffect)
                 {
@@ -45,14 +69,16 @@ namespace TD.MonoAudioSFX
                 else
                 {
                     sound.audioSource.Stop();
-                    stopPlaying = false;
-
+                    _stopPlaying = false;
+                    ReturnToPool();
                 }
             }
-            else if (!stopPlaying && !startPlaying)
+            else if (!_stopPlaying && !_startPlaying)
             {
                 if (!sound.audioSource.isPlaying)
-                    MonoAudioManager.instance.ToggleActivationPlayer(false, this);
+                {
+                    ReturnToPool();
+                }
             }
         }
 
@@ -60,53 +86,60 @@ namespace TD.MonoAudioSFX
         {
             ResetCounter();
 
-            startPlaying = true;
-            stopPlaying = false;
-            MonoAudioManager.instance.ToggleActivationPlayer(true, this);
+            _startPlaying = true;
+            _stopPlaying = false;
+            MonoAudioManager.Instance.ToggleActivationPlayer(true, this);
 
             if (delay > 0)
                 sound.audioSource.PlayDelayed(delay);
             else
                 sound.audioSource.Play();
         }
+
         public void StopSound()
         {
             if (!sound.audioSource.isPlaying) return;
             ResetCounter();
-            stopPlaying = true;
-            startPlaying = false;
+            _stopPlaying = true;
+            _startPlaying = false;
         }
+
         public void ResetCounter()
         {
-            timeGradient = 0;
+            _timeGradient = 0;
         }
 
         private void PlayFadeInOutEffect(bool isStart)
         {
-            sound.audioSource.volume = isStart == true ? 0 : sound.audioSource.volume;
+            sound.audioSource.volume = isStart ? 0 : sound.audioSource.volume;
 
-            timeGradient += Time.deltaTime;
+            _timeGradient += Time.deltaTime;
 
             if (isStart)
             {
-                sound.audioSource.volume += timeGradient / fadeInTimer;
-                if (sound.audioSource.volume >= originVolume)
+                sound.audioSource.volume += _timeGradient / fadeInTimer;
+                if (sound.audioSource.volume >= _originVolume)
                 {
-                    startPlaying = false;
+                    _startPlaying = false;
                 }
             }
             else
             {
-                sound.audioSource.volume -= timeGradient / fadeOutTimer;
+                sound.audioSource.volume -= _timeGradient / fadeOutTimer;
                 if (sound.audioSource.volume <= 0)
                 {
-                    stopPlaying = false;
+                    _stopPlaying = false;
                     sound.audioSource.Stop();
+                    ReturnToPool();
                 }
             }
+        }
 
-
+        private void ReturnToPool()
+        {
+            _pool.Return(this);
         }
     }
+
 }
 

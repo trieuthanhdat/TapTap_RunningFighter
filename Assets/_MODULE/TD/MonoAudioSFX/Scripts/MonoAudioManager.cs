@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
-using System;
 
 namespace TD.MonoAudioSFX
 {
@@ -36,52 +35,55 @@ namespace TD.MonoAudioSFX
         public MonoAudioPlayer player;
 
     }
-    
+
     public class MonoAudioManager : MonoSingleton<MonoAudioManager>
     {
-        [SerializeField] MonoAudioPlayer audioPlayerPrefabs;
-        [SerializeField] SoundConfigSO soundSO;
-        bool isInited = false;
+        [SerializeField] private MonoAudioPlayer audioPlayerPrefab;
+        [SerializeField] private SoundConfigSO soundSO;
+        [SerializeField] private int poolSize = 5;
+
+        private bool _isInited = false;
+        public bool IsInited => _isInited;
+
+        private MonoAudioPlayerPool audioPlayerPool;
+
         private void Awake()
         {
+            audioPlayerPool = new MonoAudioPlayerPool(audioPlayerPrefab, poolSize, transform);
+
             foreach (Sound s in soundSO.sounds)
             {
-                //SETUP PLAYER
-                s.player = Instantiate(audioPlayerPrefabs, transform);
-                s.player.sound = s;
-                s.player.fadeInTimer = s.fadeInDuration;
-                s.player.fadeOutTimer = s.fadeOutDuration;
-                //SETUP SOUND
-                s.audioSource = s.player.gameObject.AddComponent<AudioSource>();
-                s.audioSource.clip = s.clip;
-
-                s.audioSource.playOnAwake = s.playOnAwake;
-                s.audioSource.pitch = s.pitch;
-                if (s.isBackgroundSound)
-                    s.audioSource.volume = 0;
-                else
-                    s.audioSource.volume = s.volume;
-                //DISABLE TO SAVE PERFOMANCE
+                // Get an available player from the pool and setup
+                s.player = audioPlayerPool.Get();
+                s.player.Setup(s, audioPlayerPool);
+                // Deactivate to save performance
                 ToggleActivationPlayer(false, s.player);
             }
-            isInited = true;
+
+            _isInited = true;
         }
 
         public void ToggleActivationPlayer(bool isOn, MonoAudioPlayer player)
         {
             player.gameObject.SetActive(isOn);
         }
+
         public void PlaySound(string name, bool isLoop = false, bool isGradient = false, float delay = 0)
         {
             try
             {
-                if (!isInited) return;
+                if (!_isInited) return;
                 Sound s = Array.Find(soundSO.sounds, sound => sound.name == name);
                 if (s == null)
                 {
-                    Debug.LogWarning("MONOAUDIOMANAGER:Sound name: " + name + " is missing!!!");
+                    Debug.LogWarning("MONOAUDIOMANAGER: Sound name: " + name + " is missing!!!");
                     return;
                 }
+
+                // Get an available player from the pool
+                s.player = audioPlayerPool.Get();
+                s.player.Setup(s, audioPlayerPool);
+
                 s.audioSource.loop = isLoop;
                 s.useFadeInEffect = isGradient;
                 s.player.PlaySound(delay);
@@ -96,11 +98,11 @@ namespace TD.MonoAudioSFX
         {
             try
             {
-                if (!isInited) return;
+                if (!_isInited) return;
                 Sound s = Array.Find(soundSO.sounds, sound => sound.name == name);
                 if (s == null)
                 {
-                    Debug.LogWarning("Sound name: " + s.name + " is missing!!!");
+                    Debug.LogWarning("Sound name: " + name + " is missing!!!");
                     return;
                 }
                 s.useFadeOutEffect = isGradient;
@@ -115,5 +117,6 @@ namespace TD.MonoAudioSFX
             }
         }
     }
+
 }
 

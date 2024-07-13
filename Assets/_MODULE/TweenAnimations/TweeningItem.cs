@@ -29,7 +29,8 @@ public class TweeningItem : MonoBehaviour
         DoFloat,
         DoFadeThenStampIn,
         DoFadeOvertime,
-        DoBlink
+        DoBlink,
+        DoFadeInAndFadeOut
     }
     public TweeningType tweeningType = TweeningType.DoScale;
     public bool PlayOnAwake = false;
@@ -122,12 +123,23 @@ public class TweeningItem : MonoBehaviour
         if (PlayOnAwake)
             StartCoroutine(DOItemAnimation(gameObject, true));
     }
-    private void OnDisable()
+    public virtual void OnDisable()
     {
+        StartSleepAnimation();
         if (autoClearTweenOnDisable)
             KillTween();
     }
-    #region Initial Setup
+    #region _____SETUP AND VALIDATE_____
+    public virtual void StartSleepAnimation()
+    {
+        switch (tweeningType)
+        {
+            case TweeningType.DoFadeInAndFadeOut:
+                DOItemAnimation(gameObject, false, TweeningType.DoFadeOut, true);
+                break;
+        }
+    }
+
     public virtual void Validate()
     {
         GetTransformScaleAndPosition();
@@ -143,6 +155,7 @@ public class TweeningItem : MonoBehaviour
                 case TweeningType.DoFadeThenStampIn:
                     TrySetCanvasGroupAlpha(0);
                     break;
+                case TweeningType.DoFadeInAndFadeOut:
                 case TweeningType.DoFadeIn:
                     TrySetCanvasGroupAlpha(0);
                     break;
@@ -204,7 +217,7 @@ public class TweeningItem : MonoBehaviour
         }
     }
     #endregion
-    #region MAIN METHODS
+    #region _____MAIN METHODS_____
     //=====>TWEENING ANIM<=====//
     public virtual void PauseTween()
     {
@@ -257,6 +270,7 @@ public class TweeningItem : MonoBehaviour
 
         if (canPlay) iTween.Play();
     }
+
     public virtual Tween GetItemTween(GameObject item = null, Vector3 originScale = new Vector3(), Vector3 originPosition = new Vector3(), TweeningType newType = TweeningType.None)
     {
         if (item == null) item = gameObject;
@@ -285,6 +299,7 @@ public class TweeningItem : MonoBehaviour
             case TweeningType.DoZoomOutAndIn:
                 iTween = GetZoomOutAndInTween(item);
                 break;
+            case TweeningType.DoFadeInAndFadeOut:
             case TweeningType.DoFadeIn:
                 iTween = GetFadeInTween(item);
                 break;

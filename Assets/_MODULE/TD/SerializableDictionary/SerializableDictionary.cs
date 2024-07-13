@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace TD.SerializableDictionary
 {
@@ -12,8 +13,24 @@ namespace TD.SerializableDictionary
         private List<SerializableKeyValuePair> _keyValuePairs = new List<SerializableKeyValuePair>();
 
         private Dictionary<TKey, TValue> _dictionary = new Dictionary<TKey, TValue>();
-        public Dictionary<TKey, TValue> Dictionary { get { return _dictionary; } }
+        public Dictionary<TKey, TValue> ContentTable { get { return _dictionary; } set { _dictionary = value; } }
 
+        public int GetCount()
+        {
+            return _dictionary.Count;
+        }
+        public TKey GetKeyAtIndex(int index)
+        {
+            if (_keyValuePairs == null) return default;
+            var keyPair = _keyValuePairs[index];
+            return keyPair != null ? keyPair.Key : default;
+        }
+        public TValue GetValueAtIndex(int index)
+        {
+            if (_keyValuePairs == null) return default;
+            var keyPair = _keyValuePairs[index];
+            return keyPair != null ? keyPair.Value : default;
+        }
         public void OnBeforeSerialize()
         {
             _keyValuePairs.Clear();
@@ -41,7 +58,7 @@ namespace TD.SerializableDictionary
 
             foreach (var pair in listKeyPair)
             {
-                if(Dictionary.ContainsKey(pair.Key))
+                if(ContentTable.ContainsKey(pair.Key))
                 {
                     listToMap.Add(pair);
                 }
@@ -51,11 +68,7 @@ namespace TD.SerializableDictionary
             listKeyPair.AddRange(listToMap);
             listKeyPair.Distinct();
         }
-        public int Count
-        {
-            get { return _dictionary.Count; }
-        }
-
+        
         public void Add(TKey key, TValue value)
         {
             // Check if the key already exists before adding
@@ -63,18 +76,20 @@ namespace TD.SerializableDictionary
             {
                 _dictionary.Add(key, value);
                 _keyValuePairs.Add(new SerializableKeyValuePair(key, value));
-                Debug.Log($"Key '{key}' is new. Adding with a new key.");
+                //Debug.Log($"Key '{key}' is new. Adding with a new key.");
             }
             else
             {
-                // Handle the case where the key already exists
-                Debug.Log($"Key '{key}' already exists in the dictionary. Adding with a modified key.");
-                // Modify the key to make it unique
-                TKey modifiedKey = ModifyKeyToMakeUnique(key);
-
-                // Add the entry with the modified key
-                _dictionary.Add(modifiedKey, value);
-                _keyValuePairs.Add(new SerializableKeyValuePair(modifiedKey, value));
+                // Add the entry with the modified key after a delay
+                Task.Delay(TimeSpan.FromSeconds(0.3)).ContinueWith(_ =>
+                {
+                    // Handle the case where the key already exists
+                    //Debug.Log($"Key '{key}' already exists in the dictionary. Adding with a modified key.");
+                    // Modify the key to make it unique
+                    TKey modifiedKey = ModifyKeyToMakeUnique(key);
+                    _dictionary.Add(modifiedKey, value);
+                    _keyValuePairs.Add(new SerializableKeyValuePair(modifiedKey, value));
+                });
             }
         }
 
@@ -83,6 +98,7 @@ namespace TD.SerializableDictionary
         {
             int collisionCount;
             TKey nextKey;
+
             // Remove entries from keyCollisionCount that are not in _dictionary
             List<TKey> keysToRemove = _keyCollisionCount.Keys.Where(k => !_dictionary.ContainsKey(k)).ToList();
             foreach (var keyToRemove in keysToRemove)
@@ -128,7 +144,36 @@ namespace TD.SerializableDictionary
                 else if (typeof(TKey) == typeof(bool))
                 {
                     // Toggle the boolean value
-                    return nextKey = (TKey)(object)(!(bool)(object)key);
+                    nextKey = (TKey)(object)(!(bool)(object)key);
+                }
+                else if (typeof(TKey).IsEnum)
+                {
+                    // Handle enum types by converting to the underlying type, modifying, and converting back
+                    var underlyingType = Enum.GetUnderlyingType(typeof(TKey));
+                    if (underlyingType == typeof(int))
+                    {
+                        int intKey = (int)(object)key;
+                        intKey += collisionCount;
+                        nextKey = (TKey)Enum.ToObject(typeof(TKey), intKey);
+                    }
+                    else if (underlyingType == typeof(byte))
+                    {
+                        byte byteKey = (byte)(object)key;
+                        byteKey += (byte)collisionCount;
+                        nextKey = (TKey)Enum.ToObject(typeof(TKey), byteKey);
+                    }
+                    else if (underlyingType == typeof(long))
+                    {
+                        long longKey = (long)(object)key;
+                        longKey += collisionCount;
+                        nextKey = (TKey)Enum.ToObject(typeof(TKey), longKey);
+                    }
+                    else
+                    {
+                        // Add other underlying types as necessary
+                        Debug.LogError($"Unsupported underlying enum type: {underlyingType}");
+                        return key;
+                    }
                 }
                 else
                 {
@@ -140,6 +185,7 @@ namespace TD.SerializableDictionary
 
             return nextKey;
         }
+
 
 
         public bool ContainsKey(TKey key)

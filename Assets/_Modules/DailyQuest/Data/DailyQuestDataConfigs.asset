@@ -1,0 +1,440 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b03a8528fa063fa42836fdccea94dd44, type: 3}
+  m_Name: DailyQuestDataConfigs
+  m_EditorClassIdentifier: 
+  quests:
+  - dailyQuestAction:
+      questID: Corn_Plant_1
+      questItemToDo: 0
+      questActionType: 1
+      requireAmount: 5
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 100
+    dayIndex: 0
+  - dailyQuestAction:
+      questID: Carrot_Plant_1
+      questItemToDo: 1
+      questActionType: 1
+      requireAmount: 5
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 150
+    dayIndex: 0
+  - dailyQuestAction:
+      questID: Cabbage_Plant_1
+      questItemToDo: 2
+      questActionType: 1
+      requireAmount: 5
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 100
+    dayIndex: 0
+  - dailyQuestAction:
+      questID: Apple_Collect_1
+      questItemToDo: 3
+      questActionType: 0
+      requireAmount: 10
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 200
+    dayIndex: 0
+  - dailyQuestAction:
+      questID: Chilli_Plant_1
+      questItemToDo: 4
+      questActionType: 1
+      requireAmount: 7
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 120
+    dayIndex: 1
+  - dailyQuestAction:
+      questID: Onion_Plant_1
+      questItemToDo: 5
+      questActionType: 1
+      requireAmount: 8
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 140
+    dayIndex: 1
+  - dailyQuestAction:
+      questID: Pineapple_Collect_1
+      questItemToDo: 6
+      questActionType: 0
+      requireAmount: 5
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 180
+    dayIndex: 1
+  - dailyQuestAction:
+      questID: Potato_Collect_1
+      questItemToDo: 7
+      questActionType: 0
+      requireAmount: 6
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 110
+    dayIndex: 2
+  - dailyQuestAction:
+      questID: Pumpkin_Collect_1
+      questItemToDo: 8
+      questActionType: 0
+      requireAmount: 5
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 190
+    dayIndex: 2
+  - dailyQuestAction:
+      questID: Strawberry_Collect_1
+      questItemToDo: 9
+      questActionType: 0
+      requireAmount: 10
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 170
+    dayIndex: 2
+  - dailyQuestAction:
+      questID: Cow_Hunt_1
+      questItemToDo: 10
+      questActionType: 5
+      requireAmount: 5
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 200
+    dayIndex: 3
+  - dailyQuestAction:
+      questID: Deer_Hunt_1
+      questItemToDo: 11
+      questActionType: 5
+      requireAmount: 7
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 150
+    dayIndex: 3
+  - dailyQuestAction:
+      questID: Chicken_Hunt_1
+      questItemToDo: 12
+      questActionType: 5
+      requireAmount: 8
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 160
+    dayIndex: 3
+  - dailyQuestAction:
+      questID: Bird_Hunt_1
+      questItemToDo: 13
+      questActionType: 5
+      requireAmount: 6
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 130
+    dayIndex: 4
+  - dailyQuestAction:
+      questID: Pig_Hunt_1
+      questItemToDo: 14
+      questActionType: 5
+      requireAmount: 5
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 120
+    dayIndex: 4
+  - dailyQuestAction:
+      questID: Rabbit_Hunt_1
+      questItemToDo: 15
+      questActionType: 5
+      requireAmount: 10
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 140
+    dayIndex: 4
+  - dailyQuestAction:
+      questID: Sheep_Hunt_1
+      questItemToDo: 16
+      questActionType: 5
+      requireAmount: 7
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 180
+    dayIndex: 5
+  - dailyQuestAction:
+      questID: Bread_Create_1
+      questItemToDo: 17
+      questActionType: 4
+      requireAmount: 5
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 170
+    dayIndex: 5
+  - dailyQuestAction:
+      questID: Coconut_Water_Create_1
+      questItemToDo: 18
+      questActionType: 4
+      requireAmount: 8
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 190
+    dayIndex: 5
+  - dailyQuestAction:
+      questID: Hamburger_Create_1
+      questItemToDo: 19
+      questActionType: 4
+      requireAmount: 6
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 160
+    dayIndex: 6
+  - dailyQuestAction:
+      questID: HotDog_Create_1
+      questItemToDo: 20
+      questActionType: 4
+      requireAmount: 7
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 140
+    dayIndex: 6
+  - dailyQuestAction:
+      questID: IceCream_Create_1
+      questItemToDo: 21
+      questActionType: 4
+      requireAmount: 10
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 180
+    dayIndex: 6
+  - dailyQuestAction:
+      questID: Meat_Consume_1
+      questItemToDo: 22
+      questActionType: 3
+      requireAmount: 6
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 120
+    dayIndex: 7
+  - dailyQuestAction:
+      questID: Milk_Create_1
+      questItemToDo: 23
+      questActionType: 4
+      requireAmount: 8
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 110
+    dayIndex: 7
+  - dailyQuestAction:
+      questID: Popcorn_Consume_1
+      questItemToDo: 24
+      questActionType: 3
+      requireAmount: 5
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 200
+    dayIndex: 7
+  - dailyQuestAction:
+      questID: StarBerry_IceCream_Consume_1
+      questItemToDo: 25
+      questActionType: 3
+      requireAmount: 7
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 150
+    dayIndex: 8
+  - dailyQuestAction:
+      questID: ThitXienNuong_Consume_1
+      questItemToDo: 26
+      questActionType: 3
+      requireAmount: 10
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 160
+    dayIndex: 8
+  - dailyQuestAction:
+      questID: Corn_Plant_2
+      questItemToDo: 0
+      questActionType: 1
+      requireAmount: 5
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 150
+    dayIndex: 9
+  - dailyQuestAction:
+      questID: Carrot_Plant_2
+      questItemToDo: 1
+      questActionType: 1
+      requireAmount: 5
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 170
+    dayIndex: 9
+  - dailyQuestAction:
+      questID: Cabbage_Plant_2
+      questItemToDo: 2
+      questActionType: 1
+      requireAmount: 5
+      dailyQuestRewardDatas:
+      - rewardType: 1
+        rewardQuantity: 130
+    dayIndex: 9
+  questsPerDay: 5
+  questCycleGap: 7
+  shuffle: 0
+  json: '{     "quests": [         {             "dailyQuestAction": {                
+    "questID": "Corn_Plant_1",                 "questItemToDo": 0,                
+    "questActionType": 1,                 "requireAmount": 5,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 100                     }                 ]             },            
+    "dayIndex": 0         },         {             "dailyQuestAction": {                
+    "questID": "Carrot_Plant_1",                 "questItemToDo": 1,                
+    "questActionType": 1,                 "requireAmount": 5,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 150                     }                 ]             },            
+    "dayIndex": 0         },         {             "dailyQuestAction": {                
+    "questID": "Cabbage_Plant_1",                 "questItemToDo": 2,                
+    "questActionType": 1,                 "requireAmount": 5,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 100                     }                 ]             },            
+    "dayIndex": 0         },         {             "dailyQuestAction": {                
+    "questID": "Apple_Collect_1",                 "questItemToDo": 3,                
+    "questActionType": 0,                 "requireAmount": 10,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 200                     }                 ]             },            
+    "dayIndex": 0         },         {             "dailyQuestAction": {                
+    "questID": "Chilli_Plant_1",                 "questItemToDo": 4,                
+    "questActionType": 1,                 "requireAmount": 7,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 120                     }                 ]             },            
+    "dayIndex": 1         },         {             "dailyQuestAction": {                
+    "questID": "Onion_Plant_1",                 "questItemToDo": 5,                
+    "questActionType": 1,                 "requireAmount": 8,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 140                     }                 ]             },            
+    "dayIndex": 1         },         {             "dailyQuestAction": {                
+    "questID": "Pineapple_Collect_1",                 "questItemToDo": 6,                
+    "questActionType": 0,                 "requireAmount": 5,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 180                     }                 ]             },            
+    "dayIndex": 1         },         {             "dailyQuestAction": {                
+    "questID": "Potato_Collect_1",                 "questItemToDo": 7,                
+    "questActionType": 0,                 "requireAmount": 6,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 110                     }                 ]             },            
+    "dayIndex": 2         },         {             "dailyQuestAction": {                
+    "questID": "Pumpkin_Collect_1",                 "questItemToDo": 8,                
+    "questActionType": 0,                 "requireAmount": 5,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 190                     }                 ]             },            
+    "dayIndex": 2         },         {             "dailyQuestAction": {                
+    "questID": "Strawberry_Collect_1",                 "questItemToDo": 9,                
+    "questActionType": 0,                 "requireAmount": 10,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 170                     }                 ]             },            
+    "dayIndex": 2         },         {             "dailyQuestAction": {                
+    "questID": "Cow_Hunt_1",                 "questItemToDo": 10,                
+    "questActionType": 5,                 "requireAmount": 5,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 200                     }                 ]             },            
+    "dayIndex": 3         },         {             "dailyQuestAction": {                
+    "questID": "Deer_Hunt_1",                 "questItemToDo": 11,                
+    "questActionType": 5,                 "requireAmount": 7,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 150                     }                 ]             },            
+    "dayIndex": 3         },         {             "dailyQuestAction": {                
+    "questID": "Chicken_Hunt_1",                 "questItemToDo": 12,                
+    "questActionType": 5,                 "requireAmount": 8,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 160                     }                 ]             },            
+    "dayIndex": 3         },         {             "dailyQuestAction": {                
+    "questID": "Bird_Hunt_1",                 "questItemToDo": 13,                
+    "questActionType": 5,                 "requireAmount": 6,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 130                     }                 ]             },            
+    "dayIndex": 4         },         {             "dailyQuestAction": {                
+    "questID": "Pig_Hunt_1",                 "questItemToDo": 14,                
+    "questActionType": 5,                 "requireAmount": 5,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 120                     }                 ]             },            
+    "dayIndex": 4         },         {             "dailyQuestAction": {                
+    "questID": "Rabbit_Hunt_1",                 "questItemToDo": 15,                
+    "questActionType": 5,                 "requireAmount": 10,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 140                     }                 ]             },            
+    "dayIndex": 4         },         {             "dailyQuestAction": {                
+    "questID": "Sheep_Hunt_1",                 "questItemToDo": 16,                
+    "questActionType": 5,                 "requireAmount": 7,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 180                     }                 ]             },            
+    "dayIndex": 5         },         {             "dailyQuestAction": {                
+    "questID": "Bread_Create_1",                 "questItemToDo": 17,                
+    "questActionType": 4,                 "requireAmount": 5,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 170                     }                 ]             },            
+    "dayIndex": 5         },         {             "dailyQuestAction": {                
+    "questID": "Coconut_Water_Create_1",                 "questItemToDo": 18,                
+    "questActionType": 4,                 "requireAmount": 8,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 190                     }                 ]             },            
+    "dayIndex": 5         },         {             "dailyQuestAction": {                
+    "questID": "Hamburger_Create_1",                 "questItemToDo": 19,                
+    "questActionType": 4,                 "requireAmount": 6,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 160                     }                 ]             },            
+    "dayIndex": 6         },         {             "dailyQuestAction": {                
+    "questID": "HotDog_Create_1",                 "questItemToDo": 20,                
+    "questActionType": 4,                 "requireAmount": 7,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 140                     }                 ]             },            
+    "dayIndex": 6         },         {             "dailyQuestAction": {                
+    "questID": "IceCream_Create_1",                 "questItemToDo": 21,                
+    "questActionType": 4,                 "requireAmount": 10,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 180                     }                 ]             },            
+    "dayIndex": 6         },         {             "dailyQuestAction": {                
+    "questID": "Meat_Consume_1",                 "questItemToDo": 22,                
+    "questActionType": 3,                 "requireAmount": 6,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 120                     }                 ]             },            
+    "dayIndex": 7         },         {             "dailyQuestAction": {                
+    "questID": "Milk_Create_1",                 "questItemToDo": 23,                
+    "questActionType": 4,                 "requireAmount": 8,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 110                     }                 ]             },            
+    "dayIndex": 7         },         {             "dailyQuestAction": {                
+    "questID": "Popcorn_Consume_1",                 "questItemToDo": 24,                
+    "questActionType": 3,                 "requireAmount": 5,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 200                     }                 ]             },            
+    "dayIndex": 7         },         {             "dailyQuestAction": {                
+    "questID": "StarBerry_IceCream_Consume_1",                 "questItemToDo": 25,                
+    "questActionType": 3,                 "requireAmount": 7,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 150                     }                 ]             },            
+    "dayIndex": 8         },         {             "dailyQuestAction": {                
+    "questID": "ThitXienNuong_Consume_1",                 "questItemToDo": 26,                
+    "questActionType": 3,                 "requireAmount": 10,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 160                     }                 ]             },            
+    "dayIndex": 8         },         {             "dailyQuestAction": {                
+    "questID": "Corn_Plant_2",                 "questItemToDo": 0,                
+    "questActionType": 1,                 "requireAmount": 5,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 150                     }                 ]             },            
+    "dayIndex": 9         },         {             "dailyQuestAction": {                
+    "questID": "Carrot_Plant_2",                 "questItemToDo": 1,                
+    "questActionType": 1,                 "requireAmount": 5,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 170                     }                 ]             },            
+    "dayIndex": 9         },         {             "dailyQuestAction": {                
+    "questID": "Cabbage_Plant_2",                 "questItemToDo": 2,                
+    "questActionType": 1,                 "requireAmount": 5,                 "dailyQuestRewardDatas":
+    [                     {                         "rewardType": 1,                        
+    "rewardQuantity": 130                     }                 ]             },            
+    "dayIndex": 9         }     ],     "questsPerDay": 5,     "questCycleGap": 7,    
+    "shuffle": false,     "name": "DailyQuestDataConfigs",     "hideFlags": 0 } '
