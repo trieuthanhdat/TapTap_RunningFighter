@@ -1,3 +1,69 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:bd59150904bc3983d74f41f9f9886ca802bc3ad54468f19d0a340a5ea0601631
-size 1652
+﻿using System;
+using System.Collections;
+
+namespace UniRx
+{
+    public sealed class MultipleAssignmentDisposable : IDisposable, ICancelable
+    {
+        static readonly BooleanDisposable True = new BooleanDisposable(true);
+
+        object gate = new object();
+        IDisposable current;
+
+        public bool IsDisposed
+        {
+            get
+            {
+                lock (gate)
+                {
+                    return current == True;
+                }
+            }
+        }
+
+        public IDisposable Disposable
+        {
+            get
+            {
+                lock (gate)
+                {
+                    return (current == True)
+                        ? UniRx.Disposable.Empty
+                        : current;
+                }
+            }
+            set
+            {
+                var shouldDispose = false;
+                lock (gate)
+                {
+                    shouldDispose = (current == True);
+                    if (!shouldDispose)
+                    {
+                        current = value;
+                    }
+                }
+                if (shouldDispose && value != null)
+                {
+                    value.Dispose();
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            IDisposable old = null;
+
+            lock (gate)
+            {
+                if (current != True)
+                {
+                    old = current;
+                    current = True;
+                }
+            }
+
+            if (old != null) old.Dispose();
+        }
+    }
+}

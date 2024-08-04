@@ -1,3 +1,69 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6e51331d5a069f2bb8ae4f1e84b8c2999a6deb8d740a59184a9d43f2e4381228
-size 1882
+﻿using System;
+
+namespace UniRx.Operators
+{
+    internal class ThrowObservable<T> : OperatorObservableBase<T>
+    {
+        readonly Exception error;
+        readonly IScheduler scheduler;
+
+        public ThrowObservable(Exception error, IScheduler scheduler)
+            : base(scheduler == Scheduler.CurrentThread)
+        {
+            this.error = error;
+            this.scheduler = scheduler;
+        }
+
+        protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
+        {
+            observer = new Throw(observer, cancel);
+
+            if (scheduler == Scheduler.Immediate)
+            {
+                observer.OnError(error);
+                return Disposable.Empty;
+            }
+            else
+            {
+                return scheduler.Schedule(() =>
+                {
+                    observer.OnError(error);
+                    observer.OnCompleted();
+                });
+            }
+        }
+
+        class Throw : OperatorObserverBase<T, T>
+        {
+            public Throw(IObserver<T> observer, IDisposable cancel)
+                : base(observer, cancel)
+            {
+            }
+
+            public override void OnNext(T value)
+            {
+                try
+                {
+                    base.observer.OnNext(value);
+                }
+                catch
+                {
+                    Dispose();
+                    throw;
+                }
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
+            }
+        }
+    }
+}

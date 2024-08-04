@@ -1,3 +1,44 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:14a98f03c7050a898634a46d86b8191a04d0233ae2a216ebab9e0abd49b0118c
-size 1239
+﻿using System;
+using UniRx.Operators;
+
+namespace UniRx.Operators
+{
+    internal class IgnoreElementsObservable<T> : OperatorObservableBase<T>
+    {
+        readonly IObservable<T> source;
+
+        public IgnoreElementsObservable(IObservable<T> source)
+            : base(source.IsRequiredSubscribeOnCurrentThread())
+        {
+            this.source = source;
+        }
+
+        protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
+        {
+            return source.Subscribe(new IgnoreElements(observer, cancel));
+        }
+
+        class IgnoreElements : OperatorObserverBase<T, T>
+        {
+            public IgnoreElements(IObserver<T> observer, IDisposable cancel) : base(observer, cancel)
+            {
+            }
+
+            public override void OnNext(T value)
+            {
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
+            }
+        }
+    }
+}

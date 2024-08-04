@@ -1,3 +1,49 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d93bc0abaa9919cea33a1a43bce1e2114d5dc9612a45230d3b72d886c69bea89
-size 1699
+﻿using System; // require keep for Windows Universal App
+using UnityEngine;
+
+namespace UniRx.Triggers
+{
+    [DisallowMultipleComponent]
+    public class ObservableVisibleTrigger : ObservableTriggerBase
+    {
+        Subject<Unit> onBecameInvisible;
+
+        /// <summary>OnBecameInvisible is called when the renderer is no longer visible by any camera.</summary>
+        void OnBecameInvisible()
+        {
+            if (onBecameInvisible != null) onBecameInvisible.OnNext(Unit.Default);
+        }
+
+        /// <summary>OnBecameInvisible is called when the renderer is no longer visible by any camera.</summary>
+        public IObservable<Unit> OnBecameInvisibleAsObservable()
+        {
+            return onBecameInvisible ?? (onBecameInvisible = new Subject<Unit>());
+        }
+
+        Subject<Unit> onBecameVisible;
+
+        /// <summary>OnBecameVisible is called when the renderer became visible by any camera.</summary>
+        void OnBecameVisible()
+        {
+            if (onBecameVisible != null) onBecameVisible.OnNext(Unit.Default);
+        }
+
+        /// <summary>OnBecameVisible is called when the renderer became visible by any camera.</summary>
+        public IObservable<Unit> OnBecameVisibleAsObservable()
+        {
+            return onBecameVisible ?? (onBecameVisible = new Subject<Unit>());
+        }
+
+        protected override void RaiseOnCompletedOnDestroy()
+        {
+            if (onBecameInvisible != null)
+            {
+                onBecameInvisible.OnCompleted();
+            }
+            if (onBecameVisible != null)
+            {
+                onBecameVisible.OnCompleted();
+            }
+        }
+    }
+}

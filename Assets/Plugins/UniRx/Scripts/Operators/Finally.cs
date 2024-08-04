@@ -1,3 +1,68 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:de80a2bcf909a5274a87e708bb84d5e9f8fa5c9e50bc35615459785f498f0ba3
-size 2064
+﻿using System;
+
+namespace UniRx.Operators
+{
+    internal class FinallyObservable<T> : OperatorObservableBase<T>
+    {
+        readonly IObservable<T> source;
+        readonly Action finallyAction;
+
+        public FinallyObservable(IObservable<T> source, Action finallyAction)
+            : base(source.IsRequiredSubscribeOnCurrentThread())
+        {
+            this.source = source;
+            this.finallyAction = finallyAction;
+        }
+
+        protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
+        {
+            return new Finally(this, observer, cancel).Run();
+        }
+
+        class Finally : OperatorObserverBase<T, T>
+        {
+            readonly FinallyObservable<T> parent;
+
+            public Finally(FinallyObservable<T> parent, IObserver<T> observer, IDisposable cancel)
+                : base(observer, cancel)
+            {
+                this.parent = parent;
+            }
+
+            public IDisposable Run()
+            {
+                IDisposable subscription;
+                try
+                {
+                    subscription = parent.source.Subscribe(this);
+                }
+                catch
+                {
+                    // This behaviour is not same as .NET Official Rx
+                    parent.finallyAction();
+                    throw;
+                }
+
+                return StableCompositeDisposable.Create(subscription, Disposable.Create(() =>
+                {
+                    parent.finallyAction();
+                }));
+            }
+
+            public override void OnNext(T value)
+            {
+                base.observer.OnNext(value);
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); } finally { Dispose(); };
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); } finally { Dispose(); };
+            }
+        }
+    }
+}

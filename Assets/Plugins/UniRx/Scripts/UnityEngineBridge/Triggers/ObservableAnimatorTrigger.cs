@@ -1,3 +1,49 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:326e411e43d140f8c97bd2d8baac0c679f49b03e33dcb689cf036688cbaada86
-size 1603
+﻿using System; // require keep for Windows Universal App
+using UnityEngine;
+
+namespace UniRx.Triggers
+{
+    [DisallowMultipleComponent]
+    public class ObservableAnimatorTrigger : ObservableTriggerBase
+    {
+        Subject<int> onAnimatorIK;
+
+        /// <summary>Callback for setting up animation IK (inverse kinematics).</summary>
+        void OnAnimatorIK(int layerIndex)
+        {
+            if (onAnimatorIK != null) onAnimatorIK.OnNext(layerIndex);
+        }
+
+        /// <summary>Callback for setting up animation IK (inverse kinematics).</summary>
+        public IObservable<int> OnAnimatorIKAsObservable()
+        {
+            return onAnimatorIK ?? (onAnimatorIK = new Subject<int>());
+        }
+
+        Subject<Unit> onAnimatorMove;
+
+        /// <summary>Callback for processing animation movements for modifying root motion.</summary>
+        void OnAnimatorMove()
+        {
+            if (onAnimatorMove != null) onAnimatorMove.OnNext(Unit.Default);
+        }
+
+        /// <summary>Callback for processing animation movements for modifying root motion.</summary>
+        public IObservable<Unit> OnAnimatorMoveAsObservable()
+        {
+            return onAnimatorMove ?? (onAnimatorMove = new Subject<Unit>());
+        }
+
+        protected override void RaiseOnCompletedOnDestroy()
+        {
+            if (onAnimatorIK != null)
+            {
+                onAnimatorIK.OnCompleted();
+            }
+            if (onAnimatorMove != null)
+            {
+                onAnimatorMove.OnCompleted();
+            }
+        }
+    }
+}

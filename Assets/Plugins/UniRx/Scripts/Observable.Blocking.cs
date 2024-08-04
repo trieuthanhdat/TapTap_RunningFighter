@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:2cdd243e82d679324d967b9f13336fa6db8345b3875c75bd043cfe52bf607e7f
-size 440
+﻿using System;
+
+namespace UniRx
+{
+    public static partial class Observable
+    {
+        public static T Wait<T>(this IObservable<T> source)
+        {
+            return new UniRx.Operators.Wait<T>(source, InfiniteTimeSpan).Run();
+        }
+
+        public static T Wait<T>(this IObservable<T> source, TimeSpan timeout)
+        {
+            return new UniRx.Operators.Wait<T>(source, timeout).Run();
+        }
+    }
+}

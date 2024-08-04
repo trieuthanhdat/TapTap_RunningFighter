@@ -1,3 +1,26 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:62ed81779230430d34732edda331d823e15b733d63f2b9a3c1336deb293d255f
-size 524
+﻿#if UNITY_METRO
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+
+namespace UniRx
+{
+    public static class Thread
+    {
+        public static void Sleep(TimeSpan wait)
+        {
+            new System.Threading.ManualResetEvent(false).WaitOne(wait);
+        }
+
+        public static void Sleep(int ms)
+        {
+            new System.Threading.ManualResetEvent(false).WaitOne(ms);
+        }
+    }
+}
+
+#endif

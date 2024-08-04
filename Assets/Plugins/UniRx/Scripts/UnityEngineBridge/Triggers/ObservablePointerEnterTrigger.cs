@@ -1,3 +1,36 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:eacaf9333f90618ac6deefe2e3a05a3f54e65f19bd3518ecd5fd3f29413bdb99
-size 1047
+﻿// for uGUI(from 4.6)
+#if !(UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5)
+
+using System; // require keep for Windows Universal App
+using UnityEngine;
+using UnityEngine.EventSystems;
+
+namespace UniRx.Triggers
+{
+    [DisallowMultipleComponent]
+    public class ObservablePointerEnterTrigger : ObservableTriggerBase, IEventSystemHandler, IPointerEnterHandler
+    {
+        Subject<PointerEventData> onPointerEnter;
+
+        void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
+        {
+            if (onPointerEnter != null) onPointerEnter.OnNext(eventData);
+        }
+
+        public IObservable<PointerEventData> OnPointerEnterAsObservable()
+        {
+            return onPointerEnter ?? (onPointerEnter = new Subject<PointerEventData>());
+        }
+
+        protected override void RaiseOnCompletedOnDestroy()
+        {
+            if (onPointerEnter != null)
+            {
+                onPointerEnter.OnCompleted();
+            }
+        }
+    }
+}
+
+
+#endif

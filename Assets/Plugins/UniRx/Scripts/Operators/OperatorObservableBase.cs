@@ -1,3 +1,42 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d6732677fa9caf33d4f13c1c0ca804934d33140913a3bd24f85949efb4c6ab51
-size 1486
+﻿using System;
+
+namespace UniRx.Operators
+{
+    // implements note : all field must be readonly.
+    public abstract class OperatorObservableBase<T> : IObservable<T>, IOptimizedObservable<T>
+    {
+        readonly bool isRequiredSubscribeOnCurrentThread;
+
+        public OperatorObservableBase(bool isRequiredSubscribeOnCurrentThread)
+        {
+            this.isRequiredSubscribeOnCurrentThread = isRequiredSubscribeOnCurrentThread;
+        }
+
+        public bool IsRequiredSubscribeOnCurrentThread()
+        {
+            return isRequiredSubscribeOnCurrentThread;
+        }
+
+        public IDisposable Subscribe(IObserver<T> observer)
+        {
+            var subscription = new SingleAssignmentDisposable();
+
+            // note:
+            // does not make the safe observer, it breaks exception durability.
+            // var safeObserver = Observer.CreateAutoDetachObserver<T>(observer, subscription);
+
+            if (isRequiredSubscribeOnCurrentThread && Scheduler.IsCurrentThreadSchedulerScheduleRequired)
+            {
+                Scheduler.CurrentThread.Schedule(() => subscription.Disposable = SubscribeCore(observer, subscription));
+            }
+            else
+            {
+                subscription.Disposable = SubscribeCore(observer, subscription);
+            }
+
+            return subscription;
+        }
+
+        protected abstract IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel);
+    }
+}

@@ -1,3 +1,56 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5d246179b465c9c369b5b9c1f14265cecc7edb5449c604c4b8d55aadffaea998
-size 1870
+﻿using System;
+using System.Collections.Generic;
+
+namespace UniRx.Operators
+{
+    internal class DelaySubscriptionObservable<T> : OperatorObservableBase<T>
+    {
+        readonly IObservable<T> source;
+        readonly IScheduler scheduler;
+        readonly TimeSpan? dueTimeT;
+        readonly DateTimeOffset? dueTimeD;
+
+        public DelaySubscriptionObservable(IObservable<T> source,TimeSpan dueTime, IScheduler scheduler)
+            : base(scheduler == Scheduler.CurrentThread || source.IsRequiredSubscribeOnCurrentThread())
+        {
+            this.source = source;
+            this.scheduler = scheduler;
+            this.dueTimeT = dueTime;
+        }
+
+        public DelaySubscriptionObservable(IObservable<T> source, DateTimeOffset dueTime, IScheduler scheduler)
+            : base(scheduler == Scheduler.CurrentThread || source.IsRequiredSubscribeOnCurrentThread())
+        {
+            this.source = source;
+            this.scheduler = scheduler;
+            this.dueTimeD = dueTime;
+        }
+
+        protected override IDisposable SubscribeCore(IObserver<T> observer, IDisposable cancel)
+        {
+            if (dueTimeT != null)
+            {
+                var d = new MultipleAssignmentDisposable();
+                var dt = Scheduler.Normalize(dueTimeT.Value);
+
+                d.Disposable = scheduler.Schedule(dt, () =>
+                {
+                    d.Disposable = source.Subscribe(observer);
+                });
+
+                return d;
+            }
+            else
+            {
+                var d = new MultipleAssignmentDisposable();
+
+                d.Disposable = scheduler.Schedule(dueTimeD.Value, () =>
+                {
+                    d.Disposable = source.Subscribe(observer);
+                });
+
+                return d;
+            }
+        }
+    }
+}

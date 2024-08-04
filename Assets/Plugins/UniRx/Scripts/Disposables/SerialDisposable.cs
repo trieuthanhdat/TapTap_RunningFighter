@@ -1,3 +1,64 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7f6f275bd08a4fb6b7b7cd9d26a40d881042409a66eea581047d2806bf2a086e
-size 1565
+﻿using System;
+using System.Collections;
+
+namespace UniRx
+{
+    public sealed class SerialDisposable : IDisposable, ICancelable
+    {
+        readonly object gate = new object();
+        IDisposable current;
+        bool disposed;
+
+        public bool IsDisposed { get { lock (gate) { return disposed; } } }
+
+        public IDisposable Disposable
+        {
+            get
+            {
+                return current;
+            }
+            set
+            {
+                var shouldDispose = false;
+                var old = default(IDisposable);
+                lock (gate)
+                {
+                    shouldDispose = disposed;
+                    if (!shouldDispose)
+                    {
+                        old = current;
+                        current = value;
+                    }
+                }
+                if (old != null)
+                {
+                    old.Dispose();
+                }
+                if (shouldDispose && value != null)
+                {
+                    value.Dispose();
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            var old = default(IDisposable);
+
+            lock (gate)
+            {
+                if (!disposed)
+                {
+                    disposed = true;
+                    old = current;
+                    current = null;
+                }
+            }
+
+            if (old != null)
+            {
+                old.Dispose();
+            }
+        }
+    }
+}

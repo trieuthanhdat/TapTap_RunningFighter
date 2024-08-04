@@ -1,3 +1,49 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:bf6f62e9a2df11dd8c31c8da15ecd699095124f3a5b6a663eff2cc8193a3686c
-size 1539
+﻿using System; // require keep for Windows Universal App
+using UnityEngine;
+
+namespace UniRx.Triggers
+{
+    [DisallowMultipleComponent]
+    public class ObservableEnableTrigger : ObservableTriggerBase
+    {
+        Subject<Unit> onEnable;
+
+        /// <summary>This function is called when the object becomes enabled and active.</summary>
+        void OnEnable()
+        {
+            if (onEnable != null) onEnable.OnNext(Unit.Default);
+        }
+
+        /// <summary>This function is called when the object becomes enabled and active.</summary>
+        public IObservable<Unit> OnEnableAsObservable()
+        {
+            return onEnable ?? (onEnable = new Subject<Unit>());
+        }
+
+        Subject<Unit> onDisable;
+
+        /// <summary>This function is called when the behaviour becomes disabled () or inactive.</summary>
+        void OnDisable()
+        {
+            if (onDisable != null) onDisable.OnNext(Unit.Default);
+        }
+
+        /// <summary>This function is called when the behaviour becomes disabled () or inactive.</summary>
+        public IObservable<Unit> OnDisableAsObservable()
+        {
+            return onDisable ?? (onDisable = new Subject<Unit>());
+        }
+
+        protected override void RaiseOnCompletedOnDestroy()
+        {
+            if (onEnable != null)
+            {
+                onEnable.OnCompleted();
+            }
+            if (onDisable != null)
+            {
+                onDisable.OnCompleted();
+            }
+        }
+    }
+}

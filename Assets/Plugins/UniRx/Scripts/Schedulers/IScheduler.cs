@@ -1,3 +1,30 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5d8f1d88862a19842fc4607d92f2272ed95629b27795366965b9371505609a8f
-size 736
+﻿using System;
+
+namespace UniRx
+{
+    public interface IScheduler
+    {
+        DateTimeOffset Now { get; }
+
+        // Interface is changed from official Rx for avoid iOS AOT problem (state is dangerous).
+
+        IDisposable Schedule(Action action);
+
+        IDisposable Schedule(TimeSpan dueTime, Action action);
+    }
+
+    public interface ISchedulerPeriodic
+    {
+        IDisposable SchedulePeriodic(TimeSpan period, Action action);
+    }
+
+    public interface ISchedulerLongRunning
+    {
+        IDisposable ScheduleLongRunning(Action<ICancelable> action);
+    }
+
+    public interface ISchedulerQueueing
+    {
+        void ScheduleQueueing<T>(ICancelable cancel, T state, Action<T> action);
+    }
+}

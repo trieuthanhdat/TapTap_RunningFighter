@@ -1,3 +1,45 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:cf4ab55e6402e9b7988808ce268c9d8cc27173d9523bd80cdcec7a0cd1e2e743
-size 1307
+﻿using System;
+
+namespace UniRx.Operators
+{
+    internal class AsUnitObservableObservable<T> : OperatorObservableBase<Unit>
+    {
+        readonly IObservable<T> source;
+
+        public AsUnitObservableObservable(IObservable<T> source)
+            : base(source.IsRequiredSubscribeOnCurrentThread())
+        {
+            this.source = source;
+        }
+
+        protected override IDisposable SubscribeCore(IObserver<Unit> observer, IDisposable cancel)
+        {
+            return source.Subscribe(new AsUnitObservable(observer, cancel));
+        }
+
+        class AsUnitObservable : OperatorObserverBase<T, Unit>
+        {
+            public AsUnitObservable(IObserver<Unit> observer, IDisposable cancel)
+                : base(observer, cancel)
+            {
+            }
+
+            public override void OnNext(T value)
+            {
+                base.observer.OnNext(Unit.Default);
+            }
+
+            public override void OnError(Exception error)
+            {
+                try { observer.OnError(error); }
+                finally { Dispose(); }
+            }
+
+            public override void OnCompleted()
+            {
+                try { observer.OnCompleted(); }
+                finally { Dispose(); }
+            }
+        }
+    }
+}

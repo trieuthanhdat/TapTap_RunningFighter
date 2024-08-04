@@ -1,3 +1,30 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:21db7ec44ce7b44b81dee36205b8cfd4828b0818af5422524da5a2f7b1fffe54
-size 542
+﻿// defined from .NET Framework 4.5 and NETFX_CORE
+
+#if !(NETFX_CORE || NET_4_6 || NET_STANDARD_2_0 || UNITY_WSA_10_0)
+
+using System;
+
+namespace UniRx
+{
+    public interface IProgress<T>
+    {
+        void Report(T value);
+    }
+
+    public class Progress<T> : IProgress<T>
+    {
+        readonly Action<T> report;
+
+        public Progress(Action<T> report)
+        {
+            this.report = report;
+        }
+
+        public void Report(T value)
+        {
+            report(value);
+        }
+    }
+}
+
+#endif

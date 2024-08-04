@@ -1,3 +1,36 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a8b77e5e4a73b4983911177ea79f4fb353b07db3351d16a3501d38c4262a7747
-size 939
+﻿// for uGUI(from 4.6)
+#if !(UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5)
+
+using System; // require keep for Windows Universal App
+using UnityEngine;
+using UnityEngine.EventSystems;
+
+namespace UniRx.Triggers
+{
+    [DisallowMultipleComponent]
+    public class ObservableMoveTrigger : ObservableTriggerBase, IEventSystemHandler, IMoveHandler
+    {
+        Subject<AxisEventData> onMove;
+
+        void IMoveHandler.OnMove(AxisEventData eventData)
+        {
+            if (onMove != null) onMove.OnNext(eventData);
+        }
+
+        public IObservable<AxisEventData> OnMoveAsObservable()
+        {
+            return onMove ?? (onMove = new Subject<AxisEventData>());
+        }
+
+        protected override void RaiseOnCompletedOnDestroy()
+        {
+            if (onMove != null)
+            {
+                onMove.OnCompleted();
+            }
+        }
+    }
+}
+
+
+#endif
